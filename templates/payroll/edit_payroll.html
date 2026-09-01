@@ -1,0 +1,56 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Edit Payroll
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+<div class="row justify-content-center">
+
+<div class="col-lg-8">
+
+<div class="card shadow">
+
+<div class="card-header bg-warning">
+
+<h4>Edit Payroll</h4>
+
+</div>
+
+<div class="card-body">
+
+<form method="POST">
+
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<button class="btn btn-warning">
+
+Update Payroll
+
+</button>
+
+<a href="{% url 'payroll_list' %}"
+class="btn btn-secondary">
+
+Cancel
+
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

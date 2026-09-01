@@ -1,0 +1,288 @@
+<!-- ===================================== -->
+<!-- Sidebar -->
+<!-- ===================================== -->
+
+<aside class="sidebar" id="sidebar">
+
+
+    <!-- ================================= -->
+    <!-- Logo -->
+    <!-- ================================= -->
+
+    <div class="sidebar-header">
+
+        <a
+            href="{% url 'dashboard' %}"
+            class="logo">
+
+            <i class="bi bi-buildings-fill"></i>
+
+            <span class="logo-text">
+                Enterprise HRMS
+            </span>
+
+        </a>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- Logged In User -->
+    <!-- ================================= -->
+
+    <div class="user-panel">
+
+
+        <div class="user-avatar">
+
+            {% if user.is_authenticated and user.profile_picture %}
+
+                <img
+                    src="{{ user.profile_picture.url }}"
+                    alt="Profile">
+
+            {% else %}
+
+                <img
+                    src="https://ui-avatars.com/api/?name={{ user.username }}&background=2563eb&color=fff"
+                    alt="Profile">
+
+            {% endif %}
+
+        </div>
+
+
+        <div class="user-info">
+
+            {% if user.is_authenticated %}
+
+                <h6>
+                    {{ user.get_full_name|default:user.username }}
+                </h6>
+
+                <small>
+                    {{ user.role|default:"Administrator" }}
+                </small>
+
+            {% else %}
+
+                <h6>Guest</h6>
+
+                <small>Not Logged In</small>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- Navigation -->
+    <!-- ================================= -->
+
+    <ul class="sidebar-menu">
+
+
+        <!-- Dashboard -->
+
+        <li>
+
+            <a href="{% url 'dashboard' %}">
+
+                <i class="bi bi-speedometer2"></i>
+
+                <span class="menu-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- Employees -->
+
+        <li>
+
+            <a href="{% url 'employee_list' %}">
+
+                <i class="bi bi-people-fill"></i>
+
+                <span class="menu-text">
+                    Employees
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- Departments -->
+
+        <li>
+
+            <a href="{% url 'department_list' %}">
+
+                <i class="bi bi-diagram-3-fill"></i>
+
+                <span class="menu-text">
+                    Departments
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- Attendance -->
+
+        <li>
+
+            <a href="{% url 'attendance_list' %}">
+
+                <i class="bi bi-calendar-check-fill"></i>
+
+                <span class="menu-text">
+                    Attendance
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- Leave -->
+
+        <li>
+
+            <a href="{% url 'leave_list' %}">
+
+                <i class="bi bi-airplane-fill"></i>
+
+                <span class="menu-text">
+                    Leave Management
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- Payroll -->
+
+        <li>
+
+            <a href="{% url 'payroll_list' %}">
+
+                <i class="bi bi-cash-stack"></i>
+
+                <span class="menu-text">
+                    Payroll
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- Reports -->
+
+        <li>
+
+            <a href="{% url 'report_dashboard' %}">
+
+                <i class="bi bi-bar-chart-fill"></i>
+
+                <span class="menu-text">
+                    Reports
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- Notifications -->
+
+        <li>
+
+            <a href="#">
+
+                <i class="bi bi-bell-fill"></i>
+
+                <span class="menu-text">
+                    Notifications
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- Settings -->
+
+        <li>
+
+            <a href="#">
+
+                <i class="bi bi-gear-fill"></i>
+
+                <span class="menu-text">
+                    Settings
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <!-- My Profile -->
+
+        <li>
+
+            <a href="#">
+
+                <i class="bi bi-person-circle"></i>
+
+                <span class="menu-text">
+                    My Profile
+                </span>
+
+            </a>
+
+        </li>
+
+
+        <hr>
+
+
+        <!-- Logout -->
+
+        <li>
+
+            <a
+                href="{% url 'logout' %}"
+                class="text-danger">
+
+                <i class="bi bi-box-arrow-right"></i>
+
+                <span class="menu-text">
+                    Logout
+                </span>
+
+            </a>
+
+        </li>
+
+    </ul>
+
+</aside>
+
+
+<!-- Mobile Sidebar Overlay -->
+
+<div
+    class="sidebar-overlay"
+    id="sidebarOverlay">
+</div>

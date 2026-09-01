@@ -1,0 +1,531 @@
+
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Employees
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ========================================= -->
+    <!-- Page Heading -->
+    <!-- ========================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                Employee Management
+            </h2>
+
+            <p class="text-muted mb-0">
+                Manage all employees in your organization.
+            </p>
+
+        </div>
+
+        <div>
+
+            <!-- Excel -->
+
+            <a
+                href="{% url 'export_excel' %}"
+                class="btn btn-success">
+
+                <i class="bi bi-file-earmark-excel"></i>
+
+                Excel
+
+            </a>
+
+
+            <!-- PDF -->
+
+            <a
+                href="{% url 'export_pdf' %}"
+                class="btn btn-danger">
+
+                <i class="bi bi-file-earmark-pdf"></i>
+
+                PDF
+
+            </a>
+
+
+            <!-- Add Employee -->
+
+            <a
+                href="{% url 'add_employee' %}"
+                class="btn btn-primary">
+
+                <i class="bi bi-person-plus-fill"></i>
+
+                Add Employee
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- Statistics Cards -->
+    <!-- ========================================= -->
+
+    <div class="row mb-4">
+
+
+        <!-- Total Employees -->
+
+        <div class="col-lg-4 col-md-6 mb-3">
+
+            <div class="card bg-primary text-white shadow">
+
+                <div class="card-body">
+
+                    <h6>
+                        Total Employees
+                    </h6>
+
+                    <h2>
+                        {{ total_employees }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Active Employees -->
+
+        <div class="col-lg-4 col-md-6 mb-3">
+
+            <div class="card bg-success text-white shadow">
+
+                <div class="card-body">
+
+                    <h6>
+                        Active
+                    </h6>
+
+                    <h2>
+                        {{ active_employees }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Inactive Employees -->
+
+        <div class="col-lg-4 col-md-6 mb-3">
+
+            <div class="card bg-danger text-white shadow">
+
+                <div class="card-body">
+
+                    <h6>
+                        Inactive
+                    </h6>
+
+                    <h2>
+                        {{ inactive_employees }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- Search & Filter -->
+    <!-- ========================================= -->
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row g-3">
+
+
+                    <!-- Search -->
+
+                    <div class="col-md-4">
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="search"
+                            placeholder="Search Employee..."
+                            value="{{ search|default:'' }}">
+
+                    </div>
+
+
+                    <!-- Department -->
+
+                    <div class="col-md-3">
+
+                        <select
+                            class="form-select"
+                            name="department">
+
+                            <option value="">
+                                All Departments
+                            </option>
+
+                            {% for dept in departments %}
+
+                                <option
+                                    value="{{ dept }}"
+                                    {% if department == dept %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ dept }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div class="col-md-3">
+
+                        <select
+                            class="form-select"
+                            name="status">
+
+                            <option value="">
+                                All Status
+                            </option>
+
+                            <option
+                                value="Active"
+                                {% if status == "Active" %}
+                                    selected
+                                {% endif %}>
+
+                                Active
+
+                            </option>
+
+                            <option
+                                value="Inactive"
+                                {% if status == "Inactive" %}
+                                    selected
+                                {% endif %}>
+
+                                Inactive
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Search Button -->
+
+                    <div class="col-md-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            <i class="bi bi-search"></i>
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- Employee Table -->
+    <!-- ========================================= -->
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table
+                    id="employeeTable"
+                    class="table table-hover align-middle">
+
+
+                    <!-- Table Header -->
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>
+                                Photo
+                            </th>
+
+                            <th>
+                                Employee ID
+                            </th>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Department
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th class="text-center">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <!-- Table Body -->
+
+                    <tbody>
+
+                        {% for employee in employees %}
+
+                        <tr>
+
+
+                            <!-- Photo -->
+
+                            <td>
+
+                                {% if employee.profile_picture %}
+
+                                    <img
+                                        src="{{ employee.profile_picture.url }}"
+                                        width="55"
+                                        height="55"
+                                        class="rounded-circle border"
+                                        alt="{{ employee.first_name }}">
+
+                                {% else %}
+
+                                    <img
+                                        src="https://ui-avatars.com/api/?name={{ employee.first_name }}+{{ employee.last_name }}&background=2563eb&color=ffffff"
+                                        width="55"
+                                        height="55"
+                                        class="rounded-circle border"
+                                        alt="{{ employee.first_name }}">
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Employee ID -->
+
+                            <td>
+
+                                <strong>
+                                    {{ employee.employee_id }}
+                                </strong>
+
+                            </td>
+
+
+                            <!-- Name -->
+
+                            <td>
+
+                                {{ employee.first_name }}
+
+                                {{ employee.last_name }}
+
+                            </td>
+
+
+                            <!-- Department -->
+
+                            <td>
+
+                                {{ employee.department }}
+
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+                                {% if employee.is_active %}
+
+                                    <span class="badge bg-success">
+
+                                        Active
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+
+                                        Inactive
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Actions -->
+
+                            <td class="text-center">
+
+                                <div class="btn-group">
+
+
+                                    <!-- View -->
+
+                                    <a
+                                        href="{% url 'employee_detail' employee.id %}"
+                                        class="btn btn-info btn-sm"
+                                        title="View Employee">
+
+                                        <i class="bi bi-eye"></i>
+
+                                    </a>
+
+
+                                    <!-- Edit -->
+
+                                    <a
+                                        href="{% url 'edit_employee' employee.id %}"
+                                        class="btn btn-warning btn-sm"
+                                        title="Edit Employee">
+
+                                        <i class="bi bi-pencil"></i>
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="text-center py-4">
+
+                                No Employees Found.
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}
+
+
+<!-- ========================================= -->
+<!-- DataTables JavaScript -->
+<!-- ========================================= -->
+
+{% block extra_js %}
+
+<script>
+
+$(document).ready(function () {
+
+    $('#employeeTable').DataTable({
+
+        responsive: true,
+
+        pageLength: 10,
+
+        lengthMenu: [
+
+            [10, 25, 50, 100],
+
+            [10, 25, 50, 100]
+
+        ],
+
+        dom: 'Bfrtip',
+
+        buttons: [
+
+            'copy',
+
+            'csv',
+
+            'excel',
+
+            'pdf',
+
+            'print'
+
+        ]
+
+    });
+
+});
+
+</script>
+
+{% endblock %}
+

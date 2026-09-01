@@ -1,0 +1,399 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Leave Management
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                Leave Management
+            </h2>
+
+            <p class="text-muted">
+                Manage employee leave requests.
+            </p>
+
+        </div>
+
+        <a href="{% url 'add_leave' %}" class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Apply Leave
+
+        </a>
+
+    </div>
+
+
+    <!-- Statistics -->
+
+    <div class="row mb-4">
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card bg-primary text-white shadow">
+
+                <div class="card-body">
+
+                    <h6>Total Requests</h6>
+
+                    <h2>{{ total }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card bg-warning text-dark shadow">
+
+                <div class="card-body">
+
+                    <h6>Pending</h6>
+
+                    <h2>{{ pending }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card bg-success text-white shadow">
+
+                <div class="card-body">
+
+                    <h6>Approved</h6>
+
+                    <h2>{{ approved }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-3 col-md-6 mb-3">
+
+            <div class="card bg-danger text-white shadow">
+
+                <div class="card-body">
+
+                    <h6>Rejected</h6>
+
+                    <h2>{{ rejected }}</h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Search -->
+
+    <div class="card mb-4">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row">
+
+                    <div class="col-md-5">
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search Employee"
+                            value="{{ search }}"
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <select
+                            name="status"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Status
+                            </option>
+
+                            <option
+                                value="Pending"
+                                {% if status == "Pending" %}selected{% endif %}
+                            >
+                                Pending
+                            </option>
+
+                            <option
+                                value="Approved"
+                                {% if status == "Approved" %}selected{% endif %}
+                            >
+                                Approved
+                            </option>
+
+                            <option
+                                value="Rejected"
+                                {% if status == "Rejected" %}selected{% endif %}
+                            >
+                                Rejected
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-md-3">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Leave Table -->
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>Employee</th>
+
+                            <th>Leave Type</th>
+
+                            <th>From</th>
+
+                            <th>To</th>
+
+                            <th>Duration</th>
+
+                            <th>Status</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for leave in leaves %}
+
+                        <tr>
+
+                            <!-- Employee -->
+
+                            <td>
+
+                                {{ leave.employee.first_name }}
+
+                                {{ leave.employee.last_name }}
+
+                            </td>
+
+
+                            <!-- Leave Type -->
+
+                            <td>
+
+                                {{ leave.leave_type }}
+
+                            </td>
+
+
+                            <!-- Start Date -->
+
+                            <td>
+
+                                {{ leave.start_date }}
+
+                            </td>
+
+
+                            <!-- End Date -->
+
+                            <td>
+
+                                {{ leave.end_date }}
+
+                            </td>
+
+
+                            <!-- Duration -->
+
+                            <td>
+
+                                <span class="badge bg-info text-dark">
+
+                                    {{ leave.duration }}
+
+                                    day{{ leave.duration|pluralize }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- Status -->
+
+                            <td>
+
+                                {% if leave.status == "Approved" %}
+
+                                    <span class="badge bg-success">
+
+                                        Approved
+
+                                    </span>
+
+                                {% elif leave.status == "Rejected" %}
+
+                                    <span class="badge bg-danger">
+
+                                        Rejected
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Pending
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Actions -->
+
+                            <td>
+
+                                {% if leave.status == "Pending" %}
+
+                                    <a
+                                        href="{% url 'approve_leave' leave.id %}"
+                                        class="btn btn-success btn-sm"
+                                    >
+
+                                        Approve
+
+                                    </a>
+
+                                    <a
+                                        href="{% url 'reject_leave' leave.id %}"
+                                        class="btn btn-danger btn-sm"
+                                    >
+
+                                        Reject
+
+                                    </a>
+
+                                {% endif %}
+
+
+                                <a
+                                    href="{% url 'edit_leave' leave.id %}"
+                                    class="btn btn-warning btn-sm"
+                                >
+
+                                    Edit
+
+                                </a>
+
+
+                                <a
+                                    href="{% url 'delete_leave' leave.id %}"
+                                    class="btn btn-outline-danger btn-sm"
+                                >
+
+                                    Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="text-center text-muted py-4"
+                            >
+
+                                No Leave Requests Found
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

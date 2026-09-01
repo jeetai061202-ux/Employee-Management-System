@@ -1,0 +1,624 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Attendance Management
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- ===================================================== -->
+    <!-- PAGE HEADER -->
+    <!-- ===================================================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                Attendance Management
+            </h2>
+
+            <p class="text-muted">
+                Manage employee attendance efficiently.
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'add_attendance' %}"
+            class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Mark Attendance
+
+        </a>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- STATISTICS CARDS -->
+    <!-- ===================================================== -->
+
+    <div class="row mb-4">
+
+        <!-- Present -->
+
+        <div class="col-lg-4">
+
+            <div class="card bg-success text-white shadow">
+
+                <div class="card-body">
+
+                    <h6>
+                        Present
+                    </h6>
+
+                    <h2>
+                        {{ present_count }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Leave -->
+
+        <div class="col-lg-4">
+
+            <div class="card bg-warning text-dark shadow">
+
+                <div class="card-body">
+
+                    <h6>
+                        Leave
+                    </h6>
+
+                    <h2>
+                        {{ leave_count }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Half Day -->
+
+        <div class="col-lg-4">
+
+            <div class="card bg-info text-white shadow">
+
+                <div class="card-body">
+
+                    <h6>
+                        Half Day
+                    </h6>
+
+                    <h2>
+                        {{ halfday_count }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- SEARCH FILTERS -->
+    <!-- ===================================================== -->
+
+    <div class="card shadow mb-4">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row g-3">
+
+                    <!-- Search -->
+
+                    <div class="col-md-5">
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="search"
+                            placeholder="Search Employee"
+                            value="{{ search }}">
+
+                    </div>
+
+
+                    <!-- Department -->
+
+                    <div class="col-md-4">
+
+                        <select
+                            class="form-select"
+                            name="department">
+
+                            <option value="">
+                                All Departments
+                            </option>
+
+                            {% for dept in departments %}
+
+                            <option
+                                value="{{ dept }}"
+                                {% if dept == selected_department %}
+                                    selected
+                                {% endif %}>
+
+                                {{ dept }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Search Button -->
+
+                    <div class="col-md-3">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100">
+
+                            <i class="bi bi-search"></i>
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- SUMMARY + CHART -->
+    <!-- ===================================================== -->
+
+    <div class="row mb-4">
+
+        <!-- Summary -->
+
+        <div class="col-lg-5">
+
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    Attendance Summary
+
+                </div>
+
+                <div class="card-body">
+
+                    <ul class="list-group">
+
+                        <!-- Present -->
+
+                        <li class="list-group-item d-flex justify-content-between">
+
+                            Present
+
+                            <span class="badge bg-success">
+
+                                {{ present_count }}
+
+                            </span>
+
+                        </li>
+
+
+                        <!-- Leave -->
+
+                        <li class="list-group-item d-flex justify-content-between">
+
+                            Leave
+
+                            <span class="badge bg-warning text-dark">
+
+                                {{ leave_count }}
+
+                            </span>
+
+                        </li>
+
+
+                        <!-- Half Day -->
+
+                        <li class="list-group-item d-flex justify-content-between">
+
+                            Half Day
+
+                            <span class="badge bg-info">
+
+                                {{ halfday_count }}
+
+                            </span>
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Chart -->
+
+        <div class="col-lg-7">
+
+            <div class="card shadow">
+
+                <div class="card-header">
+
+                    Attendance Overview
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="attendancePieChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- ATTENDANCE TABLE -->
+    <!-- ===================================================== -->
+
+    <div class="card shadow">
+
+        <div class="card-header">
+
+            Today's Attendance
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>
+                                Employee
+                            </th>
+
+                            <th>
+                                Department
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Check In
+                            </th>
+
+                            <th>
+                                Check Out
+                            </th>
+
+                            <th>
+                                Working Hours
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for item in attendance_data %}
+
+                    <tr>
+
+                        <!-- Employee -->
+
+                        <td>
+
+                            {{ item.employee.first_name }}
+
+                            {{ item.employee.last_name }}
+
+                        </td>
+
+
+                        <!-- Department -->
+
+                        <td>
+
+                            {{ item.employee.department }}
+
+                        </td>
+
+
+                        <!-- Status -->
+
+                        <td>
+
+                            {% if item.attendance %}
+
+                                {% if item.attendance.status == "Present" %}
+
+                                    <span class="badge bg-success">
+
+                                        Present
+
+                                    </span>
+
+                                {% elif item.attendance.status == "Half Day" %}
+
+                                    <span class="badge bg-info">
+
+                                        Half Day
+
+                                    </span>
+
+                                {% elif item.attendance.status == "Leave" %}
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Leave
+
+                                    </span>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+
+                                    Not Marked
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Check In -->
+
+                        <td>
+
+                            {% if item.attendance %}
+
+                                {{ item.attendance.check_in|default:"--" }}
+
+                            {% else %}
+
+                                --
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Check Out -->
+
+                        <td>
+
+                            {% if item.attendance %}
+
+                                {{ item.attendance.check_out|default:"--" }}
+
+                            {% else %}
+
+                                --
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Working Hours -->
+
+                        <td>
+
+                            {% if item.attendance %}
+
+                                {{ item.attendance.working_hours }}
+
+                            {% else %}
+
+                                --
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Actions -->
+
+                        <td>
+
+                            {% if not item.attendance %}
+
+                                <a
+                                    href="{% url 'check_in' item.employee.id %}"
+                                    class="btn btn-success btn-sm">
+
+                                    <i class="bi bi-box-arrow-in-right"></i>
+
+                                    Check In
+
+                                </a>
+
+                            {% elif not item.attendance.check_out %}
+
+                                <a
+                                    href="{% url 'check_out' item.attendance.id %}"
+                                    class="btn btn-primary btn-sm">
+
+                                    <i class="bi bi-box-arrow-right"></i>
+
+                                    Check Out
+
+                                </a>
+
+                            {% else %}
+
+                                <span class="badge bg-success">
+
+                                    Completed
+
+                                </span>
+
+                            {% endif %}
+
+
+                            {% if item.attendance %}
+
+                                <a
+                                    href="{% url 'edit_attendance' item.attendance.id %}"
+                                    class="btn btn-warning btn-sm">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                    Edit
+
+                                </a>
+
+                                <a
+                                    href="{% url 'delete_attendance' item.attendance.id %}"
+                                    class="btn btn-danger btn-sm">
+
+                                    <i class="bi bi-trash"></i>
+
+                                    Delete
+
+                                </a>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="text-center py-4">
+
+                            No Employees Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+new Chart(
+
+    document.getElementById("attendancePieChart"),
+
+    {
+
+        type: "pie",
+
+        data: {
+
+            labels: [
+
+                "Present",
+
+                "Leave",
+
+                "Half Day"
+
+            ],
+
+            datasets: [{
+
+                data: [
+
+                    {{ present_count }},
+
+                    {{ leave_count }},
+
+                    {{ halfday_count }}
+
+                ]
+
+            }]
+
+        }
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

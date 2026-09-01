@@ -1,0 +1,61 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Delete Employee
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<div class="card shadow">
+
+<div class="card-body text-center">
+
+<h3 class="text-danger">
+
+Delete Employee
+
+</h3>
+
+<p>
+
+Are you sure you want to delete
+
+<strong>
+
+{{ employee.first_name }}
+
+{{ employee.last_name }}
+
+</strong>?
+
+</p>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<button class="btn btn-danger">
+
+Yes, Delete
+
+</button>
+
+<a href="{% url 'employee_list' %}"
+
+class="btn btn-secondary">
+
+Cancel
+
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

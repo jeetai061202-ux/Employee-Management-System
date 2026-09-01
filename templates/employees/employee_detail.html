@@ -1,0 +1,358 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Employee Details
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+```
+<div class="card shadow rounded-4">
+
+    <!-- ===================================================== -->
+    <!-- HEADER -->
+    <!-- ===================================================== -->
+
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <div>
+            <h3 class="mb-1">
+                Employee Details
+            </h3>
+
+            <small class="text-muted">
+                Read Mode
+            </small>
+        </div>
+
+        <!-- ================================================= -->
+        <!-- EDIT BUTTON -->
+        <!-- ================================================= -->
+
+        <a
+            href="{% url 'edit_employee' employee.pk %}"
+            class="btn btn-primary"
+        >
+            <i class="bi bi-pencil-square"></i>
+            Edit Employee
+        </a>
+
+    </div>
+
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <!-- ================================================= -->
+            <!-- PROFILE PICTURE -->
+            <!-- ================================================= -->
+
+            <div class="col-md-12 text-center mb-4">
+
+                {% if employee.profile_picture %}
+
+                    <img
+                        src="{{ employee.profile_picture.url }}"
+                        alt="Profile Picture"
+                        class="rounded-circle shadow"
+                        style="
+                            width: 150px;
+                            height: 150px;
+                            object-fit: cover;
+                        "
+                    >
+
+                {% else %}
+
+                    <div
+                        class="rounded-circle bg-secondary text-white
+                               d-inline-flex align-items-center
+                               justify-content-center shadow"
+                        style="
+                            width: 150px;
+                            height: 150px;
+                            font-size: 50px;
+                        "
+                    >
+                        <i class="bi bi-person"></i>
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- EMPLOYEE ID -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Employee ID
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.employee_id }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- FIRST NAME -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    First Name
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.first_name }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- LAST NAME -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Last Name
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.last_name }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- EMAIL -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Email
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.email }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- PHONE -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Phone
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.phone }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- GENDER -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Gender
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.gender }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- DATE OF BIRTH -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Date of Birth
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.date_of_birth|date:"d-m-Y" }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- DESIGNATION -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Designation
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.designation }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- DEPARTMENT -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Department
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.department }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- SALARY -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Salary
+                </label>
+
+                <div class="form-control bg-light">
+                    ₹ {{ employee.salary }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- JOINING DATE -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Joining Date
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.joining_date|date:"d-m-Y" }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- ADDRESS -->
+            <!-- ================================================= -->
+
+            <div class="col-md-12 mb-3">
+
+                <label class="form-label fw-bold">
+                    Address
+                </label>
+
+                <div
+                    class="form-control bg-light"
+                    style="min-height: 100px;"
+                >
+                    {{ employee.address }}
+                </div>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- CREATED / UPDATED -->
+            <!-- ================================================= -->
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Created At
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.created_at|date:"d-m-Y H:i" }}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-bold">
+                    Last Updated
+                </label>
+
+                <div class="form-control bg-light">
+                    {{ employee.updated_at|date:"d-m-Y H:i" }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- BOTTOM ACTIONS -->
+        <!-- ===================================================== -->
+
+        <div class="mt-4">
+
+            <a
+                href="{% url 'edit_employee' employee.pk %}"
+                class="btn btn-primary"
+            >
+                <i class="bi bi-pencil-square"></i>
+                Edit Employee
+            </a>
+
+            <a
+                href="{% url 'employee_list' %}"
+                class="btn btn-secondary"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back to Employees
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

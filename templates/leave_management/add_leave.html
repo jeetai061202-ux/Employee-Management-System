@@ -1,0 +1,112 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Apply Leave
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h4 class="mb-0">
+                        Apply Leave
+                    </h4>
+
+                </div>
+
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Employee
+                            </label>
+
+                            {{ form.employee }}
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Leave Type
+                            </label>
+
+                            {{ form.leave_type }}
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Start Date
+                                </label>
+
+                                {{ form.start_date }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    End Date
+                                </label>
+
+                                {{ form.end_date }}
+
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Reason
+                            </label>
+
+                            {{ form.reason }}
+
+                        </div>
+
+                        <button class="btn btn-primary">
+
+                            <i class="bi bi-send"></i>
+
+                            Submit Leave Request
+
+                        </button>
+
+                        <a href="{% url 'leave_list' %}"
+                           class="btn btn-secondary">
+
+                            Cancel
+
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

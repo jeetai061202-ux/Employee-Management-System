@@ -1,0 +1,244 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Departments
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                Department Management
+            </h2>
+
+            <p class="text-muted">
+                Manage company departments and their information.
+            </p>
+
+        </div>
+
+        <a href="{% url 'add_department' %}"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Add Department
+
+        </a>
+
+    </div>
+
+
+    <!-- Statistics -->
+
+    <div class="row mb-4">
+
+        <div class="col-lg-4 col-md-6 mb-3">
+
+            <div class="card bg-primary text-white shadow">
+
+                <div class="card-body">
+
+                    <h6>
+                        Total Departments
+                    </h6>
+
+                    <h2>
+                        {{ total_departments }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Search -->
+
+    <div class="card mb-4 shadow-sm">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row">
+
+                    <div class="col-md-9">
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search department..."
+                            value="{{ search }}"
+                        >
+
+                    </div>
+
+                    <div class="col-md-3 mt-2 mt-md-0">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+
+                            <i class="bi bi-search"></i>
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Department Table -->
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Department Name</th>
+
+                            <th>Description</th>
+
+                            <th>Created</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for department in departments %}
+
+                        <tr>
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td>
+
+                                <strong>
+                                    {{ department.name }}
+                                </strong>
+
+                            </td>
+
+                            <td>
+
+                                {% if department.description %}
+
+                                    {{ department.description|truncatechars:80 }}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        No description
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {{ department.created_at|date:"d M Y" }}
+
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="{% url 'edit_department' department.id %}"
+                                    class="btn btn-warning btn-sm"
+                                >
+
+                                    <i class="bi bi-pencil"></i>
+
+                                    Edit
+
+                                </a>
+
+
+                                <a
+                                    href="{% url 'delete_department' department.id %}"
+                                    class="btn btn-outline-danger btn-sm"
+                                >
+
+                                    <i class="bi bi-trash"></i>
+
+                                    Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="text-center py-4"
+                            >
+
+                                <i class="bi bi-building display-5 text-muted"></i>
+
+                                <p class="mt-2 mb-0 text-muted">
+
+                                    No departments found.
+
+                                </p>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

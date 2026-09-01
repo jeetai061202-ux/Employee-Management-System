@@ -1,0 +1,228 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Add Employee
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="card shadow rounded-4">
+
+        <div class="card-header">
+
+            <h3 class="mb-0">
+                Add Employee
+            </h3>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                id="employeeForm"
+            >
+
+                {% csrf_token %}
+
+                <div class="row">
+
+                    {% for field in form %}
+
+                    <div class="col-md-6 mb-3">
+
+                        <label
+                            for="{{ field.id_for_label }}"
+                            class="form-label fw-bold"
+                        >
+
+                            {{ field.label }}
+
+                        </label>
+
+
+                        {{ field }}
+
+
+                        {% if field.help_text %}
+
+                        <small class="form-text text-muted d-block mt-1">
+
+                            {{ field.help_text }}
+
+                        </small>
+
+                        {% endif %}
+
+
+                        {% if field.errors %}
+
+                        <div class="text-danger mt-1">
+
+                            {{ field.errors }}
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-success"
+                >
+
+                    <i class="bi bi-check-circle"></i>
+
+                    Save Employee
+
+                </button>
+
+
+                <a
+                    href="{% url 'employee_list' %}"
+                    class="btn btn-secondary"
+                >
+
+                    <i class="bi bi-arrow-left"></i>
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- DATE OF BIRTH FRONTEND VALIDATION -->
+<!-- ========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const form =
+            document.getElementById(
+                "employeeForm"
+            );
+
+        const dobField =
+            document.getElementById(
+                "id_date_of_birth"
+            );
+
+
+        if (!form || !dobField) {
+
+            return;
+
+        }
+
+
+        form.addEventListener(
+            "submit",
+            function (event) {
+
+                if (!dobField.value) {
+
+                    return;
+
+                }
+
+
+                const dob =
+                    new Date(
+                        dobField.value +
+                        "T00:00:00"
+                    );
+
+
+                const today =
+                    new Date();
+
+                today.setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                );
+
+
+                if (dob > today) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Date of Birth cannot be a future date."
+                    );
+
+                    dobField.focus();
+
+                    return;
+
+                }
+
+
+                let age =
+                    today.getFullYear() -
+                    dob.getFullYear();
+
+
+                const monthDifference =
+                    today.getMonth() -
+                    dob.getMonth();
+
+
+                if (
+                    monthDifference < 0 ||
+                    (
+                        monthDifference === 0 &&
+                        today.getDate() < dob.getDate()
+                    )
+                ) {
+
+                    age--;
+
+                }
+
+
+                if (age < 18) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Employee must be at least 18 years old."
+                    );
+
+                    dobField.focus();
+
+                    return;
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,266 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Add Attendance
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+```
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-primary text-white">
+
+                <h4 class="mb-0">
+                    Mark Employee Attendance
+                </h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="row">
+
+                        <!-- ================================================= -->
+                        <!-- EMPLOYEE -->
+                        <!-- ================================================= -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Employee
+                            </label>
+
+                            {{ form.employee }}
+
+                            {% if form.employee.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ form.employee.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- DATE -->
+                        <!-- ================================================= -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label class="form-label">
+                                Date
+                            </label>
+
+                            {{ form.date }}
+
+                            <small class="text-muted d-block mt-1">
+
+                                <i class="bi bi-lock-fill"></i>
+
+                                Attendance date is automatically
+                                set to today's date.
+
+                            </small>
+
+                            {% if form.date.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ form.date.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- CHECK IN - SINGLE FIELD -->
+                        <!-- ================================================= -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label
+                                for="{{ form.check_in.id_for_label }}"
+                                class="form-label">
+
+                                Check In
+
+                            </label>
+
+                            {{ form.check_in }}
+
+                            {% if form.check_in.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ form.check_in.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- CHECK OUT - SINGLE FIELD -->
+                        <!-- ================================================= -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label
+                                for="{{ form.check_out.id_for_label }}"
+                                class="form-label">
+
+                                Check Out
+
+                            </label>
+
+                            {{ form.check_out }}
+
+                            {% if form.check_out.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ form.check_out.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- STATUS -->
+                        <!-- ================================================= -->
+
+                        <div class="col-md-6 mb-3">
+
+                            <label
+                                for="{{ form.status.id_for_label }}"
+                                class="form-label">
+
+                                Status
+
+                            </label>
+
+                            {{ form.status }}
+
+                            {% if form.status.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ form.status.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ================================================= -->
+                        <!-- REMARKS -->
+                        <!-- ================================================= -->
+
+                        <div class="col-12 mb-3">
+
+                            <label
+                                for="{{ form.remarks.id_for_label }}"
+                                class="form-label">
+
+                                Remarks
+
+                            </label>
+
+                            {{ form.remarks }}
+
+                            {% if form.remarks.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ form.remarks.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================================================= -->
+                    <!-- VALIDATION INFORMATION -->
+                    <!-- ================================================= -->
+
+                    <div class="alert alert-info">
+
+                        <i class="bi bi-info-circle"></i>
+
+                        <strong>Attendance Rules:</strong>
+
+                        <ul class="mb-0 mt-2">
+
+                            <li>
+                                Present requires more than
+                                <strong>7 hours</strong> of working time.
+                            </li>
+
+                            <li>
+                                Half Day requires more than
+                                <strong>3 hours</strong> of working time.
+                            </li>
+
+                            <li>
+                                Check Out must be later than Check In.
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+
+                    <!-- ================================================= -->
+                    <!-- BUTTONS -->
+                    <!-- ================================================= -->
+
+                    <button
+                        type="submit"
+                        class="btn btn-success">
+
+                        <i class="bi bi-check-circle"></i>
+
+                        Save Attendance
+
+                    </button>
+
+
+                    <a
+                        href="{% url 'attendance_list' %}"
+                        class="btn btn-secondary">
+
+                        Cancel
+
+                    </a>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}

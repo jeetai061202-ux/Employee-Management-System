@@ -1,0 +1,70 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Delete Leave
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-danger">
+
+                <div class="card-header bg-danger text-white">
+
+                    <h4>
+
+                        Delete Leave Request
+
+                    </h4>
+
+                </div>
+
+                <div class="card-body text-center">
+
+                    <h5>
+
+                        Are you sure?
+
+                    </h5>
+
+                    <p>
+
+                        This action cannot be undone.
+
+                    </p>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <button class="btn btn-danger">
+
+                            Yes, Delete
+
+                        </button>
+
+                        <a href="{% url 'leave_list' %}"
+                           class="btn btn-secondary">
+
+                            Cancel
+
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
