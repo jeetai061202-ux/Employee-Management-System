@@ -5,7 +5,7 @@ from .models import Leave
 class LeaveForm(forms.ModelForm):
 
     class Meta:
-
+        #model name 
         model = Leave
 
         fields = [
