@@ -11,9 +11,19 @@
 
     <div class="sidebar-header">
 
-        <a
-            href="{% url 'dashboard' %}"
-            class="logo">
+        {% if user.is_authenticated and user.role == "ADMIN" %}
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="logo">
+
+        {% else %}
+
+            <a
+                href="{% url 'employee_list' %}"
+                class="logo">
+
+        {% endif %}
 
             <i class="bi bi-buildings-fill"></i>
 
@@ -84,196 +94,285 @@
     <ul class="sidebar-menu">
 
 
-        <!-- Dashboard -->
+        <!-- ================================= -->
+        <!-- Dashboard - ADMIN ONLY -->
+        <!-- ================================= -->
 
-        <li>
+        {% if user.is_authenticated and user.role == "ADMIN" %}
 
-            <a href="{% url 'dashboard' %}">
+            <li>
 
-                <i class="bi bi-speedometer2"></i>
+                <a href="{% url 'dashboard' %}">
 
-                <span class="menu-text">
-                    Dashboard
-                </span>
+                    <i class="bi bi-speedometer2"></i>
 
-            </a>
+                    <span class="menu-text">
+                        Dashboard
+                    </span>
 
-        </li>
+                </a>
 
+            </li>
 
-        <!-- Employees -->
-
-        <li>
-
-            <a href="{% url 'employee_list' %}">
-
-                <i class="bi bi-people-fill"></i>
-
-                <span class="menu-text">
-                    Employees
-                </span>
-
-            </a>
-
-        </li>
+        {% endif %}
 
 
-        <!-- Departments -->
+        <!-- ================================= -->
+        <!-- Employees - ALL ROLES -->
+        <!-- ================================= -->
 
-        <li>
+        {% if user.is_authenticated %}
 
-            <a href="{% url 'department_list' %}">
+            <li>
 
-                <i class="bi bi-diagram-3-fill"></i>
+                <a href="{% url 'employee_list' %}">
 
-                <span class="menu-text">
-                    Departments
-                </span>
+                    <i class="bi bi-people-fill"></i>
 
-            </a>
+                    <span class="menu-text">
+                        Employees
+                    </span>
 
-        </li>
+                </a>
 
+            </li>
 
-        <!-- Attendance -->
-
-        <li>
-
-            <a href="{% url 'attendance_list' %}">
-
-                <i class="bi bi-calendar-check-fill"></i>
-
-                <span class="menu-text">
-                    Attendance
-                </span>
-
-            </a>
-
-        </li>
+        {% endif %}
 
 
-        <!-- Leave -->
+        <!-- ================================= -->
+        <!-- Departments - ALL ROLES -->
+        <!-- ================================= -->
 
-        <li>
+        {% if user.is_authenticated %}
 
-            <a href="{% url 'leave_list' %}">
+            <li>
 
-                <i class="bi bi-airplane-fill"></i>
+                <a href="{% url 'department_list' %}">
 
-                <span class="menu-text">
-                    Leave Management
-                </span>
+                    <i class="bi bi-diagram-3-fill"></i>
 
-            </a>
+                    <span class="menu-text">
+                        Departments
+                    </span>
 
-        </li>
+                </a>
 
+            </li>
 
-        <!-- Payroll -->
-
-        <li>
-
-            <a href="{% url 'payroll_list' %}">
-
-                <i class="bi bi-cash-stack"></i>
-
-                <span class="menu-text">
-                    Payroll
-                </span>
-
-            </a>
-
-        </li>
+        {% endif %}
 
 
-        <!-- Reports -->
+        <!-- ================================= -->
+        <!-- Attendance - ALL ROLES -->
+        <!-- ================================= -->
 
-        <li>
+        {% if user.is_authenticated %}
 
-            <a href="{% url 'report_dashboard' %}">
+            <li>
 
-                <i class="bi bi-bar-chart-fill"></i>
+                <a href="{% url 'attendance_list' %}">
 
-                <span class="menu-text">
-                    Reports
-                </span>
+                    <i class="bi bi-calendar-check-fill"></i>
 
-            </a>
+                    <span class="menu-text">
+                        Attendance
+                    </span>
 
-        </li>
+                </a>
+
+            </li>
+
+        {% endif %}
 
 
+        <!-- ================================= -->
+        <!-- Leave - ADMIN + EMPLOYEE -->
+        <!-- ================================= -->
+
+        {% if user.is_authenticated and user.role == "ADMIN" or user.is_authenticated and user.role == "EMPLOYEE" %}
+
+            <li>
+
+                <a href="{% url 'leave_list' %}">
+
+                    <i class="bi bi-airplane-fill"></i>
+
+                    <span class="menu-text">
+                        Leave Management
+                    </span>
+
+                </a>
+
+            </li>
+
+        {% endif %}
+
+
+        <!-- ================================= -->
+        <!-- Payroll - ADMIN + HR -->
+        <!-- ================================= -->
+
+        {% if user.is_authenticated and user.role == "ADMIN" or user.is_authenticated and user.role == "HR" %}
+
+            <li>
+
+                <a href="{% url 'payroll_list' %}">
+
+                    <i class="bi bi-cash-stack"></i>
+
+                    <span class="menu-text">
+                        Payroll
+                    </span>
+
+                </a>
+
+            </li>
+
+        {% endif %}
+
+
+        <!-- ================================= -->
+        <!-- Reports - ADMIN + HR -->
+        <!-- ================================= -->
+
+        {% if user.is_authenticated and user.role == "ADMIN" or user.is_authenticated and user.role == "HR" %}
+
+            <li>
+
+                <a href="{% url 'report_dashboard' %}">
+
+                    <i class="bi bi-bar-chart-fill"></i>
+
+                    <span class="menu-text">
+                        Reports
+                    </span>
+
+                </a>
+
+            </li>
+
+        {% endif %}
+
+
+        <!-- ================================= -->
+        <!-- User Management - ADMIN ONLY -->
+        <!-- ================================= -->
+
+        {% if user.is_authenticated and user.role == "ADMIN" %}
+
+            <li>
+
+                <a href="{% url 'user_management' %}">
+
+                    <i class="bi bi-person-gear"></i>
+
+                    <span class="menu-text">
+                        User Management
+                    </span>
+
+                </a>
+
+            </li>
+
+        {% endif %}
+
+
+        <!-- ================================= -->
         <!-- Notifications -->
+        <!-- ================================= -->
 
-        <li>
+        {% if user.is_authenticated %}
 
-            <a href="#">
+            <li>
 
-                <i class="bi bi-bell-fill"></i>
+                <a href="#">
 
-                <span class="menu-text">
-                    Notifications
-                </span>
+                    <i class="bi bi-bell-fill"></i>
 
-            </a>
+                    <span class="menu-text">
+                        Notifications
+                    </span>
 
-        </li>
+                </a>
 
+            </li>
 
-        <!-- Settings -->
-
-        <li>
-
-            <a href="#">
-
-                <i class="bi bi-gear-fill"></i>
-
-                <span class="menu-text">
-                    Settings
-                </span>
-
-            </a>
-
-        </li>
+        {% endif %}
 
 
+        <!-- ================================= -->
+        <!-- Settings - ADMIN ONLY -->
+        <!-- ================================= -->
+
+        {% if user.is_authenticated and user.role == "ADMIN" %}
+
+            <li>
+
+                <a href="#">
+
+                    <i class="bi bi-gear-fill"></i>
+
+                    <span class="menu-text">
+                        Settings
+                    </span>
+
+                </a>
+
+            </li>
+
+        {% endif %}
+
+
+        <!-- ================================= -->
         <!-- My Profile -->
+        <!-- ================================= -->
 
-        <li>
+        {% if user.is_authenticated %}
 
-            <a href="#">
+            <li>
 
-                <i class="bi bi-person-circle"></i>
+                <a href="#">
 
-                <span class="menu-text">
-                    My Profile
-                </span>
+                    <i class="bi bi-person-circle"></i>
 
-            </a>
+                    <span class="menu-text">
+                        My Profile
+                    </span>
 
-        </li>
+                </a>
+
+            </li>
+
+        {% endif %}
 
 
         <hr>
 
 
+        <!-- ================================= -->
         <!-- Logout -->
+        <!-- ================================= -->
 
-        <li>
+        {% if user.is_authenticated %}
 
-            <a
-                href="{% url 'logout' %}"
-                class="text-danger">
+            <li>
 
-                <i class="bi bi-box-arrow-right"></i>
+                <a
+                    href="{% url 'logout' %}"
+                    class="text-danger">
 
-                <span class="menu-text">
-                    Logout
-                </span>
+                    <i class="bi bi-box-arrow-right"></i>
 
-            </a>
+                    <span class="menu-text">
+                        Logout
+                    </span>
 
-        </li>
+                </a>
+
+            </li>
+
+        {% endif %}
 
     </ul>
 

@@ -1,260 +1,581 @@
-from datetime import date, datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import (
     render,
     redirect,
-    get_object_or_404
+    get_object_or_404,
 )
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 
+from accounts.decorators import role_required
 from employees.models import Employee
 
 from .forms import AttendanceForm
 from .models import Attendance
 
 
-# ============================================================
-# ATTENDANCE LIST
-# ============================================================
+def _is_admin_or_hr(user):
+    return user.role in ["ADMIN", "HR"]
 
+
+def _get_logged_in_employee(user):
+    """
+    Returns the Employee record linked to the logged-in User.
+
+    Employee users must always access attendance through
+    their linked Employee record.
+    """
+    return getattr(
+        user,
+        "employee_profile",
+        None
+    )
+
+
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
 def attendance_list(request):
 
-    # ========================================================
-    # ALWAYS USE TODAY'S DATE
-    # ========================================================
-
-    today = date.today()
+    today = timezone.localdate()
 
     search = request.GET.get(
         "search",
         ""
-    )
+    ).strip()
 
     department = request.GET.get(
         "department",
         ""
-    )
+    ).strip()
 
-    # ========================================================
-    # EMPLOYEES
-    # ========================================================
+    # =====================================================
+    # ADMIN / HR
+    # =====================================================
 
-    employees = Employee.objects.all()
+    if _is_admin_or_hr(request.user):
 
-    # ========================================================
+        employees = Employee.objects.select_related(
+            "department",
+            "user"
+        ).filter(
+            is_active=True
+        )
+
+    # =====================================================
+    # EMPLOYEE
+    # =====================================================
+
+    else:
+
+        employee = _get_logged_in_employee(
+            request.user
+        )
+
+        if employee is None:
+
+            messages.warning(
+                request,
+                "Your employee profile has not been created yet."
+            )
+
+            return render(
+                request,
+                "attendance/attendance_list.html",
+                {
+                    "attendance_data": [],
+                    "departments": [],
+                    "search": "",
+                    "selected_department": "",
+                    "selected_date": today,
+                    "present_count": 0,
+                    "halfday_count": 0,
+                }
+            )
+
+        if not employee.is_active:
+
+            messages.warning(
+                request,
+                "Your employee profile is currently inactive."
+            )
+
+            return render(
+                request,
+                "attendance/attendance_list.html",
+                {
+                    "attendance_data": [],
+                    "departments": [],
+                    "search": "",
+                    "selected_department": "",
+                    "selected_date": today,
+                    "present_count": 0,
+                    "halfday_count": 0,
+                }
+            )
+
+        # Employee sees ONLY their own record.
+        employees = Employee.objects.select_related(
+            "department",
+            "user"
+        ).filter(
+            pk=employee.pk,
+            is_active=True
+        )
+
+    # =====================================================
     # SEARCH
-    # ========================================================
+    # =====================================================
 
     if search:
 
         employees = employees.filter(
-
             Q(first_name__icontains=search)
-            |
-            Q(last_name__icontains=search)
-            |
-            Q(employee_id__icontains=search)
-
+            | Q(last_name__icontains=search)
+            | Q(employee_id__icontains=search)
         )
 
-    # ========================================================
+    # =====================================================
     # DEPARTMENT FILTER
-    # ========================================================
+    # =====================================================
 
     if department:
 
-        employees = employees.filter(
-            department=department
-        )
+        try:
 
-    # ========================================================
-    # ATTENDANCE DATA
-    # ========================================================
+            department_id = int(
+                department
+            )
+
+            employees = employees.filter(
+                department_id=department_id
+            )
+
+        except (ValueError, TypeError):
+
+            employees = employees.none()
+
+    # =====================================================
+    # TODAY'S ATTENDANCE
+    # =====================================================
 
     attendance_data = []
 
     for employee in employees:
 
         attendance = Attendance.objects.filter(
-
             employee=employee,
-
             date=today
-
         ).first()
 
-        attendance_data.append({
+        minimum_checkout = None
 
-            "employee": employee,
+        if attendance and attendance.check_in:
 
-            "attendance": attendance
+            if attendance.status == "Present":
 
-        })
+                minimum_checkout = (
+                    datetime.combine(
+                        attendance.date,
+                        attendance.check_in
+                    )
+                    + timedelta(hours=7)
+                ).time()
 
-    # ========================================================
+            elif attendance.status == "Half Day":
+
+                minimum_checkout = (
+                    datetime.combine(
+                        attendance.date,
+                        attendance.check_in
+                    )
+                    + timedelta(hours=3)
+                ).time()
+
+        attendance_data.append(
+            {
+                "employee": employee,
+                "attendance": attendance,
+                "minimum_checkout": minimum_checkout,
+            }
+        )
+
+    # =====================================================
     # COUNTS
-    # ========================================================
+    # =====================================================
 
-    present_count = Attendance.objects.filter(
-        date=today,
-        status="Present"
-    ).count()
+    if _is_admin_or_hr(request.user):
 
-    leave_count = Attendance.objects.filter(
-        date=today,
-        status="Leave"
-    ).count()
+        present_count = Attendance.objects.filter(
+            date=today,
+            status="Present"
+        ).count()
 
-    halfday_count = Attendance.objects.filter(
-        date=today,
-        status="Half Day"
-    ).count()
+        halfday_count = Attendance.objects.filter(
+            date=today,
+            status="Half Day"
+        ).count()
 
-    # ========================================================
-    # CONTEXT
-    # ========================================================
+    else:
+
+        employee = _get_logged_in_employee(
+            request.user
+        )
+
+        if employee:
+
+            present_count = Attendance.objects.filter(
+                employee=employee,
+                date=today,
+                status="Present"
+            ).count()
+
+            halfday_count = Attendance.objects.filter(
+                employee=employee,
+                date=today,
+                status="Half Day"
+            ).count()
+
+        else:
+
+            present_count = 0
+            halfday_count = 0
+
+    # =====================================================
+    # DEPARTMENTS
+    # =====================================================
+
+    if _is_admin_or_hr(request.user):
+
+        departments = (
+            Employee.objects
+            .filter(is_active=True)
+            .values_list(
+                "department",
+                flat=True
+            )
+            .distinct()
+            .order_by("department")
+        )
+
+    else:
+
+        departments = []
 
     context = {
-
         "attendance_data": attendance_data,
-
-        "departments": Employee.objects.values_list(
-            "department",
-            flat=True
-        ).distinct(),
-
+        "departments": departments,
         "search": search,
-
         "selected_department": department,
-
         "selected_date": today,
-
         "present_count": present_count,
-
-        "leave_count": leave_count,
-
         "halfday_count": halfday_count,
-
     }
 
     return render(
-
         request,
-
         "attendance/attendance_list.html",
-
         context
-
     )
 
 
-# ============================================================
-# ADD ATTENDANCE
-# ============================================================
-
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
 def add_attendance(request):
 
-    today = date.today()
+    today = timezone.localdate()
 
-    # ========================================================
-    # POST
-    # ========================================================
+    employee = None
 
-    if request.method == "POST":
+    # =====================================================
+    # EMPLOYEE
+    # =====================================================
 
-        form = AttendanceForm(
-            request.POST
+    if request.user.role == "EMPLOYEE":
+
+        employee = _get_logged_in_employee(
+            request.user
         )
 
-        if form.is_valid():
+        if employee is None:
 
-            attendance = form.save(
-                commit=False
-            )
-
-            # ------------------------------------------------
-            # NEVER TRUST SUBMITTED DATE
-            # ------------------------------------------------
-
-            attendance.date = today
-
-            attendance.save()
-
-            messages.success(
+            messages.error(
                 request,
-                "Attendance added successfully."
+                "Your employee profile has not been created yet."
             )
 
             return redirect(
                 "attendance_list"
             )
 
-    # ========================================================
-    # GET
-    # ========================================================
+        if not employee.is_active:
 
-    else:
+            messages.error(
+                request,
+                "Inactive employees cannot mark attendance."
+            )
 
-        form = AttendanceForm(
-            initial={
-                "date": today
-            }
-        )
+            return redirect(
+                "attendance_list"
+            )
 
-    return render(
-
-        request,
-
-        "attendance/add_attendance.html",
-
-        {
-            "form": form
-        }
-
-    )
-
-
-# ============================================================
-# EDIT ATTENDANCE
-# ============================================================
-
-def edit_attendance(request, pk):
-
-    attendance = get_object_or_404(
-        Attendance,
-        pk=pk
-    )
-
-    today = date.today()
-
-    # ========================================================
+    # =====================================================
     # POST
-    # ========================================================
+    # =====================================================
 
     if request.method == "POST":
 
         form = AttendanceForm(
-
             request.POST,
-
-            instance=attendance
-
+            current_user=request.user
         )
 
         if form.is_valid():
 
-            attendance = form.save(
-                commit=False
+            selected_employee = form.cleaned_data.get(
+                "employee"
             )
 
-            # ------------------------------------------------
-            # ALWAYS FORCE TODAY'S DATE
-            # ------------------------------------------------
+            # Employee can ONLY mark their own attendance.
+            if request.user.role == "EMPLOYEE":
 
-            attendance.date = today
+                if (
+                    selected_employee is None
+                    or selected_employee.pk != employee.pk
+                ):
 
+                    messages.error(
+                        request,
+                        "You can only mark attendance for yourself."
+                    )
+
+                    return redirect(
+                        "attendance_list"
+                    )
+
+                selected_employee = employee
+
+            else:
+
+                if selected_employee is None:
+
+                    messages.error(
+                        request,
+                        "Employee is required."
+                    )
+
+                    return redirect(
+                        "attendance_list"
+                    )
+
+            if not selected_employee.is_active:
+
+                messages.error(
+                    request,
+                    "Inactive employees cannot mark attendance."
+                )
+
+                return redirect(
+                    "attendance_list"
+                )
+
+            # =================================================
+            # DUPLICATE CHECK
+            # =================================================
+
+            existing = Attendance.objects.filter(
+                employee=selected_employee,
+                date=today
+            ).first()
+
+            if existing:
+
+                messages.warning(
+                    request,
+                    "Attendance has already been marked for this employee today."
+                )
+
+                return redirect(
+                    "attendance_list"
+                )
+
+            # =================================================
+            # SERVER LIVE TIME
+            # =================================================
+
+            now = timezone.localtime()
+
+            attendance = Attendance(
+                employee=selected_employee,
+                date=now.date(),
+                check_in=now.time().replace(
+                    second=0,
+                    microsecond=0
+                ),
+                check_out=None,
+                status=form.cleaned_data.get(
+                    "status"
+                ),
+                working_hours=Decimal(
+                    "0.00"
+                ),
+                remarks=form.cleaned_data.get(
+                    "remarks"
+                ),
+            )
+
+            attendance.full_clean()
+            attendance.save()
+
+            messages.success(
+                request,
+                f"{selected_employee.first_name} checked in successfully at "
+                f"{now.strftime('%I:%M %p')}."
+            )
+
+            return redirect(
+                "attendance_list"
+            )
+
+    # =====================================================
+    # GET
+    # =====================================================
+
+    else:
+
+        initial = {
+            "date": today,
+            "status": "Present",
+        }
+
+        if employee:
+            initial["employee"] = employee
+
+        form = AttendanceForm(
+            current_user=request.user,
+            initial=initial
+        )
+
+    return render(
+        request,
+        "attendance/add_attendance.html",
+        {
+            "form": form
+        }
+    )
+
+
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
+def edit_attendance(request, pk):
+
+    attendance = get_object_or_404(
+        Attendance.objects.select_related(
+            "employee",
+            "employee__user"
+        ),
+        pk=pk
+    )
+
+    # =====================================================
+    # EMPLOYEE OWNERSHIP CHECK
+    # =====================================================
+
+    if request.user.role == "EMPLOYEE":
+
+        employee = _get_logged_in_employee(
+            request.user
+        )
+
+        if employee is None:
+
+            messages.error(
+                request,
+                "Your employee profile has not been created yet."
+            )
+
+            return redirect(
+                "attendance_list"
+            )
+
+        if attendance.employee_id != employee.pk:
+
+            messages.error(
+                request,
+                "You are not allowed to edit another employee's attendance."
+            )
+
+            return redirect(
+                "attendance_list"
+            )
+
+    # =====================================================
+    # POST
+    # =====================================================
+
+    if request.method == "POST":
+
+        form = AttendanceForm(
+            request.POST,
+            instance=attendance,
+            current_user=request.user
+        )
+
+        if form.is_valid():
+
+            attendance.status = (
+                form.cleaned_data.get(
+                    "status"
+                )
+            )
+
+            attendance.remarks = (
+                form.cleaned_data.get(
+                    "remarks"
+                )
+            )
+
+            # Check-In and Check-Out remain server-controlled.
+
+            if attendance.check_out:
+
+                checkin_datetime = datetime.combine(
+                    attendance.date,
+                    attendance.check_in
+                )
+
+                checkout_datetime = datetime.combine(
+                    attendance.date,
+                    attendance.check_out
+                )
+
+                if attendance.check_out < attendance.check_in:
+
+                    checkout_datetime += timedelta(
+                        days=1
+                    )
+
+                duration = (
+                    checkout_datetime
+                    - checkin_datetime
+                )
+
+                attendance.working_hours = (
+                    Decimal(
+                        str(
+                            duration.total_seconds()
+                            / 3600
+                        )
+                    ).quantize(
+                        Decimal("0.01")
+                    )
+                )
+
+            attendance.full_clean()
             attendance.save()
 
             messages.success(
@@ -266,170 +587,74 @@ def edit_attendance(request, pk):
                 "attendance_list"
             )
 
-    # ========================================================
+    # =====================================================
     # GET
-    # ========================================================
+    # =====================================================
 
     else:
 
         form = AttendanceForm(
-            instance=attendance
+            instance=attendance,
+            current_user=request.user
         )
 
-        form.initial["date"] = today
-
     return render(
-
         request,
-
         "attendance/edit_attendance.html",
-
         {
             "form": form,
-
-            "attendance": attendance
+            "attendance": attendance,
         }
-
     )
 
 
-# ============================================================
-# DELETE ATTENDANCE
-# ============================================================
-
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
+@require_POST
 def delete_attendance(request, pk):
 
     attendance = get_object_or_404(
-
         Attendance,
-
         pk=pk
-
     )
 
-    # ========================================================
-    # DELETE
-    # ========================================================
+    # =====================================================
+    # EMPLOYEE OWNERSHIP CHECK
+    # =====================================================
 
-    if request.method == "POST":
+    if request.user.role == "EMPLOYEE":
 
-        attendance.delete()
-
-        messages.success(
-
-            request,
-
-            "Attendance deleted successfully."
-
+        employee = _get_logged_in_employee(
+            request.user
         )
 
-        return redirect(
-            "attendance_list"
-        )
+        if employee is None:
 
-    # ========================================================
-    # CONFIRMATION PAGE
-    # ========================================================
+            messages.error(
+                request,
+                "Your employee profile has not been created yet."
+            )
 
-    return render(
+            return redirect(
+                "attendance_list"
+            )
 
-        request,
+        if attendance.employee_id != employee.pk:
 
-        "attendance/delete_attendance.html",
+            messages.error(
+                request,
+                "You are not allowed to delete another employee's attendance."
+            )
 
-        {
-            "attendance": attendance
-        }
+            return redirect(
+                "attendance_list"
+            )
 
-    )
-
-
-# ============================================================
-# CHECK IN
-# ============================================================
-
-def check_in(request, employee_id):
-
-    employee = get_object_or_404(
-
-        Employee,
-
-        id=employee_id
-
-    )
-
-    today = date.today()
-
-    # ========================================================
-    # CHECK IF ATTENDANCE ALREADY EXISTS
-    # ========================================================
-
-    attendance = Attendance.objects.filter(
-
-        employee=employee,
-
-        date=today
-
-    ).first()
-
-    if attendance:
-
-        messages.warning(
-
-            request,
-
-            "Attendance already exists for today."
-
-        )
-
-        return redirect(
-            "attendance_list"
-        )
-
-    # ========================================================
-    # CURRENT TIME
-    # ========================================================
-
-    current_time = datetime.now().time()
-
-    # ========================================================
-    # CREATE ATTENDANCE
-    #
-    # IMPORTANT:
-    # check_out remains NULL.
-    # ========================================================
-
-    attendance = Attendance(
-
-        employee=employee,
-
-        date=today,
-
-        check_in=current_time,
-
-        check_out=None,
-
-        status="Present",
-
-        working_hours=Decimal("0.00")
-
-    )
-
-    # ========================================================
-    # SAVE
-    #
-    # Model save() no longer calls full_clean().
-    # Therefore check-in can be saved without checkout.
-    # ========================================================
-
-    attendance.save()
+    attendance.delete()
 
     messages.success(
-
         request,
-
-        f"{employee.first_name} checked in successfully."
-
+        "Attendance deleted successfully."
     )
 
     return redirect(
@@ -437,181 +662,308 @@ def check_in(request, employee_id):
     )
 
 
-# ============================================================
-# CHECK OUT
-# ============================================================
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
+@require_POST
+def check_in(request, employee_id):
 
+    employee = get_object_or_404(
+        Employee,
+        id=employee_id,
+        is_active=True
+    )
+
+    # =====================================================
+    # EMPLOYEE OWNERSHIP CHECK
+    # =====================================================
+
+    if request.user.role == "EMPLOYEE":
+
+        logged_in_employee = _get_logged_in_employee(
+            request.user
+        )
+
+        if logged_in_employee is None:
+
+            messages.error(
+                request,
+                "Your employee profile has not been created yet."
+            )
+
+            return redirect(
+                "attendance_list"
+            )
+
+        if employee.pk != logged_in_employee.pk:
+
+            messages.error(
+                request,
+                "You can only check in for yourself."
+            )
+
+            return redirect(
+                "attendance_list"
+            )
+
+    today = timezone.localdate()
+
+    # =====================================================
+    # DUPLICATE CHECK
+    # =====================================================
+
+    existing = Attendance.objects.filter(
+        employee=employee,
+        date=today
+    ).first()
+
+    if existing:
+
+        messages.warning(
+            request,
+            "Attendance has already been marked for today."
+        )
+
+        return redirect(
+            "attendance_list"
+        )
+
+    # =====================================================
+    # ACTUAL SERVER LIVE CHECK-IN TIME
+    # =====================================================
+
+    now = timezone.localtime()
+
+    current_time = now.time().replace(
+        second=0,
+        microsecond=0
+    )
+
+    attendance = Attendance(
+        employee=employee,
+        date=today,
+        check_in=current_time,
+        check_out=None,
+        status="Present",
+        working_hours=Decimal(
+            "0.00"
+        )
+    )
+
+    attendance.full_clean()
+    attendance.save()
+
+    messages.success(
+        request,
+        f"{employee.first_name} checked in successfully at "
+        f"{now.strftime('%I:%M %p')}."
+    )
+
+    return redirect(
+        "attendance_list"
+    )
+
+
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
+@require_POST
 def check_out(request, attendance_id):
 
     attendance = get_object_or_404(
-
-        Attendance,
-
+        Attendance.objects.select_related(
+            "employee",
+            "employee__user"
+        ),
         id=attendance_id
-
     )
 
-    # ========================================================
+    # =====================================================
+    # EMPLOYEE OWNERSHIP CHECK
+    # =====================================================
+
+    if request.user.role == "EMPLOYEE":
+
+        employee = _get_logged_in_employee(
+            request.user
+        )
+
+        if employee is None:
+
+            messages.error(
+                request,
+                "Your employee profile has not been created yet."
+            )
+
+            return redirect(
+                "attendance_list"
+            )
+
+        if attendance.employee_id != employee.pk:
+
+            messages.error(
+                request,
+                "You can only check out your own attendance."
+            )
+
+            return redirect(
+                "attendance_list"
+            )
+
+    # =====================================================
     # ALREADY CHECKED OUT
-    # ========================================================
+    # =====================================================
 
     if attendance.check_out:
 
         messages.warning(
-
             request,
-
             "Already checked out."
-
         )
 
         return redirect(
             "attendance_list"
         )
 
-    # ========================================================
+    # =====================================================
     # CHECK-IN REQUIRED
-    # ========================================================
+    # =====================================================
 
     if not attendance.check_in:
 
         messages.error(
-
             request,
-
             "Cannot check out because Check-In time is missing."
-
         )
 
         return redirect(
             "attendance_list"
         )
 
-    # ========================================================
-    # CURRENT CHECK-OUT TIME
-    # ========================================================
+    # =====================================================
+    # ACTUAL SERVER LIVE CURRENT TIME
+    # =====================================================
 
-    check_out_time = datetime.now().time()
+    now = timezone.localtime()
 
-    # ========================================================
-    # CALCULATE WORKING HOURS
-    # ========================================================
-
-    check_in_datetime = datetime.combine(
-
-        attendance.date,
-
-        attendance.check_in
-
+    current_datetime = now.replace(
+        second=0,
+        microsecond=0
     )
 
-    check_out_datetime = datetime.combine(
-
-        attendance.date,
-
-        check_out_time
-
+    checkin_datetime = timezone.make_aware(
+        datetime.combine(
+            attendance.date,
+            attendance.check_in
+        ),
+        timezone.get_current_timezone()
     )
 
-    duration = (
-
-        check_out_datetime
-        -
-        check_in_datetime
-
-    )
-
-    total_seconds = duration.total_seconds()
-
-    total_hours = total_seconds / 3600
-
-    # ========================================================
-    # PRESENT VALIDATION
-    #
-    # MUST BE MORE THAN 7 HOURS
-    # ========================================================
+    # =====================================================
+    # MINIMUM CHECKOUT
+    # =====================================================
 
     if attendance.status == "Present":
 
-        if total_hours <= 7:
+        minimum_checkout = (
+            checkin_datetime
+            + timedelta(hours=7)
+        )
 
-            messages.error(
+    elif attendance.status == "Half Day":
 
-                request,
+        minimum_checkout = (
+            checkin_datetime
+            + timedelta(hours=3)
+        )
 
-                f"Cannot check out. Present attendance "
-                f"requires more than 7 hours. "
-                f"Current working time: "
-                f"{total_hours:.2f} hours."
+    else:
 
-            )
+        messages.error(
+            request,
+            "Invalid attendance status."
+        )
 
-            return redirect(
-                "attendance_list"
-            )
+        return redirect(
+            "attendance_list"
+        )
 
-    # ========================================================
-    # HALF DAY VALIDATION
-    #
-    # MUST BE MORE THAN 3 HOURS
-    # ========================================================
+    # =====================================================
+    # PREVENT EARLY CHECKOUT
+    # =====================================================
 
-    if attendance.status == "Half Day":
+    if current_datetime < minimum_checkout:
 
-        if total_hours <= 3:
+        remaining_seconds = (
+            minimum_checkout
+            - current_datetime
+        ).total_seconds()
 
-            messages.error(
+        remaining_minutes = int(
+            (remaining_seconds + 59) // 60
+        )
 
-                request,
-
-                f"Cannot check out. Half Day attendance "
-                f"requires more than 3 hours. "
-                f"Current working time: "
-                f"{total_hours:.2f} hours."
-
-            )
-
-            return redirect(
-                "attendance_list"
-            )
-
-    # ========================================================
-    # ROUND TO 2 DECIMAL PLACES
-    # ========================================================
-
-    working_hours = Decimal(
-        str(
-            round(
-                total_hours,
-                2
+        minimum_time_display = (
+            minimum_checkout.strftime(
+                "%I:%M %p"
             )
         )
-    ).quantize(
+
+        required_hours = (
+            "7"
+            if attendance.status == "Present"
+            else "3"
+        )
+
+        messages.error(
+            request,
+            f"Cannot check out yet. "
+            f"{attendance.status} attendance requires "
+            f"at least {required_hours} hours. "
+            f"Earliest Check-Out is "
+            f"{minimum_time_display}. "
+            f"Please wait approximately "
+            f"{remaining_minutes} minutes."
+        )
+
+        return redirect(
+            "attendance_list"
+        )
+
+    # =====================================================
+    # RECORD ACTUAL LIVE CHECKOUT TIME
+    # =====================================================
+
+    checkout_time = current_datetime.time()
+
+    checkout_datetime = current_datetime
+
+    duration = (
+        checkout_datetime
+        - checkin_datetime
+    )
+
+    total_hours = Decimal(
+        str(
+            duration.total_seconds()
+            / 3600
+        )
+    )
+
+    working_hours = total_hours.quantize(
         Decimal("0.01")
     )
 
-    # ========================================================
-    # UPDATE ATTENDANCE
-    # ========================================================
-
-    attendance.check_out = check_out_time
-
+    attendance.check_out = checkout_time
     attendance.working_hours = working_hours
 
+    attendance.full_clean()
     attendance.save()
 
-    # ========================================================
-    # SUCCESS MESSAGE
-    # ========================================================
-
     messages.success(
-
         request,
-
-        f"Checked out successfully. "
+        f"Checked out successfully at "
+        f"{current_datetime.strftime('%I:%M %p')}. "
         f"Total working time: "
         f"{working_hours:.2f} hours."
-
     )
 
     return redirect(

@@ -14,7 +14,11 @@ Edit Department
 
             <div class="card shadow">
 
-                <div class="card-header bg-warning">
+                <!-- ========================================= -->
+                <!-- Card Header -->
+                <!-- ========================================= -->
+
+                <div class="card-header bg-warning d-flex justify-content-between align-items-center">
 
                     <h5 class="mb-0">
 
@@ -24,7 +28,55 @@ Edit Department
 
                     </h5>
 
+
+                    <!-- ========================================= -->
+                    <!-- Three Dot Menu -->
+                    <!-- ========================================= -->
+
+                    <div class="dropdown">
+
+                        <button
+                            type="button"
+                            class="btn btn-dark btn-sm"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            title="More Options">
+
+                            <i class="bi bi-three-dots-vertical"></i>
+
+                        </button>
+
+
+                        <!-- ========================================= -->
+                        <!-- Dropdown Menu -->
+                        <!-- ========================================= -->
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+
+                            <li>
+
+                                <a
+                                    href="{% url 'delete_department' department.id %}"
+                                    class="dropdown-item text-danger">
+
+                                    <i class="bi bi-trash-fill me-2"></i>
+
+                                    Delete Department
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
                 </div>
+
+
+                <!-- ========================================= -->
+                <!-- Card Body -->
+                <!-- ========================================= -->
 
                 <div class="card-body">
 
@@ -32,6 +84,10 @@ Edit Department
 
                         {% csrf_token %}
 
+
+                        <!-- ========================================= -->
+                        <!-- Non Field Errors -->
+                        <!-- ========================================= -->
 
                         {% if form.non_field_errors %}
 
@@ -44,18 +100,22 @@ Edit Department
                         {% endif %}
 
 
+                        <!-- ========================================= -->
+                        <!-- Department Name -->
+                        <!-- ========================================= -->
+
                         <div class="mb-3">
 
                             <label
                                 for="{{ form.name.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
+                                class="form-label fw-semibold">
 
                                 Department Name
 
                             </label>
 
                             {{ form.name }}
+
 
                             {% if form.name.errors %}
 
@@ -70,18 +130,22 @@ Edit Department
                         </div>
 
 
+                        <!-- ========================================= -->
+                        <!-- Description -->
+                        <!-- ========================================= -->
+
                         <div class="mb-4">
 
                             <label
                                 for="{{ form.description.id_for_label }}"
-                                class="form-label fw-semibold"
-                            >
+                                class="form-label fw-semibold">
 
                                 Description
 
                             </label>
 
                             {{ form.description }}
+
 
                             {% if form.description.errors %}
 
@@ -96,23 +160,28 @@ Edit Department
                         </div>
 
 
+                        <!-- ========================================= -->
+                        <!-- Buttons -->
+                        <!-- ========================================= -->
+
                         <div class="d-flex gap-2">
 
                             <button
                                 type="submit"
-                                class="btn btn-warning"
-                            >
+                                class="btn btn-warning">
 
-                                <i class="bi bi-save"></i>
+                                <i class="bi bi-save me-1"></i>
 
                                 Update Department
 
                             </button>
 
+
                             <a
                                 href="{% url 'department_list' %}"
-                                class="btn btn-secondary"
-                            >
+                                class="btn btn-secondary">
+
+                                <i class="bi bi-arrow-left me-1"></i>
 
                                 Cancel
 

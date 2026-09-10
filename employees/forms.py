@@ -1,6 +1,11 @@
+from datetime import date
+
 from django import forms
 from django.core.exceptions import ValidationError
-from datetime import date
+from django.db import models
+
+from accounts.models import User
+from departments.models import Department
 
 from .models import Employee
 
@@ -10,30 +15,66 @@ MAX_PROFILE_PICTURE_SIZE = 2 * 1024 * 1024  # 2 MB
 
 class EmployeeForm(forms.ModelForm):
 
-    # ==========================================================
-    # ACTIVE / INACTIVE DROPDOWN
-    # ==========================================================
-
     STATUS_CHOICES = (
         ("True", "Active"),
         ("False", "Inactive"),
     )
 
+    # =============================================================
+    # REGISTERED LOGIN ACCOUNT
+    # =============================================================
+
+    user = forms.ModelChoiceField(
+        queryset=User.objects.none(),
+        required=True,
+        label="Registered Employee User",
+        empty_label="Select Registered Employee User",
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+            }
+        ),
+        help_text=(
+            "Select the registered Employee user who will be linked "
+            "to this Employee record."
+        ),
+    )
+
+    # =============================================================
+    # STATUS
+    # =============================================================
+
     status = forms.ChoiceField(
         choices=STATUS_CHOICES,
         widget=forms.Select(
             attrs={
-                "class": "form-select"
+                "class": "form-select",
             }
         ),
         label="Status",
     )
+
+    # =============================================================
+    # EMPLOYEE SELF-EDITABLE FIELDS
+    # =============================================================
+
+    EMPLOYEE_EDITABLE_FIELDS = {
+        "first_name",
+        "last_name",
+        "email",
+        "phone",
+        "gender",
+        "date_of_birth",
+        "profile_picture",
+        "address",
+    }
 
     class Meta:
 
         model = Employee
 
         fields = [
+            "user",
             "employee_id",
             "first_name",
             "last_name",
@@ -140,19 +181,92 @@ class EmployeeForm(forms.ModelForm):
             ),
         }
 
-    # ==========================================================
-    # INITIALIZATION
-    # ==========================================================
+    # =============================================================
+    # INITIALIZE FORM
+    # =============================================================
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        *args,
+        current_user=None,
+        self_edit=False,
+        **kwargs
+    ):
 
         super().__init__(*args, **kwargs)
 
-        # ------------------------------------------------------
-        # Employee ID cannot be changed while editing
-        # ------------------------------------------------------
+        self.current_user = current_user
+        self.is_employee_self_edit = self_edit
+
+        # =========================================================
+        # REGISTERED EMPLOYEE USERS
+        # =========================================================
+
+        linked_user_id = None
 
         if self.instance and self.instance.pk:
+            linked_user_id = self.instance.user_id
+
+        available_users = (
+            User.objects
+            .filter(
+                role="EMPLOYEE"
+            )
+            .order_by(
+                "username"
+            )
+        )
+
+        # When editing an existing Employee:
+        #
+        # - Show users that are not already linked.
+        # - Also keep this Employee's current linked user.
+        #
+        if linked_user_id:
+
+            available_users = available_users.filter(
+                models.Q(
+                    employee_profile__isnull=True
+                )
+                |
+                models.Q(
+                    pk=linked_user_id
+                )
+            )
+
+        else:
+
+            # Adding a new Employee:
+            #
+            # Only show registered Employee accounts that
+            # are not already linked.
+            #
+            available_users = available_users.filter(
+                employee_profile__isnull=True
+            )
+
+        self.fields["user"].queryset = available_users
+
+        # =========================================================
+        # EMPLOYEE SELF EDIT
+        # =========================================================
+
+        if self.is_employee_self_edit:
+
+            for field_name in list(self.fields):
+
+                if field_name not in self.EMPLOYEE_EDITABLE_FIELDS:
+
+                    self.fields.pop(
+                        field_name,
+                        None
+                    )
+
+        # =========================================================
+        # ADMIN / HR EDIT
+        # =========================================================
+
+        elif self.instance and self.instance.pk:
 
             self.fields["employee_id"].disabled = True
 
@@ -160,11 +274,23 @@ class EmployeeForm(forms.ModelForm):
                 "Employee ID cannot be changed after creation."
             )
 
-        # ------------------------------------------------------
-        # Set current status when editing
-        # ------------------------------------------------------
+            self.fields["user"].disabled = True
 
-        if self.instance and self.instance.pk:
+            self.fields["user"].help_text = (
+                "The registered Employee user linked to this "
+                "Employee record cannot be changed here."
+            )
+
+        # =========================================================
+        # STATUS
+        # =========================================================
+
+        if (
+            not self.is_employee_self_edit
+            and self.instance
+            and self.instance.pk
+            and "status" in self.fields
+        ):
 
             self.fields["status"].initial = (
                 "True"
@@ -172,21 +298,98 @@ class EmployeeForm(forms.ModelForm):
                 else "False"
             )
 
-        # ------------------------------------------------------
-        # Department dropdown
-        # ------------------------------------------------------
+        # =========================================================
+        # DEPARTMENT
+        # =========================================================
 
-        self.fields["department"].empty_label = "Select Department"
+        if "department" in self.fields:
 
-        self.fields["department"].queryset = (
-            self.fields["department"]
-            .queryset
-            .order_by("name")
+            self.fields["department"].empty_label = (
+                "Select Department"
+            )
+
+            self.fields["department"].queryset = (
+                Department.objects
+                .filter(
+                    is_active=True
+                )
+                .order_by(
+                    "name"
+                )
+            )
+
+    # =============================================================
+    # USER VALIDATION
+    # =============================================================
+
+    def clean_user(self):
+
+        user = self.cleaned_data.get("user")
+
+        if not user:
+
+            raise ValidationError(
+                "Please select a registered Employee user."
+            )
+
+        if user.role != "EMPLOYEE":
+
+            raise ValidationError(
+                "Only users with the Employee role can be linked "
+                "to an Employee record."
+            )
+
+        existing_employee = getattr(
+            user,
+            "employee_profile",
+            None
         )
 
-    # ==========================================================
+        if existing_employee:
+
+            # During editing, the Employee can keep its own
+            # existing linked user.
+
+            if (
+                not self.instance
+                or existing_employee.pk != self.instance.pk
+            ):
+
+                raise ValidationError(
+                    "This registered user is already linked "
+                    "to an Employee record."
+                )
+
+        return user
+
+    # =============================================================
+    # DEPARTMENT VALIDATION
+    # =============================================================
+
+    def clean_department(self):
+
+        department = self.cleaned_data.get(
+            "department"
+        )
+
+        if not department:
+
+            raise ValidationError(
+                "Please select a department."
+            )
+
+        if not department.is_active:
+
+            raise ValidationError(
+                "The selected department is inactive. "
+                "Please select an active department."
+            )
+
+        return department
+
+    # =============================================================
     # DATE OF BIRTH VALIDATION
-    # ==========================================================
+    # =============================================================
 
     def clean_date_of_birth(self):
 
@@ -195,14 +398,9 @@ class EmployeeForm(forms.ModelForm):
         )
 
         if not date_of_birth:
-
             return date_of_birth
 
         today = date.today()
-
-        # ------------------------------------------------------
-        # Future date
-        # ------------------------------------------------------
 
         if date_of_birth > today:
 
@@ -210,13 +408,9 @@ class EmployeeForm(forms.ModelForm):
                 "Date of Birth cannot be a future date."
             )
 
-        # ------------------------------------------------------
-        # Calculate age
-        # ------------------------------------------------------
-
         age = (
-            today.year -
-            date_of_birth.year
+            today.year
+            - date_of_birth.year
         )
 
         if (
@@ -229,10 +423,6 @@ class EmployeeForm(forms.ModelForm):
 
             age -= 1
 
-        # ------------------------------------------------------
-        # Minimum age = 18
-        # ------------------------------------------------------
-
         if age < 18:
 
             raise ValidationError(
@@ -241,9 +431,85 @@ class EmployeeForm(forms.ModelForm):
 
         return date_of_birth
 
-    # ==========================================================
+    # =============================================================
+    # PHONE VALIDATION
+    # =============================================================
+
+    def clean_phone(self):
+
+        phone = (
+            self.cleaned_data.get("phone") or ""
+        ).strip()
+
+        if not phone.isdigit():
+
+            raise ValidationError(
+                "Phone number must contain only numerical digits."
+            )
+
+        if len(phone) < 10:
+
+            raise ValidationError(
+                "Phone number must contain at least 10 digits."
+            )
+
+        if len(phone) > 15:
+
+            raise ValidationError(
+                "Phone number cannot contain more than 15 digits."
+            )
+
+        return phone
+
+    # =============================================================
+    # EMAIL VALIDATION
+    # =============================================================
+
+    def clean_email(self):
+
+        email = (
+            self.cleaned_data.get("email") or ""
+        ).strip().lower()
+
+        if not email:
+
+            raise ValidationError(
+                "Email address is required."
+            )
+
+        if self.instance and self.instance.pk:
+
+            existing_employee = (
+                Employee.objects
+                .filter(
+                    email__iexact=email
+                )
+                .exclude(
+                    pk=self.instance.pk
+                )
+            )
+
+        else:
+
+            existing_employee = (
+                Employee.objects
+                .filter(
+                    email__iexact=email
+                )
+            )
+
+        if existing_employee.exists():
+
+            raise ValidationError(
+                "An Employee with this email address "
+                "already exists."
+            )
+
+        return email
+
+    # =============================================================
     # PROFILE PICTURE VALIDATION
-    # ==========================================================
+    # =============================================================
 
     def clean_profile_picture(self):
 
@@ -252,12 +518,7 @@ class EmployeeForm(forms.ModelForm):
         )
 
         if not profile_picture:
-
             return profile_picture
-
-        # ------------------------------------------------------
-        # File size
-        # ------------------------------------------------------
 
         if profile_picture.size > MAX_PROFILE_PICTURE_SIZE:
 
@@ -265,15 +526,13 @@ class EmployeeForm(forms.ModelForm):
                 "Profile picture size must not exceed 2 MB."
             )
 
-        # ------------------------------------------------------
-        # Image validation
-        # ------------------------------------------------------
-
         try:
 
             from PIL import Image
 
-            image = Image.open(profile_picture)
+            image = Image.open(
+                profile_picture
+            )
 
             image.verify()
 
@@ -285,19 +544,63 @@ class EmployeeForm(forms.ModelForm):
 
         return profile_picture
 
-    # ==========================================================
+    # =============================================================
     # SAVE
-    # ==========================================================
+    # =============================================================
 
     def save(self, commit=True):
 
-        employee = super().save(commit=False)
+        employee = super().save(
+            commit=False
+        )
 
-        status = self.cleaned_data.get("status")
+        # =========================================================
+        # EMPLOYEE SELF EDIT
+        # =========================================================
+
+        if self.is_employee_self_edit:
+
+            if commit:
+                employee.save()
+
+            return employee
+
+        # =========================================================
+        # ADMIN / HR
+        # =========================================================
+
+        selected_user = self.cleaned_data.get(
+            "user"
+        )
+
+        # Explicitly connect the Employee record
+        # to the registered User account.
+        #
+        # This is the important relationship:
+        #
+        # User → Employee
+        #
+        # Once saved, account.employee_profile will work.
+        #
+        if selected_user:
+
+            employee.user = selected_user
+
+        # =========================================================
+        # STATUS
+        # =========================================================
+
+        status = self.cleaned_data.get(
+            "status"
+        )
 
         employee.is_active = (
             status == "True"
         )
+
+        # =========================================================
+        # SAVE EMPLOYEE
+        # =========================================================
 
         if commit:
 

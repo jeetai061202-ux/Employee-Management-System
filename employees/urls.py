@@ -1,7 +1,13 @@
 from django.urls import path
+
 from . import views
 
+
 urlpatterns = [
+
+    # ==========================================================
+    # EMPLOYEE LIST
+    # ==========================================================
 
     path(
         "",
@@ -9,11 +15,19 @@ urlpatterns = [
         name="employee_list"
     ),
 
+    # ==========================================================
+    # ADD EMPLOYEE
+    # ==========================================================
+
     path(
         "add/",
         views.add_employee,
         name="add_employee"
     ),
+
+    # ==========================================================
+    # EMPLOYEE DETAILS
+    # ==========================================================
 
     path(
         "<int:pk>/",
@@ -21,11 +35,22 @@ urlpatterns = [
         name="employee_detail"
     ),
 
+    # ==========================================================
+    # EDIT EMPLOYEE
+    # ==========================================================
+
     path(
         "<int:pk>/edit/",
         views.edit_employee,
         name="edit_employee"
     ),
+
+    # ==========================================================
+    # DELETE EMPLOYEE
+    # ==========================================================
+    # This now performs SOFT DELETE.
+    # The employee is not removed from the database.
+    # is_active is changed from True to False.
 
     path(
         "<int:pk>/delete/",
@@ -33,13 +58,24 @@ urlpatterns = [
         name="delete_employee"
     ),
 
+    # ==========================================================
+    # EXPORT EXCEL
+    # ==========================================================
+
     path(
-    "export/pdf/",
-    views.export_employees_pdf,
-    name="export_pdf",
+        "export/excel/",
+        views.export_employees_excel,
+        name="export_excel"
     ),
 
-    path("export/excel/", views.export_employees_excel, name="export_excel"),
-    path("export/pdf/", views.export_employees_pdf, name="export_pdf"), 
+    # ==========================================================
+    # EXPORT PDF
+    # ==========================================================
+
+    path(
+        "export/pdf/",
+        views.export_employees_pdf,
+        name="export_pdf"
+    ),
 
 ]

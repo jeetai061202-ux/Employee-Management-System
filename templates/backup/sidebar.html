@@ -3,19 +3,20 @@
     <div class="p-3">
 
         <h4 class="text-center">
-
             HRMS
-
         </h4>
 
         <hr>
 
         <ul class="nav flex-column">
 
+            <!-- ============================= -->
+            <!-- DASHBOARD -->
+            <!-- ============================= -->
+
             <li class="nav-item">
 
                 <a href="/"
-
                    class="nav-link text-white">
 
                     <i class="bi bi-speedometer2"></i>
@@ -26,52 +27,86 @@
 
             </li>
 
-            <li class="nav-item">
 
-                <a href="/employees/"
+            <!-- ============================= -->
+            <!-- ADMIN ONLY -->
+            <!-- ============================= -->
 
-                   class="nav-link text-white">
+            {% if request.user.role == "ADMIN" %}
 
-                    <i class="bi bi-people-fill"></i>
+                <li class="nav-item">
 
-                    Employees
+                    <a href="{% url 'user_management' %}"
+                       class="nav-link text-white">
 
-                </a>
+                        <i class="bi bi-person-gear"></i>
 
-            </li>
+                        User Management
 
-            <li class="nav-item">
+                    </a>
 
-                <a href="/departments/"
+                </li>
 
-                   class="nav-link text-white">
+            {% endif %}
 
-                    <i class="bi bi-diagram-3-fill"></i>
 
-                    Departments
+            <!-- ============================= -->
+            <!-- ADMIN + HR -->
+            <!-- ============================= -->
 
-                </a>
+            {% if request.user.role == "ADMIN" or request.user.role == "HR" %}
 
-            </li>
+                <li class="nav-item">
 
-            <li class="nav-item">
+                    <a href="/employees/"
+                       class="nav-link text-white">
 
-                <a href="/attendance/"
+                        <i class="bi bi-people-fill"></i>
 
-                   class="nav-link text-white">
+                        Employees
 
-                    <i class="bi bi-calendar-check-fill"></i>
+                    </a>
 
-                    Attendance
+                </li>
 
-                </a>
 
-            </li>
+                <li class="nav-item">
+
+                    <a href="/departments/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-diagram-3-fill"></i>
+
+                        Departments
+
+                    </a>
+
+                </li>
+
+
+                <li class="nav-item">
+
+                    <a href="/attendance/"
+                       class="nav-link text-white">
+
+                        <i class="bi bi-calendar-check-fill"></i>
+
+                        Attendance
+
+                    </a>
+
+                </li>
+
+            {% endif %}
+
+
+            <!-- ============================= -->
+            <!-- LEAVE -->
+            <!-- ============================= -->
 
             <li class="nav-item">
 
                 <a href="/leave/"
-
                    class="nav-link text-white">
 
                     <i class="bi bi-airplane-fill"></i>
@@ -82,38 +117,50 @@
 
             </li>
 
-            <li class="nav-item">
 
-                <a href="/payroll/"
+            <!-- ============================= -->
+            <!-- ADMIN + HR -->
+            <!-- ============================= -->
 
-                   class="nav-link text-white">
+            {% if request.user.role == "ADMIN" or request.user.role == "HR" %}
 
-                    <i class="bi bi-cash-stack"></i>
+                <li class="nav-item">
 
-                    Payroll
+                    <a href="/payroll/"
+                       class="nav-link text-white">
 
-                </a>
+                        <i class="bi bi-cash-stack"></i>
 
-            </li>
+                        Payroll
 
-            <li class="nav-item">
+                    </a>
 
-                <a href="/reports/"
+                </li>
 
-                   class="nav-link text-white">
 
-                    <i class="bi bi-bar-chart-fill"></i>
+                <li class="nav-item">
 
-                    Reports
+                    <a href="/reports/"
+                       class="nav-link text-white">
 
-                </a>
+                        <i class="bi bi-bar-chart-fill"></i>
 
-            </li>
+                        Reports
+
+                    </a>
+
+                </li>
+
+            {% endif %}
+
+
+            <!-- ============================= -->
+            <!-- SETTINGS -->
+            <!-- ============================= -->
 
             <li class="nav-item">
 
                 <a href="#"
-
                    class="nav-link text-white">
 
                     <i class="bi bi-gear-fill"></i>
@@ -124,12 +171,17 @@
 
             </li>
 
+
             <hr>
+
+
+            <!-- ============================= -->
+            <!-- LOGOUT -->
+            <!-- ============================= -->
 
             <li class="nav-item">
 
-                <a href="#"
-
+                <a href="{% url 'logout' %}"
                    class="nav-link text-danger">
 
                     <i class="bi bi-box-arrow-right"></i>

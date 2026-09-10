@@ -1,0 +1,355 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+User Access Management
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="card shadow rounded-4">
+
+        <!-- ==================================================
+             HEADER
+             ================================================== -->
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+
+            <div>
+                <h3 class="mb-0">
+                    User Access Management
+                </h3>
+
+                <small class="text-muted">
+                    Manage users and account access
+                </small>
+            </div>
+
+            <!-- CREATE USER -->
+
+            <a
+                href="{% url 'create_user' %}"
+                class="btn btn-primary"
+            >
+                <i class="bi bi-person-plus"></i>
+                Create User
+            </a>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <!-- ==================================================
+                 MESSAGES
+                 ================================================== -->
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+
+            <!-- ==================================================
+                 USER TABLE
+                 ================================================== -->
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>User ID</th>
+
+                            <th>Name</th>
+
+                            <th>Email</th>
+
+                            <th>Phone</th>
+
+                            <th>Role</th>
+
+                            <th>Employee Record</th>
+
+                            <th>Status</th>
+
+                            <th>Staff</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for account in users %}
+
+                            <tr>
+
+                                <!-- NUMBER -->
+
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+
+
+                                <!-- USER ID -->
+
+                                <td>
+                                    <strong>
+                                        {{ account.username }}
+                                    </strong>
+                                </td>
+
+
+                                <!-- NAME -->
+
+                                <td>
+
+                                    {% if account.first_name or account.last_name %}
+
+                                        {{ account.first_name }}
+                                        {{ account.last_name }}
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            Not provided
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- EMAIL -->
+
+                                <td>
+                                    {{ account.email|default:"Not provided" }}
+                                </td>
+
+
+                                <!-- PHONE -->
+
+                                <td>
+                                    {{ account.phone|default:"Not provided" }}
+                                </td>
+
+
+                                <!-- ROLE -->
+
+                                <td>
+
+                                    {% if account.role == "ADMIN" %}
+
+                                        <span class="badge bg-danger">
+                                            Admin
+                                        </span>
+
+                                    {% elif account.role == "HR" %}
+
+                                        <span class="badge bg-primary">
+                                            HR
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-secondary">
+                                            Employee
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- EMPLOYEE RECORD -->
+
+                                <td>
+
+                                    {% if account.role == "EMPLOYEE" %}
+
+                                        {% if account.employee_profile %}
+
+                                            <span class="badge bg-success">
+                                                Linked
+                                            </span>
+
+                                            <br>
+
+                                            <small class="text-muted">
+                                                {{ account.employee_profile.employee_id }}
+                                            </small>
+
+                                        {% else %}
+
+                                            <span class="badge bg-warning text-dark">
+                                                Not linked
+                                            </span>
+
+                                        {% endif %}
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            Not applicable
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    {% if account.is_active %}
+
+                                        <span class="badge bg-success">
+                                            Active
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-danger">
+                                            Inactive
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- STAFF -->
+
+                                <td>
+
+                                    {% if account.is_staff %}
+
+                                        <span class="badge bg-info text-dark">
+                                            Yes
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            No
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- ACTIONS -->
+
+                                <td>
+
+                                    <div class="d-flex gap-2">
+
+                                        <!-- EDIT -->
+
+                                        <a
+                                            href="{% url 'edit_user' account.pk %}"
+                                            class="btn btn-sm btn-outline-primary"
+                                            title="Edit user"
+                                        >
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+
+                                        <!-- ACTIVATE / DEACTIVATE -->
+
+                                        {% if account.is_active %}
+
+                                            <form
+                                                method="POST"
+                                                action="{% url 'toggle_user_status' account.pk %}"
+                                                onsubmit="return confirm('Are you sure you want to deactivate this user?');"
+                                            >
+
+                                                {% csrf_token %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    title="Deactivate user"
+                                                >
+                                                    <i class="bi bi-person-dash"></i>
+                                                </button>
+
+                                            </form>
+
+                                        {% else %}
+
+                                            <form
+                                                method="POST"
+                                                action="{% url 'toggle_user_status' account.pk %}"
+                                                onsubmit="return confirm('Are you sure you want to activate this user?');"
+                                            >
+
+                                                {% csrf_token %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-sm btn-outline-success"
+                                                    title="Activate user"
+                                                >
+                                                    <i class="bi bi-person-check"></i>
+                                                </button>
+
+                                            </form>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="10"
+                                    class="text-center text-muted py-4"
+                                >
+                                    No users found.
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

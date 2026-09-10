@@ -1,60 +1,114 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-Delete Employee
+Deactivate Employee
 {% endblock %}
 
 {% block content %}
 
 <div class="container mt-5">
 
-<div class="card shadow">
+    <div class="row justify-content-center">
 
-<div class="card-body text-center">
+        <div class="col-md-6">
 
-<h3 class="text-danger">
+            <div class="card shadow">
 
-Delete Employee
+                <div class="card-body text-center">
 
-</h3>
+                    <!-- ================================================= -->
+                    <!-- HEADING -->
+                    <!-- ================================================= -->
 
-<p>
+                    <h3 class="text-danger mb-3">
 
-Are you sure you want to delete
+                        Deactivate Employee
 
-<strong>
+                    </h3>
 
-{{ employee.first_name }}
 
-{{ employee.last_name }}
+                    <!-- ================================================= -->
+                    <!-- EMPLOYEE NAME -->
+                    <!-- ================================================= -->
 
-</strong>?
+                    <p class="fs-5">
 
-</p>
+                        Are you sure you want to deactivate
 
-<form method="POST">
+                        <strong>
+                            {{ employee.first_name }}
+                            {{ employee.last_name }}
+                        </strong>
 
-{% csrf_token %}
+                        ?
 
-<button class="btn btn-danger">
+                    </p>
 
-Yes, Delete
 
-</button>
+                    <!-- ================================================= -->
+                    <!-- SOFT DELETE INFORMATION -->
+                    <!-- ================================================= -->
 
-<a href="{% url 'employee_list' %}"
+                    <div class="alert alert-warning">
 
-class="btn btn-secondary">
+                        <i class="bi bi-info-circle"></i>
 
-Cancel
+                        <strong>Note:</strong>
 
-</a>
+                        This employee will not be permanently deleted.
 
-</form>
+                        The employee record will remain in the database
+                        and will be marked as inactive.
 
-</div>
+                    </div>
 
-</div>
+
+                    <!-- ================================================= -->
+                    <!-- FORM -->
+                    <!-- ================================================= -->
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <!-- ================================================= -->
+                        <!-- DEACTIVATE BUTTON -->
+                        <!-- ================================================= -->
+
+                        <button
+                            type="submit"
+                            class="btn btn-danger">
+
+                            <i class="bi bi-person-x"></i>
+
+                            Yes, Deactivate
+
+                        </button>
+
+
+                        <!-- ================================================= -->
+                        <!-- CANCEL BUTTON -->
+                        <!-- ================================================= -->
+
+                        <a
+                            href="{% url 'edit_employee' employee.id %}"
+                            class="btn btn-secondary">
+
+                            <i class="bi bi-arrow-left"></i>
+
+                            Cancel
+
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 

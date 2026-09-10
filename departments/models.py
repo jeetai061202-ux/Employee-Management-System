@@ -1,4 +1,3 @@
-
 from django.db import models
 
 
@@ -14,6 +13,16 @@ class Department(models.Model):
         null=True
     )
 
+    # ==========================================================
+    # SOFT DELETE
+    # True  = Department is active
+    # False = Department is deleted/inactive
+    # ==========================================================
+
+    is_active = models.BooleanField(
+        default=True
+    )
+
     created_at = models.DateTimeField(
         auto_now_add=True
     )
@@ -24,4 +33,3 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
-

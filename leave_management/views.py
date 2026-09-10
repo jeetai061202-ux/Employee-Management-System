@@ -1,13 +1,26 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.db.models import Q
-from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.core.mail import send_mail
+from django.db.models import Q
+from django.shortcuts import (
+    render,
+    redirect,
+    get_object_or_404
+)
+
+from accounts.decorators import role_required
 
 from .models import Leave
 from .forms import LeaveForm
 
 
+# ============================================================
+# LEAVE LIST
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "EMPLOYEE")
 def leave_list(request):
 
     leaves = Leave.objects.select_related(
@@ -66,6 +79,12 @@ def leave_list(request):
     )
 
 
+# ============================================================
+# ADD LEAVE
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "EMPLOYEE")
 def add_leave(request):
 
     if request.method == "POST":
@@ -96,6 +115,12 @@ def add_leave(request):
     )
 
 
+# ============================================================
+# EDIT LEAVE
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "EMPLOYEE")
 def edit_leave(request, pk):
 
     leave = get_object_or_404(
@@ -136,6 +161,12 @@ def edit_leave(request, pk):
     )
 
 
+# ============================================================
+# DELETE LEAVE
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "EMPLOYEE")
 def delete_leave(request, pk):
 
     leave = get_object_or_404(
@@ -163,10 +194,12 @@ def delete_leave(request, pk):
     )
 
 
-# ==========================================================
+# ============================================================
 # APPROVE LEAVE
-# ==========================================================
+# ============================================================
 
+@login_required
+@role_required("ADMIN", "EMPLOYEE")
 def approve_leave(request, pk):
 
     leave = get_object_or_404(
@@ -236,10 +269,12 @@ Employee Management System
     return redirect("leave_list")
 
 
-# ==========================================================
+# ============================================================
 # REJECT LEAVE
-# ==========================================================
+# ============================================================
 
+@login_required
+@role_required("ADMIN", "EMPLOYEE")
 def reject_leave(request, pk):
 
     leave = get_object_or_404(

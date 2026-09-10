@@ -1,4 +1,4 @@
-
+from django.conf import settings
 from django.db import models
 from django.core.validators import RegexValidator
 
@@ -11,6 +11,15 @@ class Employee(models.Model):
         ("Male", "Male"),
         ("Female", "Female"),
         ("Other", "Other"),
+    )
+
+    # Connect employee record with the registered user account
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="employee_profile",
     )
 
     employee_id = models.CharField(
@@ -51,10 +60,6 @@ class Employee(models.Model):
         max_length=100
     )
 
-    # ==========================================================
-    # DEPARTMENT RELATIONSHIP
-    # ==========================================================
-
     department = models.ForeignKey(
         Department,
         on_delete=models.PROTECT,
@@ -67,12 +72,6 @@ class Employee(models.Model):
     )
 
     joining_date = models.DateField()
-
-    # ==========================================================
-    # SOFT DELETE
-    # True  = Active employee
-    # False = Soft-deleted / Inactive employee
-    # ==========================================================
 
     is_active = models.BooleanField(
         default=True
@@ -95,13 +94,10 @@ class Employee(models.Model):
     )
 
     class Meta:
-
         ordering = ["employee_id"]
 
     def __str__(self):
-
         return (
             f"{self.employee_id} - "
             f"{self.first_name} {self.last_name}"
         )
-

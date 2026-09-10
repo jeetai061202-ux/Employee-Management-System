@@ -1,12 +1,13 @@
-
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.db.models.deletion import ProtectedError
 from django.shortcuts import (
     get_object_or_404,
     redirect,
     render,
 )
+
+from accounts.decorators import role_required
 
 from .forms import DepartmentForm
 from .models import Department
@@ -14,14 +15,21 @@ from .models import Department
 
 # ==========================================================
 # DEPARTMENT LIST
+# ADMIN + HR + EMPLOYEE
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
 def department_list(request):
+
+    # ======================================================
+    # SHOW ONLY ACTIVE DEPARTMENTS
+    # ======================================================
 
     departments = (
         Department.objects
+        .filter(is_active=True)
         .prefetch_related("employees")
-        .all()
         .order_by("name")
     )
 
@@ -53,7 +61,10 @@ def department_list(request):
 
         "search": search,
 
-        "total_departments": Department.objects.count(),
+        # Count only active departments
+        "total_departments": Department.objects.filter(
+            is_active=True
+        ).count(),
 
     }
 
@@ -66,8 +77,11 @@ def department_list(request):
 
 # ==========================================================
 # ADD DEPARTMENT
+# ADMIN + HR + EMPLOYEE
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
 def add_department(request):
 
     if request.method == "POST":
@@ -78,7 +92,14 @@ def add_department(request):
 
         if form.is_valid():
 
-            form.save()
+            department = form.save(
+                commit=False
+            )
+
+            # New departments are active
+            department.is_active = True
+
+            department.save()
 
             messages.success(
                 request,
@@ -104,8 +125,11 @@ def add_department(request):
 
 # ==========================================================
 # EDIT DEPARTMENT
+# ADMIN + HR + EMPLOYEE
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
 def edit_department(request, pk):
 
     department = get_object_or_404(
@@ -150,9 +174,12 @@ def edit_department(request, pk):
 
 
 # ==========================================================
-# DELETE DEPARTMENT
+# DELETE DEPARTMENT - SOFT DELETE
+# ADMIN + HR + EMPLOYEE
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
 def delete_department(request, pk):
 
     department = get_object_or_404(
@@ -162,21 +189,31 @@ def delete_department(request, pk):
 
     if request.method == "POST":
 
-        try:
+        # ==================================================
+        # SOFT DELETE
+        # ==================================================
+        # Do NOT permanently delete the department.
+        #
+        # Instead:
+        #
+        # True  -> False
+        #
+        # The department remains in the database but will
+        # no longer appear on the main department page.
+        # ==================================================
 
-            department.delete()
+        department.is_active = False
 
-            messages.success(
-                request,
-                "Department deleted successfully."
-            )
+        department.save(
+            update_fields=[
+                "is_active"
+            ]
+        )
 
-        except ProtectedError:
-
-            messages.error(
-                request,
-                "This department cannot be deleted because employees are assigned to it."
-            )
+        messages.success(
+            request,
+            "Department deleted successfully."
+        )
 
         return redirect(
             "department_list"
@@ -189,4 +226,3 @@ def delete_department(request, pk):
             "department": department,
         }
     )
-

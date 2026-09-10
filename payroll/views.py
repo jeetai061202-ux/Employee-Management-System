@@ -1,10 +1,16 @@
-from django.contrib import messages
-from django.db.models import Q, Sum
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from datetime import datetime
 
-from .models import Payroll
-from .forms import PayrollForm
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q, Sum
+from django.http import HttpResponse
+from django.shortcuts import (
+    render,
+    redirect,
+    get_object_or_404,
+)
+
+from openpyxl import Workbook
 
 from reportlab.platypus import (
     SimpleDocTemplate,
@@ -17,19 +23,31 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 
-from datetime import datetime
+from accounts.decorators import role_required
 
-from openpyxl import Workbook
-from django.http import HttpResponse
+from .models import Payroll
+from .forms import PayrollForm
 
 
+# ============================================================
+# PAYROLL LIST
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def payroll_list(request):
 
-    payrolls = Payroll.objects.select_related("employee").all().order_by("-year", "-month")
+    payrolls = (
+        Payroll.objects
+        .select_related("employee")
+        .all()
+        .order_by("-year", "-month")
+    )
 
     search = request.GET.get("search")
 
     if search:
+
         payrolls = payrolls.filter(
             Q(employee__first_name__icontains=search)
             | Q(employee__last_name__icontains=search)
@@ -57,6 +75,12 @@ def payroll_list(request):
     )
 
 
+# ============================================================
+# ADD PAYROLL
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def add_payroll(request):
 
     if request.method == "POST":
@@ -100,6 +124,12 @@ def add_payroll(request):
     )
 
 
+# ============================================================
+# EDIT PAYROLL
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def edit_payroll(request, pk):
 
     payroll = get_object_or_404(
@@ -140,7 +170,9 @@ def edit_payroll(request, pk):
 
     else:
 
-        form = PayrollForm(instance=payroll)
+        form = PayrollForm(
+            instance=payroll
+        )
 
     return render(
         request,
@@ -151,6 +183,12 @@ def edit_payroll(request, pk):
     )
 
 
+# ============================================================
+# DELETE PAYROLL
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def delete_payroll(request, pk):
 
     payroll = get_object_or_404(
@@ -178,17 +216,31 @@ def delete_payroll(request, pk):
     )
 
 
+# ============================================================
+# SALARY SLIP PDF
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def salary_slip_pdf(request, pk):
 
-    payroll = get_object_or_404(Payroll, pk=pk)
-
-    response = HttpResponse(content_type="application/pdf")
-
-    response["Content-Disposition"] = (
-        f'attachment; filename="SalarySlip_{payroll.employee.employee_id}.pdf"'
+    payroll = get_object_or_404(
+        Payroll,
+        pk=pk
     )
 
-    doc = SimpleDocTemplate(response)
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
+
+    response["Content-Disposition"] = (
+        f'attachment; filename="SalarySlip_'
+        f'{payroll.employee.employee_id}.pdf"'
+    )
+
+    doc = SimpleDocTemplate(
+        response
+    )
 
     styles = getSampleStyleSheet()
 
@@ -205,35 +257,59 @@ def salary_slip_pdf(request, pk):
     )
 
     generated = Paragraph(
-        f"Generated on: {datetime.now().strftime('%d-%m-%Y %H:%M')}",
+        f"Generated on: "
+        f"{datetime.now().strftime('%d-%m-%Y %H:%M')}",
         styles["Normal"]
     )
 
     elements.append(title)
     elements.append(subtitle)
     elements.append(generated)
-    elements.append(Spacer(1, 0.3 * inch))
+    elements.append(
+        Spacer(
+            1,
+            0.3 * inch
+        )
+    )
 
     employee_table = [
 
-        ["Employee ID", payroll.employee.employee_id],
+        [
+            "Employee ID",
+            payroll.employee.employee_id
+        ],
 
         [
             "Employee Name",
-            f"{payroll.employee.first_name} {payroll.employee.last_name}",
+            (
+                f"{payroll.employee.first_name} "
+                f"{payroll.employee.last_name}"
+            ),
         ],
 
-        ["Department", payroll.employee.department],
+        [
+            "Department",
+            payroll.employee.department
+        ],
 
-        ["Month", payroll.month],
+        [
+            "Month",
+            payroll.month
+        ],
 
-        ["Year", payroll.year],
+        [
+            "Year",
+            payroll.year
+        ],
 
     ]
 
     table = Table(
         employee_table,
-        colWidths=[2.2 * inch, 4 * inch]
+        colWidths=[
+            2.2 * inch,
+            4 * inch
+        ]
     )
 
     table.setStyle(
@@ -242,13 +318,34 @@ def salary_slip_pdf(request, pk):
 
             [
 
-                ("GRID", (0, 0), (-1, -1), 1, colors.grey),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    1,
+                    colors.grey
+                ),
 
-                ("BACKGROUND", (0, 0), (0, -1), colors.lightgrey),
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (0, -1),
+                    colors.lightgrey
+                ),
 
-                ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, -1),
+                    "Helvetica"
+                ),
 
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    8
+                ),
 
             ]
 
@@ -258,29 +355,60 @@ def salary_slip_pdf(request, pk):
 
     elements.append(table)
 
-    elements.append(Spacer(1, 0.4 * inch))
+    elements.append(
+        Spacer(
+            1,
+            0.4 * inch
+        )
+    )
 
     salary_table = [
 
-        ["Description", "Amount"],
+        [
+            "Description",
+            "Amount"
+        ],
 
-        ["Basic Salary", f"₹ {payroll.basic_salary}"],
+        [
+            "Basic Salary",
+            f"₹ {payroll.basic_salary}"
+        ],
 
-        ["HRA", f"₹ {payroll.hra}"],
+        [
+            "HRA",
+            f"₹ {payroll.hra}"
+        ],
 
-        ["Allowance", f"₹ {payroll.allowance}"],
+        [
+            "Allowance",
+            f"₹ {payroll.allowance}"
+        ],
 
-        ["Bonus", f"₹ {payroll.bonus}"],
+        [
+            "Bonus",
+            f"₹ {payroll.bonus}"
+        ],
 
-        ["Tax", f"- ₹ {payroll.tax}"],
+        [
+            "Tax",
+            f"- ₹ {payroll.tax}"
+        ],
 
-        ["PF", f"- ₹ {payroll.pf}"],
+        [
+            "PF",
+            f"- ₹ {payroll.pf}"
+        ],
 
-        ["Net Salary", f"₹ {payroll.net_salary}"],
+        [
+            "Net Salary",
+            f"₹ {payroll.net_salary}"
+        ],
 
     ]
 
-    salary = Table(salary_table)
+    salary = Table(
+        salary_table
+    )
 
     salary.setStyle(
 
@@ -288,21 +416,62 @@ def salary_slip_pdf(request, pk):
 
             [
 
-                ("BACKGROUND", (0, 0), (-1, 0), colors.darkblue),
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, 0),
+                    colors.darkblue
+                ),
 
-                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+                (
+                    "TEXTCOLOR",
+                    (0, 0),
+                    (-1, 0),
+                    colors.white
+                ),
 
-                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    1,
+                    colors.black
+                ),
 
-                ("BACKGROUND", (0, 1), (-1, -2), colors.beige),
+                (
+                    "BACKGROUND",
+                    (0, 1),
+                    (-1, -2),
+                    colors.beige
+                ),
 
-                ("BACKGROUND", (0, -1), (-1, -1), colors.lightgreen),
+                (
+                    "BACKGROUND",
+                    (0, -1),
+                    (-1, -1),
+                    colors.lightgreen
+                ),
 
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                (
+                    "FONTNAME",
+                    (0, 0),
+                    (-1, 0),
+                    "Helvetica-Bold"
+                ),
 
-                ("FONTNAME", (0, -1), (-1, -1), "Helvetica-Bold"),
+                (
+                    "FONTNAME",
+                    (0, -1),
+                    (-1, -1),
+                    "Helvetica-Bold"
+                ),
 
-                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                (
+                    "ALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "CENTER"
+                ),
 
             ]
 
@@ -312,10 +481,19 @@ def salary_slip_pdf(request, pk):
 
     elements.append(salary)
 
-    doc.build(elements)
+    doc.build(
+        elements
+    )
 
     return response
 
+
+# ============================================================
+# EXPORT PAYROLL EXCEL
+# ============================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def export_payroll_excel(request):
 
     workbook = Workbook()
@@ -339,9 +517,15 @@ def export_payroll_excel(request):
         "Net Salary",
     ]
 
-    worksheet.append(headers)
+    worksheet.append(
+        headers
+    )
 
-    payrolls = Payroll.objects.select_related("employee").all()
+    payrolls = (
+        Payroll.objects
+        .select_related("employee")
+        .all()
+    )
 
     for payroll in payrolls:
 
@@ -349,7 +533,10 @@ def export_payroll_excel(request):
 
             payroll.employee.employee_id,
 
-            f"{payroll.employee.first_name} {payroll.employee.last_name}",
+            (
+                f"{payroll.employee.first_name} "
+                f"{payroll.employee.last_name}"
+            ),
 
             payroll.employee.department,
 
@@ -375,12 +562,19 @@ def export_payroll_excel(request):
 
     response = HttpResponse(
 
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
 
     )
 
-    response["Content-Disposition"] = 'attachment; filename="Payroll_Report.xlsx"'
+    response["Content-Disposition"] = (
+        'attachment; filename="Payroll_Report.xlsx"'
+    )
 
-    workbook.save(response)
+    workbook.save(
+        response
+    )
 
     return response

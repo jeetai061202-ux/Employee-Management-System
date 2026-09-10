@@ -1,6 +1,9 @@
-from datetime import date, datetime
+from datetime import timedelta
 
 from django import forms
+from django.utils import timezone
+
+from employees.models import Employee
 
 from .models import Attendance
 
@@ -8,7 +11,6 @@ from .models import Attendance
 class AttendanceForm(forms.ModelForm):
 
     class Meta:
-
         model = Attendance
 
         fields = [
@@ -21,7 +23,6 @@ class AttendanceForm(forms.ModelForm):
         ]
 
         widgets = {
-
             "employee": forms.Select(
                 attrs={
                     "class": "form-select"
@@ -32,6 +33,7 @@ class AttendanceForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "type": "date",
+                    "readonly": "readonly",
                 }
             ),
 
@@ -39,6 +41,7 @@ class AttendanceForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "type": "time",
+                    "readonly": "readonly",
                 }
             ),
 
@@ -46,6 +49,7 @@ class AttendanceForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "type": "time",
+                    "readonly": "readonly",
                 }
             ),
 
@@ -58,166 +62,242 @@ class AttendanceForm(forms.ModelForm):
             "remarks": forms.Textarea(
                 attrs={
                     "class": "form-control",
-                    "rows": 3,
+                    "rows": 3
                 }
             ),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+        self,
+        *args,
+        current_user=None,
+        **kwargs
+    ):
 
         super().__init__(*args, **kwargs)
 
-        self.initial["date"] = date.today()
+        self.current_user = current_user
+
+        now = timezone.localtime()
+
+        # =====================================================
+        # EMPLOYEE DROPDOWN
+        # =====================================================
+
+        if (
+            current_user
+            and getattr(current_user, "role", None) == "EMPLOYEE"
+        ):
+
+            linked_employee = getattr(
+                current_user,
+                "employee_profile",
+                None
+            )
+
+            if linked_employee:
+
+                # Employee users can only see themselves.
+                self.fields["employee"].queryset = (
+                    Employee.objects
+                    .filter(
+                        pk=linked_employee.pk,
+                        is_active=True
+                    )
+                    .select_related(
+                        "department",
+                        "user"
+                    )
+                )
+
+                # Automatically select the logged-in employee.
+                self.initial["employee"] = linked_employee
+
+                # Do not allow employee to change the employee.
+                self.fields["employee"].disabled = True
+
+            else:
+
+                # No linked Employee record.
+                self.fields["employee"].queryset = (
+                    Employee.objects.none()
+                )
+
+        else:
+
+            # Admin / HR can select any active employee.
+            self.fields["employee"].queryset = (
+                Employee.objects
+                .filter(is_active=True)
+                .select_related(
+                    "department",
+                    "user"
+                )
+                .order_by("employee_id")
+            )
+
+        # =====================================================
+        # DATE
+        # =====================================================
+
+        # Always use today's date.
+        self.initial["date"] = now.date()
 
         self.fields["date"].disabled = True
 
-    # ==========================================================
-    # DATE
-    # ==========================================================
+        # =====================================================
+        # SERVER-CONTROLLED TIMES
+        # =====================================================
+
+        if not self.instance.pk:
+
+            current_time = now.time().replace(
+                second=0,
+                microsecond=0
+            )
+
+            self.initial["check_in"] = current_time
+
+            # Display the earliest Present checkout time.
+            minimum_checkout = (
+                now + timedelta(hours=7)
+            )
+
+            self.initial["check_out"] = (
+                minimum_checkout.time().replace(
+                    second=0,
+                    microsecond=0
+                )
+            )
+
+        # Check-in and check-out are controlled by the server.
+        self.fields["check_in"].disabled = True
+        self.fields["check_out"].disabled = True
 
     def clean_date(self):
 
-        return date.today()
+        # Server is authoritative for attendance date.
+        return timezone.localdate()
 
-    # ==========================================================
-    # ATTENDANCE VALIDATION
-    # ==========================================================
+    def clean_employee(self):
+
+        employee = self.cleaned_data.get(
+            "employee"
+        )
+
+        if employee is None:
+
+            raise forms.ValidationError(
+                "Employee is required."
+            )
+
+        if not employee.is_active:
+
+            raise forms.ValidationError(
+                "Inactive employees cannot mark attendance."
+            )
+
+        # =====================================================
+        # EMPLOYEE OWNERSHIP VALIDATION
+        # =====================================================
+
+        if (
+            self.current_user
+            and getattr(self.current_user, "role", None)
+            == "EMPLOYEE"
+        ):
+
+            linked_employee = getattr(
+                self.current_user,
+                "employee_profile",
+                None
+            )
+
+            if linked_employee is None:
+
+                raise forms.ValidationError(
+                    "Your employee profile has not been created yet."
+                )
+
+            if employee.pk != linked_employee.pk:
+
+                raise forms.ValidationError(
+                    "You can only mark attendance for yourself."
+                )
+
+        return employee
 
     def clean(self):
 
         cleaned_data = super().clean()
 
-        check_in = cleaned_data.get("check_in")
-        check_out = cleaned_data.get("check_out")
-        status = cleaned_data.get("status")
+        # =====================================================
+        # SERVER-CONTROLLED CHECK-IN
+        # =====================================================
 
-        # ------------------------------------------------------
-        # Present / Half Day requires both times
-        # ------------------------------------------------------
+        if not self.instance.pk:
 
-        if status in ["Present", "Half Day"]:
+            now = timezone.localtime()
 
-            if not check_in:
+            cleaned_data["date"] = now.date()
 
-                self.add_error(
-                    "check_in",
-                    "Check-In time is required."
+            cleaned_data["check_in"] = (
+                now.time().replace(
+                    second=0,
+                    microsecond=0
                 )
-
-            if not check_out:
-
-                self.add_error(
-                    "check_out",
-                    "Check-Out time is required."
-                )
-
-            # Stop here if either time is missing
-
-            if not check_in or not check_out:
-
-                return cleaned_data
-
-        # ------------------------------------------------------
-        # If one time is missing for other statuses
-        # ------------------------------------------------------
-
-        if not check_in or not check_out:
-
-            return cleaned_data
-
-        # ------------------------------------------------------
-        # Check-out must be after check-in
-        # ------------------------------------------------------
-
-        if check_out <= check_in:
-
-            self.add_error(
-                "check_out",
-                "Check-Out Time must be later than Check-In Time."
             )
 
-            return cleaned_data
-
-        # ------------------------------------------------------
-        # Calculate working hours
-        # ------------------------------------------------------
-
-        check_in_datetime = datetime.combine(
-            date.today(),
-            check_in
-        )
-
-        check_out_datetime = datetime.combine(
-            date.today(),
-            check_out
-        )
-
-        working_duration = (
-            check_out_datetime - check_in_datetime
-        )
-
-        total_seconds = working_duration.total_seconds()
-
-        total_hours = total_seconds / 3600
-
-        # ------------------------------------------------------
-        # PRESENT
-        # More than 7 hours
-        # ------------------------------------------------------
-
-        if status == "Present" and total_hours <= 7:
-
-            self.add_error(
-                "check_out",
-                "Present attendance requires more than 7 hours "
-                "of working time."
-            )
-
-        # ------------------------------------------------------
-        # HALF DAY
-        # More than 3 hours
-        # ------------------------------------------------------
-
-        elif status == "Half Day" and total_hours <= 3:
-
-            self.add_error(
-                "check_out",
-                "Half Day attendance requires more than 3 hours "
-                "of working time."
-            )
-
-        # ------------------------------------------------------
-        # Store working hours
-        # ------------------------------------------------------
-
-        if not self.errors:
-
-            cleaned_data["calculated_working_hours"] = round(
-                total_hours,
-                2
-            )
+            cleaned_data["check_out"] = None
 
         return cleaned_data
 
-    # ==========================================================
-    # SAVE
-    # ==========================================================
-
     def save(self, commit=True):
 
-        attendance = super().save(commit=False)
-
-        working_hours = self.cleaned_data.get(
-            "calculated_working_hours"
+        attendance = super().save(
+            commit=False
         )
 
-        if working_hours is not None:
+        # =====================================================
+        # NEW ATTENDANCE
+        # =====================================================
 
-            attendance.working_hours = working_hours
+        if not attendance.pk:
 
-        else:
+            now = timezone.localtime()
+
+            attendance.date = now.date()
+
+            attendance.check_in = (
+                now.time().replace(
+                    second=0,
+                    microsecond=0
+                )
+            )
+
+            attendance.check_out = None
 
             attendance.working_hours = 0
+
+        # =====================================================
+        # EMPLOYEE USER
+        # =====================================================
+
+        if (
+            self.current_user
+            and getattr(self.current_user, "role", None)
+            == "EMPLOYEE"
+        ):
+
+            linked_employee = getattr(
+                self.current_user,
+                "employee_profile",
+                None
+            )
+
+            if linked_employee:
+
+                attendance.employee = linked_employee
 
         if commit:
 

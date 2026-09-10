@@ -1,14 +1,13 @@
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import (
-    render,
-    redirect,
-    get_object_or_404,
-)
+from django.shortcuts import get_object_or_404, redirect, render
 
 from openpyxl import Workbook
 
@@ -23,26 +22,85 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from django.core.mail import send_mail
-from django.conf import settings
+from accounts.decorators import role_required
+from departments.models import Department
 
 from .forms import EmployeeForm
 from .models import Employee
 
 
 # ==========================================================
-# Employee List
+# EMPLOYEE LIST
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
 def employee_list(request):
 
-    employees = Employee.objects.all()
+    user = request.user
 
-    search = request.GET.get("search", "")
-    department = request.GET.get("department", "")
-    status = request.GET.get("status", "")
+    if user.role in ["ADMIN", "HR"]:
+
+        employees = Employee.objects.select_related(
+            "department",
+            "user",
+        ).all()
+
+    else:
+
+        employee = getattr(
+            user,
+            "employee_profile",
+            None,
+        )
+
+        if employee is None:
+
+            messages.warning(
+                request,
+                "Your employee profile has not been created yet.",
+            )
+
+            return render(
+                request,
+                "employees/employee_list.html",
+                {
+                    "employees": Employee.objects.none(),
+                    "page_obj": None,
+                    "departments": Department.objects.none(),
+                    "search": "",
+                    "department": "",
+                    "status": "",
+                    "total_employees": 0,
+                    "active_employees": 0,
+                    "inactive_employees": 0,
+                },
+            )
+
+        employees = Employee.objects.select_related(
+            "department",
+            "user",
+        ).filter(
+            user=user
+        )
+
+    search = request.GET.get(
+        "search",
+        "",
+    ).strip()
+
+    department = request.GET.get(
+        "department",
+        "",
+    ).strip()
+
+    status = request.GET.get(
+        "status",
+        "",
+    ).strip()
 
     if search:
+
         employees = employees.filter(
             Q(first_name__icontains=search)
             | Q(last_name__icontains=search)
@@ -51,131 +109,201 @@ def employee_list(request):
         )
 
     if department:
-        employees = employees.filter(
-            department=department
-        )
 
-    # ======================================================
-    # ACTIVE / INACTIVE FILTER
-    # ======================================================
+        try:
+
+            department_id = int(
+                department
+            )
+
+            employees = employees.filter(
+                department_id=department_id
+            )
+
+        except (ValueError, TypeError):
+
+            employees = employees.none()
 
     if status == "Active":
+
         employees = employees.filter(
             is_active=True
         )
 
     elif status == "Inactive":
+
         employees = employees.filter(
             is_active=False
         )
 
+    elif user.role in ["ADMIN", "HR"]:
+
+        employees = employees.filter(
+            is_active=True
+        )
+
     paginator = Paginator(
         employees,
-        10
+        10,
     )
 
-    page_number = request.GET.get("page")
+    page_number = request.GET.get(
+        "page"
+    )
 
     page_obj = paginator.get_page(
         page_number
     )
 
-    context = {
+    if user.role in ["ADMIN", "HR"]:
 
-        "employees": page_obj,
-
-        "page_obj": page_obj,
-
-        "departments": Employee.objects.values_list(
-            "department",
-            flat=True
-        ).distinct(),
-
-        "search": search,
-
-        "department": department,
-
-        "status": status,
-
-        # ==================================================
-        # STATISTICS
-        # ==================================================
-
-        "total_employees": Employee.objects.count(),
-
-        "active_employees": Employee.objects.filter(
+        departments = Department.objects.filter(
             is_active=True
-        ).count(),
+        ).order_by(
+            "name"
+        )
 
-        "inactive_employees": Employee.objects.filter(
+    else:
+
+        departments = Department.objects.none()
+
+    if user.role in ["ADMIN", "HR"]:
+
+        total_employees = Employee.objects.count()
+
+        active_employees = Employee.objects.filter(
+            is_active=True
+        ).count()
+
+        inactive_employees = Employee.objects.filter(
             is_active=False
-        ).count(),
+        ).count()
+
+    else:
+
+        employee = getattr(
+            user,
+            "employee_profile",
+            None,
+        )
+
+        if employee is not None:
+
+            total_employees = 1
+
+            active_employees = (
+                1
+                if employee.is_active
+                else 0
+            )
+
+            inactive_employees = (
+                0
+                if employee.is_active
+                else 1
+            )
+
+        else:
+
+            total_employees = 0
+            active_employees = 0
+            inactive_employees = 0
+
+    context = {
+        "employees": page_obj,
+        "page_obj": page_obj,
+        "departments": departments,
+        "search": search,
+        "department": department,
+        "status": status,
+        "total_employees": total_employees,
+        "active_employees": active_employees,
+        "inactive_employees": inactive_employees,
     }
 
     return render(
         request,
         "employees/employee_list.html",
-        context
+        context,
     )
 
 
 # ==========================================================
-# Add Employee
+# ADD EMPLOYEE
+#
+# Admin/HR select an existing registered Employee user.
+# That User account becomes linked to the new Employee record.
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR")
 def add_employee(request):
 
     if request.method == "POST":
 
         form = EmployeeForm(
             request.POST,
-            request.FILES
+            request.FILES,
+            self_edit=False,
         )
 
         if form.is_valid():
 
             employee = form.save()
 
+            # Keep the registered User's basic information aligned
+            # with the Employee record.
+            linked_user = employee.user
+
+            linked_user.first_name = employee.first_name
+            linked_user.last_name = employee.last_name
+            linked_user.email = employee.email
+            linked_user.phone = employee.phone
+
+            if employee.profile_picture:
+                linked_user.profile_picture = (
+                    employee.profile_picture
+                )
+
+            linked_user.save()
+
             try:
 
                 send_mail(
-
-                    subject="Welcome to Employee Management System",
-
+                    subject=(
+                        "Welcome to Employee "
+                        "Management System"
+                    ),
                     message=f"""
 Dear {employee.first_name},
 
 Welcome to our organization!
 
-Your employee account has been created successfully.
+Your employee profile has been created successfully.
 
-Employee ID : {employee.employee_id}
-
-Department : {employee.department}
-
-Designation : {employee.designation}
+Employee ID: {employee.employee_id}
+Department: {employee.department}
+Designation: {employee.designation}
 
 We wish you a successful journey with us.
 
 Regards,
 HR Department
                     """,
-
                     from_email=settings.DEFAULT_FROM_EMAIL,
-
                     recipient_list=[
                         employee.email
                     ],
-
                     fail_silently=True,
                 )
 
             except Exception:
+
                 pass
 
             messages.success(
                 request,
-                "Employee added successfully."
+                "Employee added and linked to the registered user successfully.",
             )
 
             return redirect(
@@ -184,63 +312,133 @@ HR Department
 
     else:
 
-        form = EmployeeForm()
+        form = EmployeeForm(
+            self_edit=False,
+        )
 
     return render(
         request,
         "employees/add_employee.html",
         {
-            "form": form
-        }
+            "form": form,
+        },
     )
 
 
 # ==========================================================
-# Employee Detail
+# EMPLOYEE DETAIL
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
 def employee_detail(request, pk):
 
     employee = get_object_or_404(
-        Employee,
-        pk=pk
+        Employee.objects.select_related(
+            "department",
+            "user",
+        ),
+        pk=pk,
     )
+
+    if request.user.role == "EMPLOYEE":
+
+        if employee.user_id != request.user.id:
+
+            messages.error(
+                request,
+                (
+                    "You are not allowed to view "
+                    "another employee's details."
+                ),
+            )
+
+            return redirect(
+                "employee_list"
+            )
 
     return render(
         request,
         "employees/employee_detail.html",
         {
-            "employee": employee
-        }
+            "employee": employee,
+        },
     )
 
 
 # ==========================================================
-# Edit Employee
+# EDIT EMPLOYEE
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR", "EMPLOYEE")
 def edit_employee(request, pk):
 
     employee = get_object_or_404(
-        Employee,
-        pk=pk
+        Employee.objects.select_related(
+            "department",
+            "user",
+        ),
+        pk=pk,
     )
+
+    if request.user.role == "EMPLOYEE":
+
+        if employee.user_id != request.user.id:
+
+            messages.error(
+                request,
+                (
+                    "You are not allowed to edit "
+                    "another employee's details."
+                ),
+            )
+
+            return redirect(
+                "employee_list"
+            )
+
+        self_edit = True
+
+    else:
+
+        self_edit = False
 
     if request.method == "POST":
 
         form = EmployeeForm(
             request.POST,
             request.FILES,
-            instance=employee
+            instance=employee,
+            current_user=request.user,
+            self_edit=self_edit,
         )
 
         if form.is_valid():
 
-            form.save()
+            employee = form.save()
+
+            # Keep the linked login account synchronized with
+            # editable personal Employee information.
+            linked_user = employee.user
+
+            if linked_user:
+
+                linked_user.first_name = employee.first_name
+                linked_user.last_name = employee.last_name
+                linked_user.email = employee.email
+                linked_user.phone = employee.phone
+
+                if employee.profile_picture:
+                    linked_user.profile_picture = (
+                        employee.profile_picture
+                    )
+
+                linked_user.save()
 
             messages.success(
                 request,
-                "Employee updated successfully."
+                "Employee updated successfully.",
             )
 
             return redirect(
@@ -250,7 +448,9 @@ def edit_employee(request, pk):
     else:
 
         form = EmployeeForm(
-            instance=employee
+            instance=employee,
+            current_user=request.user,
+            self_edit=self_edit,
         )
 
     return render(
@@ -258,29 +458,37 @@ def edit_employee(request, pk):
         "employees/edit_employee.html",
         {
             "form": form,
-            "employee": employee
-        }
+            "employee": employee,
+        },
     )
 
 
 # ==========================================================
-# Delete Employee
+# DELETE EMPLOYEE - SOFT DELETE
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR")
 def delete_employee(request, pk):
 
     employee = get_object_or_404(
         Employee,
-        pk=pk
+        pk=pk,
     )
 
     if request.method == "POST":
 
-        employee.delete()
+        employee.is_active = False
+
+        employee.save(
+            update_fields=[
+                "is_active",
+            ]
+        )
 
         messages.success(
             request,
-            "Employee deleted successfully."
+            "Employee deactivated successfully.",
         )
 
         return redirect(
@@ -291,15 +499,17 @@ def delete_employee(request, pk):
         request,
         "employees/delete_employee.html",
         {
-            "employee": employee
-        }
+            "employee": employee,
+        },
     )
 
 
 # ==========================================================
-# Export Excel
+# EXPORT EXCEL
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR")
 def export_employees_excel(request):
 
     workbook = Workbook()
@@ -320,30 +530,30 @@ def export_employees_excel(request):
         "Salary",
     ])
 
-    employees = Employee.objects.all()
+    employees = Employee.objects.select_related(
+        "department"
+    ).all()
 
     for employee in employees:
 
         worksheet.append([
-
             employee.employee_id,
-
             employee.first_name,
-
             employee.last_name,
-
             employee.email,
-
             employee.phone,
-
-            employee.department,
-
+            (
+                employee.department.name
+                if employee.department
+                else ""
+            ),
             employee.designation,
-
-            "Active" if employee.is_active else "Inactive",
-
+            (
+                "Active"
+                if employee.is_active
+                else "Inactive"
+            ),
             float(employee.salary),
-
         ])
 
     response = HttpResponse(
@@ -363,9 +573,11 @@ def export_employees_excel(request):
 
 
 # ==========================================================
-# Export PDF
+# EXPORT PDF
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR")
 def export_employees_pdf(request):
 
     response = HttpResponse(
@@ -376,7 +588,9 @@ def export_employees_pdf(request):
         'attachment; filename="employees.pdf"'
     )
 
-    doc = SimpleDocTemplate(response)
+    document = SimpleDocTemplate(
+        response
+    )
 
     styles = getSampleStyleSheet()
 
@@ -385,22 +599,24 @@ def export_employees_pdf(request):
     elements.append(
         Paragraph(
             "<b>Employee Management System</b>",
-            styles["Title"]
+            styles["Title"],
         )
     )
 
     elements.append(
         Paragraph(
-            f"Generated on: "
-            f"{datetime.now().strftime('%d-%m-%Y %H:%M')}",
-            styles["Normal"]
+            (
+                "Generated on: "
+                f"{datetime.now().strftime('%d-%m-%Y %H:%M')}"
+            ),
+            styles["Normal"],
         )
     )
 
     elements.append(
         Spacer(
             1,
-            0.3 * inch
+            0.3 * inch,
         )
     )
 
@@ -413,85 +629,90 @@ def export_employees_pdf(request):
         "Salary",
     ]]
 
-    employees = Employee.objects.all()
+    employees = Employee.objects.select_related(
+        "department"
+    ).all()
 
     for employee in employees:
 
         data.append([
-
             employee.employee_id,
-
-            f"{employee.first_name} "
-            f"{employee.last_name}",
-
-            employee.department,
-
+            (
+                f"{employee.first_name} "
+                f"{employee.last_name}"
+            ),
+            (
+                employee.department.name
+                if employee.department
+                else ""
+            ),
             employee.designation,
-
-            "Active" if employee.is_active else "Inactive",
-
+            (
+                "Active"
+                if employee.is_active
+                else "Inactive"
+            ),
             f"₹ {employee.salary}",
         ])
 
-    table = Table(data)
+    table = Table(
+        data
+    )
 
     table.setStyle(
         TableStyle([
-
             (
                 "BACKGROUND",
                 (0, 0),
                 (-1, 0),
-                colors.darkblue
+                colors.darkblue,
             ),
-
             (
                 "TEXTCOLOR",
                 (0, 0),
                 (-1, 0),
-                colors.white
+                colors.white,
             ),
-
             (
                 "GRID",
                 (0, 0),
                 (-1, -1),
                 1,
-                colors.black
+                colors.black,
             ),
-
             (
                 "BACKGROUND",
                 (0, 1),
                 (-1, -1),
-                colors.beige
+                colors.beige,
             ),
-
             (
                 "FONTNAME",
                 (0, 0),
                 (-1, 0),
-                "Helvetica-Bold"
+                "Helvetica-Bold",
             ),
-
             (
                 "BOTTOMPADDING",
                 (0, 0),
                 (-1, 0),
-                10
+                10,
             ),
-
             (
                 "ALIGN",
                 (0, 0),
                 (-1, -1),
-                "CENTER"
+                "CENTER",
             ),
         ])
     )
 
-    elements.append(table)
+    elements.append(
+        table
+    )
 
-    doc.build(elements)
+    document.build(
+        elements
+    )
 
     return response

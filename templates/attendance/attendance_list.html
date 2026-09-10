@@ -8,118 +8,48 @@ Attendance Management
 
 <div class="container-fluid">
 
-    <!-- ===================================================== -->
     <!-- PAGE HEADER -->
-    <!-- ===================================================== -->
-
     <div class="d-flex justify-content-between align-items-center mb-4">
-
         <div>
-
-            <h2 class="fw-bold">
-                Attendance Management
-            </h2>
-
+            <h2 class="fw-bold">Attendance Management</h2>
             <p class="text-muted">
                 Manage employee attendance efficiently.
             </p>
-
         </div>
 
-        <a
-            href="{% url 'add_attendance' %}"
-            class="btn btn-primary">
-
+        <a href="{% url 'add_attendance' %}"
+           class="btn btn-primary">
             <i class="bi bi-plus-circle"></i>
-
             Mark Attendance
-
         </a>
-
     </div>
 
 
-    <!-- ===================================================== -->
-    <!-- STATISTICS CARDS -->
-    <!-- ===================================================== -->
-
+    <!-- STATISTICS -->
     <div class="row mb-4">
 
-        <!-- Present -->
-
-        <div class="col-lg-4">
-
+        <div class="col-lg-6">
             <div class="card bg-success text-white shadow">
-
                 <div class="card-body">
-
-                    <h6>
-                        Present
-                    </h6>
-
-                    <h2>
-                        {{ present_count }}
-                    </h2>
-
+                    <h6>Present</h6>
+                    <h2>{{ present_count }}</h2>
                 </div>
-
             </div>
-
         </div>
 
-
-        <!-- Leave -->
-
-        <div class="col-lg-4">
-
-            <div class="card bg-warning text-dark shadow">
-
-                <div class="card-body">
-
-                    <h6>
-                        Leave
-                    </h6>
-
-                    <h2>
-                        {{ leave_count }}
-                    </h2>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- Half Day -->
-
-        <div class="col-lg-4">
-
+        <div class="col-lg-6">
             <div class="card bg-info text-white shadow">
-
                 <div class="card-body">
-
-                    <h6>
-                        Half Day
-                    </h6>
-
-                    <h2>
-                        {{ halfday_count }}
-                    </h2>
-
+                    <h6>Half Day</h6>
+                    <h2>{{ halfday_count }}</h2>
                 </div>
-
             </div>
-
         </div>
 
     </div>
 
 
-    <!-- ===================================================== -->
-    <!-- SEARCH FILTERS -->
-    <!-- ===================================================== -->
-
+    <!-- SEARCH -->
     <div class="card shadow mb-4">
 
         <div class="card-body">
@@ -128,8 +58,6 @@ Attendance Management
 
                 <div class="row g-3">
 
-                    <!-- Search -->
-
                     <div class="col-md-5">
 
                         <input
@@ -137,18 +65,17 @@ Attendance Management
                             class="form-control"
                             name="search"
                             placeholder="Search Employee"
-                            value="{{ search }}">
+                            value="{{ search }}"
+                        >
 
                     </div>
-
-
-                    <!-- Department -->
 
                     <div class="col-md-4">
 
                         <select
                             class="form-select"
-                            name="department">
+                            name="department"
+                        >
 
                             <option value="">
                                 All Departments
@@ -159,11 +86,10 @@ Attendance Management
                             <option
                                 value="{{ dept }}"
                                 {% if dept == selected_department %}
-                                    selected
-                                {% endif %}>
-
+                                selected
+                                {% endif %}
+                            >
                                 {{ dept }}
-
                             </option>
 
                             {% endfor %}
@@ -172,19 +98,14 @@ Attendance Management
 
                     </div>
 
-
-                    <!-- Search Button -->
-
                     <div class="col-md-3">
 
                         <button
                             type="submit"
-                            class="btn btn-primary w-100">
-
+                            class="btn btn-primary w-100"
+                        >
                             <i class="bi bi-search"></i>
-
                             Search
-
                         </button>
 
                     </div>
@@ -198,68 +119,37 @@ Attendance Management
     </div>
 
 
-    <!-- ===================================================== -->
     <!-- SUMMARY + CHART -->
-    <!-- ===================================================== -->
-
     <div class="row mb-4">
-
-        <!-- Summary -->
 
         <div class="col-lg-5">
 
             <div class="card shadow">
 
                 <div class="card-header">
-
                     Attendance Summary
-
                 </div>
 
                 <div class="card-body">
 
                     <ul class="list-group">
 
-                        <!-- Present -->
-
                         <li class="list-group-item d-flex justify-content-between">
 
                             Present
 
                             <span class="badge bg-success">
-
                                 {{ present_count }}
-
                             </span>
 
                         </li>
-
-
-                        <!-- Leave -->
-
-                        <li class="list-group-item d-flex justify-content-between">
-
-                            Leave
-
-                            <span class="badge bg-warning text-dark">
-
-                                {{ leave_count }}
-
-                            </span>
-
-                        </li>
-
-
-                        <!-- Half Day -->
 
                         <li class="list-group-item d-flex justify-content-between">
 
                             Half Day
 
                             <span class="badge bg-info">
-
                                 {{ halfday_count }}
-
                             </span>
 
                         </li>
@@ -273,16 +163,12 @@ Attendance Management
         </div>
 
 
-        <!-- Chart -->
-
         <div class="col-lg-7">
 
             <div class="card shadow">
 
                 <div class="card-header">
-
                     Attendance Overview
-
                 </div>
 
                 <div class="card-body">
@@ -298,16 +184,11 @@ Attendance Management
     </div>
 
 
-    <!-- ===================================================== -->
     <!-- ATTENDANCE TABLE -->
-    <!-- ===================================================== -->
-
     <div class="card shadow">
 
         <div class="card-header">
-
             Today's Attendance
-
         </div>
 
         <div class="card-body">
@@ -320,38 +201,17 @@ Attendance Management
 
                         <tr>
 
-                            <th>
-                                Employee
-                            </th>
-
-                            <th>
-                                Department
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th>
-                                Check In
-                            </th>
-
-                            <th>
-                                Check Out
-                            </th>
-
-                            <th>
-                                Working Hours
-                            </th>
-
-                            <th>
-                                Actions
-                            </th>
+                            <th>Employee</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Working Hours</th>
+                            <th>Actions</th>
 
                         </tr>
 
                     </thead>
-
 
                     <tbody>
 
@@ -359,28 +219,20 @@ Attendance Management
 
                     <tr>
 
-                        <!-- Employee -->
-
+                        <!-- EMPLOYEE -->
                         <td>
-
                             {{ item.employee.first_name }}
-
                             {{ item.employee.last_name }}
-
                         </td>
 
 
-                        <!-- Department -->
-
+                        <!-- DEPARTMENT -->
                         <td>
-
                             {{ item.employee.department }}
-
                         </td>
 
 
-                        <!-- Status -->
-
+                        <!-- STATUS -->
                         <td>
 
                             {% if item.attendance %}
@@ -388,25 +240,13 @@ Attendance Management
                                 {% if item.attendance.status == "Present" %}
 
                                     <span class="badge bg-success">
-
                                         Present
-
                                     </span>
 
                                 {% elif item.attendance.status == "Half Day" %}
 
                                     <span class="badge bg-info">
-
                                         Half Day
-
-                                    </span>
-
-                                {% elif item.attendance.status == "Leave" %}
-
-                                    <span class="badge bg-warning text-dark">
-
-                                        Leave
-
                                     </span>
 
                                 {% endif %}
@@ -414,9 +254,7 @@ Attendance Management
                             {% else %}
 
                                 <span class="badge bg-secondary">
-
                                     Not Marked
-
                                 </span>
 
                             {% endif %}
@@ -424,13 +262,20 @@ Attendance Management
                         </td>
 
 
-                        <!-- Check In -->
-
+                        <!-- CHECK IN -->
                         <td>
 
                             {% if item.attendance %}
 
-                                {{ item.attendance.check_in|default:"--" }}
+                                {% if item.attendance.check_in %}
+
+                                    {{ item.attendance.check_in|time:"h:i A" }}
+
+                                {% else %}
+
+                                    --
+
+                                {% endif %}
 
                             {% else %}
 
@@ -441,13 +286,33 @@ Attendance Management
                         </td>
 
 
-                        <!-- Check Out -->
-
+                        <!-- CHECK OUT -->
                         <td>
 
                             {% if item.attendance %}
 
-                                {{ item.attendance.check_out|default:"--" }}
+                                {% if item.attendance.check_out %}
+
+                                    {{ item.attendance.check_out|time:"h:i A" }}
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        Not Checked Out
+                                    </span>
+
+                                    {% if item.minimum_checkout %}
+
+                                    <br>
+
+                                    <small class="text-muted">
+                                        Earliest:
+                                        {{ item.minimum_checkout|time:"h:i A" }}
+                                    </small>
+
+                                    {% endif %}
+
+                                {% endif %}
 
                             {% else %}
 
@@ -458,13 +323,13 @@ Attendance Management
                         </td>
 
 
-                        <!-- Working Hours -->
-
+                        <!-- WORKING HOURS -->
                         <td>
 
                             {% if item.attendance %}
 
                                 {{ item.attendance.working_hours }}
+                                hrs
 
                             {% else %}
 
@@ -475,40 +340,62 @@ Attendance Management
                         </td>
 
 
-                        <!-- Actions -->
-
+                        <!-- ACTIONS -->
                         <td>
 
                             {% if not item.attendance %}
 
-                                <a
-                                    href="{% url 'check_in' item.employee.id %}"
-                                    class="btn btn-success btn-sm">
+                                <!-- CHECK IN -->
+                                <form
+                                    method="POST"
+                                    action="{% url 'check_in' item.employee.id %}"
+                                    class="d-inline"
+                                >
 
-                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    {% csrf_token %}
 
-                                    Check In
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success btn-sm"
+                                    >
 
-                                </a>
+                                        <i class="bi bi-box-arrow-in-right"></i>
+
+                                        Check In
+
+                                    </button>
+
+                                </form>
+
 
                             {% elif not item.attendance.check_out %}
 
-                                <a
-                                    href="{% url 'check_out' item.attendance.id %}"
-                                    class="btn btn-primary btn-sm">
+                                <!-- CHECK OUT -->
+                                <form
+                                    method="POST"
+                                    action="{% url 'check_out' item.attendance.id %}"
+                                    class="d-inline"
+                                >
 
-                                    <i class="bi bi-box-arrow-right"></i>
+                                    {% csrf_token %}
 
-                                    Check Out
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary btn-sm"
+                                    >
 
-                                </a>
+                                        <i class="bi bi-box-arrow-right"></i>
+
+                                        Check Out
+
+                                    </button>
+
+                                </form>
 
                             {% else %}
 
                                 <span class="badge bg-success">
-
                                     Completed
-
                                 </span>
 
                             {% endif %}
@@ -518,7 +405,8 @@ Attendance Management
 
                                 <a
                                     href="{% url 'edit_attendance' item.attendance.id %}"
-                                    class="btn btn-warning btn-sm">
+                                    class="btn btn-warning btn-sm"
+                                >
 
                                     <i class="bi bi-pencil"></i>
 
@@ -526,15 +414,8 @@ Attendance Management
 
                                 </a>
 
-                                <a
-                                    href="{% url 'delete_attendance' item.attendance.id %}"
-                                    class="btn btn-danger btn-sm">
 
-                                    <i class="bi bi-trash"></i>
-
-                                    Delete
-
-                                </a>
+                                
 
                             {% endif %}
 
@@ -549,10 +430,9 @@ Attendance Management
 
                         <td
                             colspan="7"
-                            class="text-center py-4">
-
+                            class="text-center py-4"
+                        >
                             No Employees Found
-
                         </td>
 
                     </tr>
@@ -571,7 +451,6 @@ Attendance Management
 
 </div>
 
-
 {% endblock %}
 
 
@@ -579,45 +458,41 @@ Attendance Management
 
 <script>
 
-new Chart(
+const chartCanvas = document.getElementById(
+    "attendancePieChart"
+);
 
-    document.getElementById("attendancePieChart"),
+if (chartCanvas) {
 
-    {
+    new Chart(
+        chartCanvas,
+        {
+            type: "pie",
 
-        type: "pie",
+            data: {
 
-        data: {
+                labels: [
+                    "Present",
+                    "Half Day"
+                ],
 
-            labels: [
+                datasets: [
 
-                "Present",
-
-                "Leave",
-
-                "Half Day"
-
-            ],
-
-            datasets: [{
-
-                data: [
-
-                    {{ present_count }},
-
-                    {{ leave_count }},
-
-                    {{ halfday_count }}
+                    {
+                        data: [
+                            {{ present_count }},
+                            {{ halfday_count }}
+                        ]
+                    }
 
                 ]
 
-            }]
+            }
 
         }
+    );
 
-    }
-
-);
+}
 
 </script>
 

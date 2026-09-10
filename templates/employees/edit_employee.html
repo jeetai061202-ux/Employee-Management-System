@@ -1,7 +1,11 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-Edit Employee
+    {% if user.role == "ADMIN" or user.role == "HR" %}
+        Edit Employee
+    {% else %}
+        Edit My Profile
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -19,11 +23,23 @@ Edit Employee
             <div>
 
                 <h3 class="mb-0">
-                    Edit Employee
+
+                    {% if user.role == "ADMIN" or user.role == "HR" %}
+                        Edit Employee
+                    {% else %}
+                        Edit My Profile
+                    {% endif %}
+
                 </h3>
 
                 <small class="text-muted">
-                    Update employee information
+
+                    {% if user.role == "ADMIN" or user.role == "HR" %}
+                        Update employee information
+                    {% else %}
+                        Update your personal information
+                    {% endif %}
+
                 </small>
 
             </div>
@@ -31,43 +47,55 @@ Edit Employee
 
             <!-- ================================================= -->
             <!-- THREE DOT MENU -->
+            <!-- Admin / HR Only -->
             <!-- ================================================= -->
 
-            <div class="dropdown">
+            {% if user.role == "ADMIN" or user.role == "HR" %}
 
-                <button
-                    class="btn btn-light border"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    title="More options"
-                >
+                <div class="dropdown">
 
-                    <i class="bi bi-three-dots-vertical"></i>
+                    <button
+                        class="btn btn-light border"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        title="More options"
+                    >
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
 
-                </button>
 
+                    <ul class="dropdown-menu dropdown-menu-end">
 
-                <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
 
-                    <li>
+                            <form
+                                method="POST"
+                                action="{% url 'delete_employee' employee.pk %}"
+                                class="m-0"
+                                onsubmit="return confirm('Are you sure you want to deactivate this employee?');"
+                            >
 
-                        <a
-                            class="dropdown-item text-danger"
-                            href="{% url 'delete_employee' employee.pk %}"
-                        >
+                                {% csrf_token %}
 
-                            <i class="bi bi-trash me-2"></i>
+                                <button
+                                    type="submit"
+                                    class="dropdown-item text-danger"
+                                >
+                                    <i class="bi bi-person-dash me-2"></i>
 
-                            Delete Employee
+                                    Deactivate Employee
+                                </button>
 
-                        </a>
+                            </form>
 
-                    </li>
+                        </li>
 
-                </ul>
+                    </ul>
 
-            </div>
+                </div>
+
+            {% endif %}
 
         </div>
 
@@ -77,6 +105,15 @@ Edit Employee
         <!-- ===================================================== -->
 
         <div class="card-body">
+
+            {% if form.non_field_errors %}
+
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+
+            {% endif %}
+
 
             <form
                 method="POST"
@@ -90,43 +127,43 @@ Edit Employee
 
                     {% for field in form %}
 
-                    <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-3">
 
-                        <label
-                            for="{{ field.id_for_label }}"
-                            class="form-label fw-bold"
-                        >
+                            <label
+                                for="{{ field.id_for_label }}"
+                                class="form-label fw-bold"
+                            >
 
-                            {{ field.label }}
+                                {{ field.label }}
 
-                        </label>
+                                {% if field.field.required %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
 
-
-                        {{ field }}
-
-
-                        {% if field.help_text %}
-
-                        <small class="form-text text-muted d-block mt-1">
-
-                            {{ field.help_text }}
-
-                        </small>
-
-                        {% endif %}
+                            </label>
 
 
-                        {% if field.errors %}
+                            {{ field }}
 
-                        <div class="text-danger mt-1">
 
-                            {{ field.errors }}
+                            {% if field.help_text %}
+
+                                <small class="form-text text-muted d-block mt-1">
+                                    {{ field.help_text }}
+                                </small>
+
+                            {% endif %}
+
+
+                            {% if field.errors %}
+
+                                <div class="text-danger mt-1">
+                                    {{ field.errors }}
+                                </div>
+
+                            {% endif %}
 
                         </div>
-
-                        {% endif %}
-
-                    </div>
 
                     {% endfor %}
 
@@ -144,7 +181,11 @@ Edit Employee
 
                     <i class="bi bi-check-circle"></i>
 
-                    Update Employee
+                    {% if user.role == "ADMIN" or user.role == "HR" %}
+                        Update Employee
+                    {% else %}
+                        Save My Changes
+                    {% endif %}
 
                 </button>
 
@@ -180,20 +221,14 @@ document.addEventListener(
     function () {
 
         const form =
-            document.getElementById(
-                "employeeForm"
-            );
+            document.getElementById("employeeForm");
 
         const dobField =
-            document.getElementById(
-                "id_date_of_birth"
-            );
+            document.getElementById("id_date_of_birth");
 
 
         if (!form || !dobField) {
-
             return;
-
         }
 
 
@@ -202,16 +237,13 @@ document.addEventListener(
             function (event) {
 
                 if (!dobField.value) {
-
                     return;
-
                 }
 
 
                 const dob =
                     new Date(
-                        dobField.value +
-                        "T00:00:00"
+                        dobField.value + "T00:00:00"
                     );
 
 
@@ -266,9 +298,7 @@ document.addEventListener(
                         today.getDate() < dob.getDate()
                     )
                 ) {
-
                     age--;
-
                 }
 
 

@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.http import HttpResponse
+from django.shortcuts import render
 
 from openpyxl import Workbook
 
@@ -17,13 +18,20 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
 
+from accounts.decorators import role_required
+
 from employees.models import Employee
 from attendance.models import Attendance
 from payroll.models import Payroll
 
 
-def report_dashboard(request):
+# ==========================================================
+# Reports Dashboard
+# ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR")
+def report_dashboard(request):
 
     return render(
         request,
@@ -31,8 +39,13 @@ def report_dashboard(request):
     )
 
 
-def employee_report(request):
+# ==========================================================
+# Employee Report
+# ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR")
+def employee_report(request):
 
     employees = Employee.objects.all().order_by("-id")[:10]
 
@@ -50,15 +63,11 @@ def employee_report(request):
         "total_employees": Employee.objects.count(),
 
         "active_employees": Employee.objects.filter(
-            status="Active"
+            is_active=True
         ).count(),
 
         "inactive_employees": Employee.objects.filter(
-            status="Inactive"
-        ).count(),
-
-        "leave_employees": Employee.objects.filter(
-            status="On Leave"
+            is_active=False
         ).count(),
 
         "department_labels": [
@@ -79,6 +88,13 @@ def employee_report(request):
         context
     )
 
+
+# ==========================================================
+# Payroll Report
+# ==========================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def payroll_report(request):
 
     payrolls = Payroll.objects.select_related(
@@ -92,15 +108,18 @@ def payroll_report(request):
         "total_payrolls": Payroll.objects.count(),
 
         "total_net_salary": sum(
-            payroll.net_salary for payroll in payrolls
+            payroll.net_salary
+            for payroll in payrolls
         ),
 
         "total_basic_salary": sum(
-            payroll.basic_salary for payroll in payrolls
+            payroll.basic_salary
+            for payroll in payrolls
         ),
 
         "total_bonus": sum(
-            payroll.bonus for payroll in payrolls
+            payroll.bonus
+            for payroll in payrolls
         ),
 
         "chart_labels": [
@@ -111,11 +130,20 @@ def payroll_report(request):
 
         "chart_values": [
 
-            sum(payroll.basic_salary for payroll in payrolls),
+            sum(
+                payroll.basic_salary
+                for payroll in payrolls
+            ),
 
-            sum(payroll.bonus for payroll in payrolls),
+            sum(
+                payroll.bonus
+                for payroll in payrolls
+            ),
 
-            sum(payroll.net_salary for payroll in payrolls),
+            sum(
+                payroll.net_salary
+                for payroll in payrolls
+            ),
 
         ],
 
@@ -127,6 +155,13 @@ def payroll_report(request):
         context
     )
 
+
+# ==========================================================
+# Attendance Report
+# ==========================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def attendance_report(request):
 
     attendance = Attendance.objects.select_related(
@@ -143,10 +178,6 @@ def attendance_report(request):
             status="Present"
         ).count(),
 
-        "absent_count": Attendance.objects.filter(
-            status="Absent"
-        ).count(),
-
         "leave_count": Attendance.objects.filter(
             status="Leave"
         ).count(),
@@ -157,20 +188,23 @@ def attendance_report(request):
 
         "chart_labels": [
             "Present",
-            "Absent",
             "Leave",
             "Half Day",
         ],
 
         "chart_values": [
 
-            Attendance.objects.filter(status="Present").count(),
+            Attendance.objects.filter(
+                status="Present"
+            ).count(),
 
-            Attendance.objects.filter(status="Absent").count(),
+            Attendance.objects.filter(
+                status="Leave"
+            ).count(),
 
-            Attendance.objects.filter(status="Leave").count(),
-
-            Attendance.objects.filter(status="Half Day").count(),
+            Attendance.objects.filter(
+                status="Half Day"
+            ).count(),
 
         ],
 
@@ -179,49 +213,6 @@ def attendance_report(request):
     return render(
         request,
         "reports/attendance_report.html",
-        context
-    )
-
-    context = {
-
-        "total_records": Attendance.objects.count(),
-
-        "present_count": Attendance.objects.filter(
-            status="Present"
-        ).count(),
-
-        "absent_count": Attendance.objects.filter(
-            status="Absent"
-        ).count(),
-
-        "leave_count": Attendance.objects.filter(
-            status="Leave"
-        ).count(),
-
-    }
-
-    return render(
-        request,
-        "reports/attendance_report.html",
-        context
-    )
-
-
-
-
-    context = {
-
-        "total_payrolls": Payroll.objects.count(),
-
-        "payrolls": Payroll.objects.select_related(
-            "employee"
-        ).order_by("-year", "-month")[:10],
-
-    }
-
-    return render(
-        request,
-        "reports/payroll_report.html",
         context
     )
 
@@ -230,6 +221,8 @@ def attendance_report(request):
 # Export Employee Report - Excel
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR")
 def employee_report_excel(request):
 
     workbook = Workbook()
@@ -256,23 +249,35 @@ def employee_report_excel(request):
         worksheet.append([
 
             employee.employee_id,
+
             employee.first_name,
+
             employee.last_name,
+
             employee.department,
+
             employee.designation,
-            employee.status,
+
+            "Active"
+            if employee.is_active
+            else "Inactive",
+
             employee.email,
+
             employee.phone,
 
         ])
 
     response = HttpResponse(
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
     )
 
-    response[
-        "Content-Disposition"
-    ] = 'attachment; filename="Employee_Report.xlsx"'
+    response["Content-Disposition"] = (
+        'attachment; filename="Employee_Report.xlsx"'
+    )
 
     workbook.save(response)
 
@@ -283,9 +288,13 @@ def employee_report_excel(request):
 # Export Employee Report - PDF
 # ==========================================================
 
+@login_required
+@role_required("ADMIN", "HR")
 def employee_report_pdf(request):
 
-    response = HttpResponse(content_type="application/pdf")
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
 
     response["Content-Disposition"] = (
         'attachment; filename="Employee_Report.pdf"'
@@ -298,47 +307,33 @@ def employee_report_pdf(request):
     elements = []
 
     elements.append(
-
         Paragraph(
-
             "<b>Employee Management System</b>",
-
             styles["Title"]
-
         )
-
     )
 
     elements.append(
-
         Paragraph(
-
-            f"Generated on {datetime.now().strftime('%d-%m-%Y %H:%M')}",
-
+            f"Generated on "
+            f"{datetime.now().strftime('%d-%m-%Y %H:%M')}",
             styles["Normal"]
-
         )
-
     )
 
     elements.append(
-
-        Spacer(1, 0.3 * inch)
-
+        Spacer(
+            1,
+            0.3 * inch
+        )
     )
 
     data = [[
-
         "Employee ID",
-
         "Employee Name",
-
         "Department",
-
         "Designation",
-
         "Status",
-
     ]]
 
     employees = Employee.objects.all()
@@ -349,33 +344,71 @@ def employee_report_pdf(request):
 
             employee.employee_id,
 
-            f"{employee.first_name} {employee.last_name}",
+            (
+                f"{employee.first_name} "
+                f"{employee.last_name}"
+            ),
 
             employee.department,
 
             employee.designation,
 
-            employee.status,
+            "Active"
+            if employee.is_active
+            else "Inactive",
 
         ])
 
     table = Table(data)
 
-    table.setStyle(TableStyle([
+    table.setStyle(
+        TableStyle([
 
-        ("BACKGROUND", (0, 0), (-1, 0), colors.darkblue),
+            (
+                "BACKGROUND",
+                (0, 0),
+                (-1, 0),
+                colors.darkblue
+            ),
 
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            (
+                "TEXTCOLOR",
+                (0, 0),
+                (-1, 0),
+                colors.white
+            ),
 
-        ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            (
+                "GRID",
+                (0, 0),
+                (-1, -1),
+                1,
+                colors.black
+            ),
 
-        ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+            (
+                "BACKGROUND",
+                (0, 1),
+                (-1, -1),
+                colors.beige
+            ),
 
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            (
+                "FONTNAME",
+                (0, 0),
+                (-1, 0),
+                "Helvetica-Bold"
+            ),
 
-        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+            (
+                "ALIGN",
+                (0, 0),
+                (-1, -1),
+                "CENTER"
+            ),
 
-    ]))
+        ])
+    )
 
     elements.append(table)
 
@@ -383,6 +416,13 @@ def employee_report_pdf(request):
 
     return response
 
+
+# ==========================================================
+# Export Attendance Report - Excel
+# ==========================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def attendance_report_excel(request):
 
     workbook = Workbook()
@@ -401,7 +441,9 @@ def attendance_report_excel(request):
         "Working Hours",
     ])
 
-    attendance = Attendance.objects.select_related("employee").all()
+    attendance = Attendance.objects.select_related(
+        "employee"
+    ).all()
 
     for record in attendance:
 
@@ -409,7 +451,10 @@ def attendance_report_excel(request):
 
             record.employee.employee_id,
 
-            f"{record.employee.first_name} {record.employee.last_name}",
+            (
+                f"{record.employee.first_name} "
+                f"{record.employee.last_name}"
+            ),
 
             record.date,
 
@@ -424,7 +469,10 @@ def attendance_report_excel(request):
         ])
 
     response = HttpResponse(
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
     )
 
     response["Content-Disposition"] = (
@@ -435,9 +483,18 @@ def attendance_report_excel(request):
 
     return response
 
+
+# ==========================================================
+# Export Attendance Report - PDF
+# ==========================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def attendance_report_pdf(request):
 
-    response = HttpResponse(content_type="application/pdf")
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
 
     response["Content-Disposition"] = (
         'attachment; filename="Attendance_Report.pdf"'
@@ -458,12 +515,18 @@ def attendance_report_pdf(request):
 
     elements.append(
         Paragraph(
-            f"Generated on {datetime.now().strftime('%d-%m-%Y %H:%M')}",
+            f"Generated on "
+            f"{datetime.now().strftime('%d-%m-%Y %H:%M')}",
             styles["Normal"]
         )
     )
 
-    elements.append(Spacer(1, 0.3 * inch))
+    elements.append(
+        Spacer(
+            1,
+            0.3 * inch
+        )
+    )
 
     data = [[
         "Employee",
@@ -473,13 +536,18 @@ def attendance_report_pdf(request):
         "Check Out",
     ]]
 
-    attendance = Attendance.objects.select_related("employee").all()
+    attendance = Attendance.objects.select_related(
+        "employee"
+    ).all()
 
     for record in attendance:
 
         data.append([
 
-            f"{record.employee.first_name} {record.employee.last_name}",
+            (
+                f"{record.employee.first_name} "
+                f"{record.employee.last_name}"
+            ),
 
             str(record.date),
 
@@ -493,21 +561,54 @@ def attendance_report_pdf(request):
 
     table = Table(data)
 
-    table.setStyle(TableStyle([
+    table.setStyle(
+        TableStyle([
 
-        ("BACKGROUND", (0, 0), (-1, 0), colors.darkblue),
+            (
+                "BACKGROUND",
+                (0, 0),
+                (-1, 0),
+                colors.darkblue
+            ),
 
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            (
+                "TEXTCOLOR",
+                (0, 0),
+                (-1, 0),
+                colors.white
+            ),
 
-        ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            (
+                "GRID",
+                (0, 0),
+                (-1, -1),
+                1,
+                colors.black
+            ),
 
-        ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+            (
+                "BACKGROUND",
+                (0, 1),
+                (-1, -1),
+                colors.beige
+            ),
 
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            (
+                "FONTNAME",
+                (0, 0),
+                (-1, 0),
+                "Helvetica-Bold"
+            ),
 
-        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+            (
+                "ALIGN",
+                (0, 0),
+                (-1, -1),
+                "CENTER"
+            ),
 
-    ]))
+        ])
+    )
 
     elements.append(table)
 
@@ -515,6 +616,13 @@ def attendance_report_pdf(request):
 
     return response
 
+
+# ==========================================================
+# Export Payroll Report - Excel
+# ==========================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def payroll_report_excel(request):
 
     workbook = Workbook()
@@ -535,7 +643,9 @@ def payroll_report_excel(request):
         "Net Salary",
     ])
 
-    payrolls = Payroll.objects.select_related("employee").all()
+    payrolls = Payroll.objects.select_related(
+        "employee"
+    ).all()
 
     for payroll in payrolls:
 
@@ -543,7 +653,10 @@ def payroll_report_excel(request):
 
             payroll.employee.employee_id,
 
-            f"{payroll.employee.first_name} {payroll.employee.last_name}",
+            (
+                f"{payroll.employee.first_name} "
+                f"{payroll.employee.last_name}"
+            ),
 
             payroll.month,
 
@@ -562,7 +675,10 @@ def payroll_report_excel(request):
         ])
 
     response = HttpResponse(
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        content_type=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        )
     )
 
     response["Content-Disposition"] = (
@@ -573,9 +689,18 @@ def payroll_report_excel(request):
 
     return response
 
+
+# ==========================================================
+# Export Payroll Report - PDF
+# ==========================================================
+
+@login_required
+@role_required("ADMIN", "HR")
 def payroll_report_pdf(request):
 
-    response = HttpResponse(content_type="application/pdf")
+    response = HttpResponse(
+        content_type="application/pdf"
+    )
 
     response["Content-Disposition"] = (
         'attachment; filename="Payroll_Report.pdf"'
@@ -596,38 +721,40 @@ def payroll_report_pdf(request):
 
     elements.append(
         Paragraph(
-            f"Generated on {datetime.now().strftime('%d-%m-%Y %H:%M')}",
+            f"Generated on "
+            f"{datetime.now().strftime('%d-%m-%Y %H:%M')}",
             styles["Normal"]
         )
     )
 
     elements.append(
-        Spacer(1, 0.3 * inch)
+        Spacer(
+            1,
+            0.3 * inch
+        )
     )
 
     data = [[
-
         "Employee",
-
         "Month",
-
         "Year",
-
         "Basic",
-
         "Bonus",
-
         "Net Salary",
-
     ]]
 
-    payrolls = Payroll.objects.select_related("employee").all()
+    payrolls = Payroll.objects.select_related(
+        "employee"
+    ).all()
 
     for payroll in payrolls:
 
         data.append([
 
-            f"{payroll.employee.first_name} {payroll.employee.last_name}",
+            (
+                f"{payroll.employee.first_name} "
+                f"{payroll.employee.last_name}"
+            ),
 
             payroll.month,
 
@@ -643,21 +770,54 @@ def payroll_report_pdf(request):
 
     table = Table(data)
 
-    table.setStyle(TableStyle([
+    table.setStyle(
+        TableStyle([
 
-        ("BACKGROUND", (0, 0), (-1, 0), colors.darkblue),
+            (
+                "BACKGROUND",
+                (0, 0),
+                (-1, 0),
+                colors.darkblue
+            ),
 
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            (
+                "TEXTCOLOR",
+                (0, 0),
+                (-1, 0),
+                colors.white
+            ),
 
-        ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            (
+                "GRID",
+                (0, 0),
+                (-1, -1),
+                1,
+                colors.black
+            ),
 
-        ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+            (
+                "BACKGROUND",
+                (0, 1),
+                (-1, -1),
+                colors.beige
+            ),
 
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            (
+                "FONTNAME",
+                (0, 0),
+                (-1, 0),
+                "Helvetica-Bold"
+            ),
 
-        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+            (
+                "ALIGN",
+                (0, 0),
+                (-1, -1),
+                "CENTER"
+            ),
 
-    ]))
+        ])
+    )
 
     elements.append(table)
 
