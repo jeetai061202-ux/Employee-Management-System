@@ -25,13 +25,13 @@ from .models import User
 
 def redirect_by_role(user):
 
-    if user.role == "ADMIN":
+    if user.role and user.role.name == "Admin":
         return redirect("dashboard")
 
-    elif user.role == "HR":
+    elif user.role and user.role.name == "HR":
         return redirect("employee_list")
 
-    elif user.role == "EMPLOYEE":
+    elif user.role and user.role.name == "Employee":
         return redirect("employee_list")
 
     return redirect("login")
@@ -172,7 +172,9 @@ def create_user(request):
 @role_required("ADMIN")
 def user_management(request):
 
-    users = User.objects.all().order_by(
+    users = User.objects.select_related(
+        "role"
+    ).all().order_by(
         "username"
     )
 
@@ -225,7 +227,7 @@ def edit_user(request, user_id):
         "accounts/user_form.html",
         {
             "form": form,
-            "title": "Update User Role",
+            "title": "Update User",
             "user_account": user,
         }
     )

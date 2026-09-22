@@ -5,11 +5,19 @@ from . import views
 
 urlpatterns = [
 
+    # ==========================================================
+    # DEPARTMENT LIST
+    # ==========================================================
+
     path(
         "",
         views.department_list,
         name="department_list"
     ),
+
+    # ==========================================================
+    # ADD DEPARTMENT
+    # ==========================================================
 
     path(
         "add/",
@@ -17,14 +25,22 @@ urlpatterns = [
         name="add_department"
     ),
 
+    # ==========================================================
+    # EDIT DEPARTMENT
+    # ==========================================================
+
     path(
-        "edit/<int:pk>/",
+        "edit/<uuid:pk>/",
         views.edit_department,
         name="edit_department"
     ),
 
+    # ==========================================================
+    # DELETE DEPARTMENT - SOFT DELETE
+    # ==========================================================
+
     path(
-        "delete/<int:pk>/",
+        "delete/<uuid:pk>/",
         views.delete_department,
         name="delete_department"
     ),

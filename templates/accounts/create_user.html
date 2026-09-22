@@ -1,36 +1,125 @@
 {% extends 'layouts/base.html' %}
 
 {% block title %}
-Create User
+    Create User
 {% endblock %}
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="user-create-page">
 
-    <div class="card shadow rounded-4">
+    <!-- ========================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================================= -->
 
-        <div class="card-header">
+    <div class="user-create-header">
 
-            <h3 class="mb-1">
+        <div>
+
+            <div class="user-create-eyebrow">
+                <i class="bi bi-shield-check"></i>
+                User Management
+            </div>
+
+            <h1>
+                <i class="bi bi-person-plus-fill"></i>
                 Create User
-            </h3>
+            </h1>
 
-            <small class="text-muted">
-                Admin creates the user's account and login credentials
-            </small>
+            <p>
+                Create a new user account with login credentials,
+                contact information and role access.
+            </p>
 
         </div>
 
 
-        <div class="card-body">
+        <a
+            href="{% url 'user_management' %}"
+            class="user-create-back-button"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Back to Users
+        </a>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- MAIN CARD -->
+    <!-- ========================================= -->
+
+    <div class="user-create-card">
+
+
+        <!-- ========================================= -->
+        <!-- CARD HEADER -->
+        <!-- ========================================= -->
+
+        <div class="user-create-card-header">
+
+            <div class="user-create-card-icon">
+                <i class="bi bi-person-plus-fill"></i>
+            </div>
+
+            <div>
+
+                <h2>
+                    New User Account
+                </h2>
+
+                <p>
+                    Enter the information required to create
+                    the user's HRMS account.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- CARD BODY -->
+        <!-- ========================================= -->
+
+        <div class="user-create-card-body">
+
+
+            <!-- ========================================= -->
+            <!-- DJANGO MESSAGES -->
+            <!-- ========================================= -->
 
             {% if messages %}
+
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {{ message }}
+
+                    <div class="user-create-alert user-create-alert-{{ message.tags }}">
+
+                        <div class="user-create-alert-icon">
+
+                            {% if message.tags == "success" %}
+                                <i class="bi bi-check-circle-fill"></i>
+
+                            {% elif message.tags == "error" %}
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                            {% elif message.tags == "warning" %}
+                                <i class="bi bi-exclamation-circle-fill"></i>
+
+                            {% else %}
+                                <i class="bi bi-info-circle-fill"></i>
+                            {% endif %}
+
+                        </div>
+
+                        <div>
+                            {{ message }}
+                        </div>
+
                     </div>
+
                 {% endfor %}
+
             {% endif %}
 
 
@@ -39,203 +128,427 @@ Create User
                 {% csrf_token %}
 
 
-                <!-- ==================================================
-                     PERSONAL INFORMATION
-                     ================================================== -->
+                <!-- ========================================= -->
+                <!-- PERSONAL INFORMATION -->
+                <!-- ========================================= -->
 
-                <h5 class="mb-3">
-                    Personal Information
-                </h5>
+                <div class="user-create-section">
 
-                <div class="row">
+                    <div class="user-create-section-heading">
 
-                    <div class="col-md-6 mb-3">
+                        <div class="user-create-section-icon">
+                            <i class="bi bi-person-vcard"></i>
+                        </div>
 
-                        <label class="form-label">
-                            First Name
-                        </label>
+                        <div>
 
-                        {{ form.first_name }}
+                            <h3>
+                                Personal Information
+                            </h3>
 
-                        {% if form.first_name.errors %}
-                            <div class="text-danger small">
-                                {{ form.first_name.errors }}
-                            </div>
-                        {% endif %}
+                            <p>
+                                Basic information and contact details
+                                for the new user.
+                            </p>
 
-                    </div>
-
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label">
-                            Last Name
-                        </label>
-
-                        {{ form.last_name }}
-
-                        {% if form.last_name.errors %}
-                            <div class="text-danger small">
-                                {{ form.last_name.errors }}
-                            </div>
-                        {% endif %}
+                        </div>
 
                     </div>
 
 
-                    <div class="col-md-6 mb-3">
+                    <div class="user-create-grid">
 
-                        <label class="form-label">
-                            Email
-                        </label>
 
-                        {{ form.email }}
+                        <!-- FIRST NAME -->
 
-                        {% if form.email.errors %}
-                            <div class="text-danger small">
-                                {{ form.email.errors }}
+                        <div class="user-create-field">
+
+                            <label
+                                for="{{ form.first_name.id_for_label }}"
+                                class="user-create-label"
+                            >
+                                First Name
+                            </label>
+
+                            <div class="user-create-input-wrapper">
+
+                                <i class="bi bi-person"></i>
+
+                                {{ form.first_name }}
+
                             </div>
-                        {% endif %}
 
-                    </div>
+                            {% if form.first_name.errors %}
+
+                                <div class="user-create-error">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                    {{ form.first_name.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
 
 
-                    <div class="col-md-6 mb-3">
+                        <!-- LAST NAME -->
 
-                        <label class="form-label">
-                            Phone
-                        </label>
+                        <div class="user-create-field">
 
-                        {{ form.phone }}
+                            <label
+                                for="{{ form.last_name.id_for_label }}"
+                                class="user-create-label"
+                            >
+                                Last Name
+                            </label>
 
-                        {% if form.phone.errors %}
-                            <div class="text-danger small">
-                                {{ form.phone.errors }}
+                            <div class="user-create-input-wrapper">
+
+                                <i class="bi bi-person"></i>
+
+                                {{ form.last_name }}
+
                             </div>
-                        {% endif %}
+
+                            {% if form.last_name.errors %}
+
+                                <div class="user-create-error">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                    {{ form.last_name.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="user-create-field">
+
+                            <label
+                                for="{{ form.email.id_for_label }}"
+                                class="user-create-label"
+                            >
+                                Email Address
+                            </label>
+
+                            <div class="user-create-input-wrapper">
+
+                                <i class="bi bi-envelope"></i>
+
+                                {{ form.email }}
+
+                            </div>
+
+                            {% if form.email.errors %}
+
+                                <div class="user-create-error">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                    {{ form.email.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="user-create-field">
+
+                            <label
+                                for="{{ form.phone_number.id_for_label }}"
+                                class="user-create-label"
+                            >
+                                Phone Number
+                            </label>
+
+                            <div class="user-create-input-wrapper">
+
+                                <i class="bi bi-telephone"></i>
+
+                                {{ form.phone_number }}
+
+                            </div>
+
+                            {% if form.phone_number.errors %}
+
+                                <div class="user-create-error">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                    {{ form.phone_number.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
 
                     </div>
 
                 </div>
 
 
-                <hr class="my-4">
+                <!-- ========================================= -->
+                <!-- ACCOUNT INFORMATION -->
+                <!-- ========================================= -->
 
+                <div class="user-create-section">
 
-                <!-- ==================================================
-                     ACCOUNT INFORMATION
-                     ================================================== -->
+                    <div class="user-create-section-heading">
 
-                <h5 class="mb-3">
-                    Account Information
-                </h5>
+                        <div class="user-create-section-icon">
+                            <i class="bi bi-person-lock"></i>
+                        </div>
 
-                <div class="row">
+                        <div>
 
-                    <div class="col-md-6 mb-3">
+                            <h3>
+                                Account Information
+                            </h3>
 
-                        <label class="form-label">
-                            User ID
-                        </label>
+                            <p>
+                                Configure login credentials and access role.
+                            </p>
 
-                        {{ form.username }}
-
-                        {% if form.username.errors %}
-                            <div class="text-danger small">
-                                {{ form.username.errors }}
-                            </div>
-                        {% endif %}
+                        </div>
 
                     </div>
 
 
-                    <div class="col-md-6 mb-3">
+                    <div class="user-create-grid">
 
-                        <label class="form-label">
-                            Role
-                        </label>
 
-                        {{ form.role }}
+                        <!-- USERNAME -->
 
-                        {% if form.role.errors %}
-                            <div class="text-danger small">
-                                {{ form.role.errors }}
+                        <div class="user-create-field">
+
+                            <label
+                                for="{{ form.username.id_for_label }}"
+                                class="user-create-label"
+                            >
+                                User ID
+                            </label>
+
+                            <div class="user-create-input-wrapper">
+
+                                <i class="bi bi-person-badge"></i>
+
+                                {{ form.username }}
+
                             </div>
-                        {% endif %}
 
-                    </div>
+                            {% if form.username.errors %}
+
+                                <div class="user-create-error">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                    {{ form.username.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
 
 
-                    <div class="col-md-6 mb-3">
+                        <!-- ROLE -->
 
-                        <label class="form-label">
-                            Password
-                        </label>
+                        <div class="user-create-field">
 
-                        {{ form.password1 }}
+                            <label
+                                for="{{ form.role.id_for_label }}"
+                                class="user-create-label"
+                            >
+                                Role
+                            </label>
 
-                        {% if form.password1.errors %}
-                            <div class="text-danger small">
-                                {{ form.password1.errors }}
+                            <div class="user-create-input-wrapper">
+
+                                <i class="bi bi-shield-check"></i>
+
+                                {{ form.role }}
+
                             </div>
-                        {% endif %}
 
-                    </div>
+                            {% if form.role.errors %}
+
+                                <div class="user-create-error">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                    {{ form.role.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
 
 
-                    <div class="col-md-6 mb-3">
+                        <!-- PASSWORD -->
 
-                        <label class="form-label">
-                            Confirm Password
-                        </label>
+                        <div class="user-create-field">
 
-                        {{ form.password2 }}
+                            <label
+                                for="{{ form.password1.id_for_label }}"
+                                class="user-create-label"
+                            >
+                                Password
+                            </label>
 
-                        {% if form.password2.errors %}
-                            <div class="text-danger small">
-                                {{ form.password2.errors }}
+                            <div class="user-create-input-wrapper">
+
+                                <i class="bi bi-lock"></i>
+
+                                {{ form.password1 }}
+
                             </div>
-                        {% endif %}
+
+                            {% if form.password1.errors %}
+
+                                <div class="user-create-error">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                    {{ form.password1.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- CONFIRM PASSWORD -->
+
+                        <div class="user-create-field">
+
+                            <label
+                                for="{{ form.password2.id_for_label }}"
+                                class="user-create-label"
+                            >
+                                Confirm Password
+                            </label>
+
+                            <div class="user-create-input-wrapper">
+
+                                <i class="bi bi-lock-fill"></i>
+
+                                {{ form.password2 }}
+
+                            </div>
+
+                            {% if form.password2.errors %}
+
+                                <div class="user-create-error">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                    {{ form.password2.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
 
                     </div>
 
                 </div>
 
 
-                <!-- ==================================================
-                     FORM ERRORS
-                     ================================================== -->
+                <!-- ========================================= -->
+                <!-- NON FIELD ERRORS -->
+                <!-- ========================================= -->
 
                 {% if form.non_field_errors %}
 
-                    <div class="alert alert-danger">
+                    <div class="user-create-alert user-create-alert-error">
 
-                        {{ form.non_field_errors }}
+                        <div class="user-create-alert-icon">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Please correct the following:
+                            </strong>
+
+                            <div class="mt-1">
+                                {{ form.non_field_errors }}
+                            </div>
+
+                        </div>
 
                     </div>
 
                 {% endif %}
 
 
-                <!-- ==================================================
-                     ACTIONS
-                     ================================================== -->
+                <!-- ========================================= -->
+                <!-- SECURITY NOTICE -->
+                <!-- ========================================= -->
 
-                <div class="d-flex justify-content-end gap-2 mt-4">
+                <div class="user-create-security-notice">
+
+                    <div class="user-create-security-icon">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Account Security
+                        </strong>
+
+                        <p>
+                            The password entered here will be used by the
+                            user to sign in to the HRMS. Make sure the
+                            credentials are shared securely with the user.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================================= -->
+                <!-- ACTION BUTTONS -->
+                <!-- ========================================= -->
+
+                <div class="user-create-actions">
 
                     <a
                         href="{% url 'user_management' %}"
-                        class="btn btn-secondary"
+                        class="user-create-cancel-button"
                     >
+                        <i class="bi bi-arrow-left"></i>
                         Cancel
                     </a>
 
+
                     <button
                         type="submit"
-                        class="btn btn-primary"
+                        class="user-create-submit-button"
                     >
-                        <i class="bi bi-person-plus"></i>
+
+                        <i class="bi bi-person-plus-fill"></i>
+
                         Create User
+
                     </button>
 
                 </div>
@@ -247,5 +560,532 @@ Create User
     </div>
 
 </div>
+
+
+<!-- ========================================= -->
+<!-- PAGE-SPECIFIC STYLES -->
+<!-- ========================================= -->
+
+<style>
+
+    .user-create-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 10px 0 40px;
+    }
+
+
+    /* =========================================
+       HEADER
+       ========================================= */
+
+    .user-create-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 25px;
+        margin-bottom: 28px;
+    }
+
+    .user-create-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 9px;
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .user-create-header h1 {
+        margin: 0;
+        color: #0f172a;
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .user-create-header h1 i {
+        margin-right: 7px;
+        color: #2563eb;
+    }
+
+    .user-create-header p {
+        margin: 8px 0 0;
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .user-create-back-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex-shrink: 0;
+        padding: 10px 16px;
+        border: 1px solid #dbe3ef;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #334155;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .user-create-back-button:hover {
+        border-color: #bfdbfe;
+        background: #eff6ff;
+        color: #2563eb;
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================
+       MAIN CARD
+       ========================================= */
+
+    .user-create-card {
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+
+    /* =========================================
+       CARD HEADER
+       ========================================= */
+
+    .user-create-card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 22px 28px;
+        background: linear-gradient(
+            135deg,
+            #2563eb 0%,
+            #1d4ed8 100%
+        );
+        color: #ffffff;
+    }
+
+    .user-create-card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.16);
+        font-size: 21px;
+    }
+
+    .user-create-card-header h2 {
+        margin: 0;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .user-create-card-header p {
+        margin: 4px 0 0;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       CARD BODY
+       ========================================= */
+
+    .user-create-card-body {
+        padding: 30px;
+    }
+
+
+    /* =========================================
+       ALERTS
+       ========================================= */
+
+    .user-create-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding: 14px 16px;
+        border-radius: 11px;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .user-create-alert-icon {
+        padding-top: 1px;
+        font-size: 16px;
+    }
+
+    .user-create-alert-success {
+        border: 1px solid #bbf7d0;
+        background: #f0fdf4;
+        color: #166534;
+    }
+
+    .user-create-alert-error {
+        border: 1px solid #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+    }
+
+    .user-create-alert-warning {
+        border: 1px solid #fde68a;
+        background: #fffbeb;
+        color: #92400e;
+    }
+
+    .user-create-alert-info {
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        color: #1e3a8a;
+    }
+
+
+    /* =========================================
+       SECTIONS
+       ========================================= */
+
+    .user-create-section {
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .user-create-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .user-create-section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+        border-radius: 10px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 17px;
+    }
+
+    .user-create-section-heading h3 {
+        margin: 0;
+        color: #0f172a;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .user-create-section-heading p {
+        margin: 3px 0 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       FORM GRID
+       ========================================= */
+
+    .user-create-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px 20px;
+    }
+
+    .user-create-field {
+        min-width: 0;
+    }
+
+    .user-create-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+       INPUTS
+       ========================================= */
+
+    .user-create-input-wrapper {
+        position: relative;
+    }
+
+    .user-create-input-wrapper > i {
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        z-index: 2;
+        color: #94a3b8;
+        font-size: 15px;
+        pointer-events: none;
+        transform: translateY(-50%);
+    }
+
+    .user-create-input-wrapper input,
+    .user-create-input-wrapper select,
+    .user-create-input-wrapper textarea {
+        width: 100%;
+        min-height: 45px;
+        padding: 10px 14px 10px 40px;
+        border: 1px solid #dbe3ef;
+        border-radius: 10px;
+        outline: none;
+        background: #ffffff;
+        color: #0f172a;
+        font-size: 14px;
+        box-sizing: border-box;
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .user-create-input-wrapper select {
+        cursor: pointer;
+        appearance: auto;
+    }
+
+    .user-create-input-wrapper input:hover,
+    .user-create-input-wrapper select:hover,
+    .user-create-input-wrapper textarea:hover {
+        border-color: #bfdbfe;
+    }
+
+    .user-create-input-wrapper input:focus,
+    .user-create-input-wrapper select:focus,
+    .user-create-input-wrapper textarea:focus {
+        border-color: #2563eb;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+    }
+
+    .user-create-input-wrapper input::placeholder,
+    .user-create-input-wrapper textarea::placeholder {
+        color: #94a3b8;
+    }
+
+
+    /* =========================================
+       FIELD ERRORS
+       ========================================= */
+
+    .user-create-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        margin-top: 7px;
+        color: #dc2626;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .user-create-error i {
+        margin-top: 2px;
+    }
+
+
+    /* =========================================
+       SECURITY NOTICE
+       ========================================= */
+
+    .user-create-security-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        margin-bottom: 28px;
+        padding: 16px 18px;
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        background: #eff6ff;
+    }
+
+    .user-create-security-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        border-radius: 9px;
+        background: #dbeafe;
+        color: #2563eb;
+        font-size: 15px;
+    }
+
+    .user-create-security-notice strong {
+        display: block;
+        margin-bottom: 3px;
+        color: #1e3a8a;
+        font-size: 13px;
+    }
+
+    .user-create-security-notice p {
+        margin: 0;
+        color: #475569;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================
+       ACTIONS
+       ========================================= */
+
+    .user-create-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding-top: 5px;
+    }
+
+    .user-create-cancel-button,
+    .user-create-submit-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .user-create-cancel-button {
+        border: 1px solid #dbe3ef;
+        background: #ffffff;
+        color: #475569;
+    }
+
+    .user-create-cancel-button:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+        color: #0f172a;
+    }
+
+    .user-create-submit-button {
+        border: 1px solid #2563eb;
+        background: #2563eb;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18);
+    }
+
+    .user-create-submit-button:hover {
+        border-color: #1d4ed8;
+        background: #1d4ed8;
+        color: #ffffff;
+        box-shadow: 0 7px 18px rgba(37, 99, 235, 0.24);
+        transform: translateY(-1px);
+    }
+
+    .user-create-submit-button:active {
+        transform: translateY(0);
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+       ========================================= */
+
+    @media (max-width: 768px) {
+
+        .user-create-page {
+            padding-bottom: 25px;
+        }
+
+        .user-create-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .user-create-header h1 {
+            font-size: 25px;
+        }
+
+        .user-create-back-button {
+            width: 100%;
+        }
+
+        .user-create-card-header {
+            padding: 18px 20px;
+        }
+
+        .user-create-card-body {
+            padding: 22px 20px;
+        }
+
+        .user-create-grid {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+    }
+
+
+    @media (max-width: 576px) {
+
+        .user-create-header h1 {
+            font-size: 22px;
+        }
+
+        .user-create-header p {
+            font-size: 13px;
+        }
+
+        .user-create-card-header {
+            gap: 11px;
+        }
+
+        .user-create-card-icon {
+            width: 42px;
+            height: 42px;
+        }
+
+        .user-create-card-header h2 {
+            font-size: 17px;
+        }
+
+        .user-create-card-body {
+            padding: 20px 15px;
+        }
+
+        .user-create-section-heading {
+            align-items: flex-start;
+        }
+
+        .user-create-actions {
+            flex-direction: column-reverse;
+        }
+
+        .user-create-cancel-button,
+        .user-create-submit-button {
+            width: 100%;
+        }
+
+    }
+
+</style>
 
 {% endblock %}

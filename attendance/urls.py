@@ -1,9 +1,10 @@
+
 from django.urls import path
 
 from . import views
 
-urlpatterns = [
 
+urlpatterns = [
     path(
         "",
         views.attendance_list,
@@ -17,26 +18,27 @@ urlpatterns = [
     ),
 
     path(
-        "edit/<int:pk>/",
+        "edit/<uuid:pk>/",
         views.edit_attendance,
         name="edit_attendance",
     ),
 
     path(
-        "delete/<int:pk>/",
+        "delete/<uuid:pk>/",
         views.delete_attendance,
         name="delete_attendance",
     ),
+
     path(
-    "check-in/<int:employee_id>/",
-    views.check_in,
-    name="check_in",
+        "check-in/<uuid:employee_id>/",
+        views.check_in,
+        name="check_in",
     ),
 
     path(
-    "check-out/<int:attendance_id>/",
-    views.check_out,
-    name="check_out",
+        "check-out/<uuid:attendance_id>/",
+        views.check_out,
+        name="check_out",
     ),
-
 ]
+

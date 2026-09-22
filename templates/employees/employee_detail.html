@@ -1,4 +1,3 @@
-
 {% extends 'layouts/base.html' %}
 
 {% block title %}
@@ -15,30 +14,38 @@ Employee Details
         <div class="card-header d-flex justify-content-between align-items-center">
 
             <div>
+
                 <h3 class="mb-1">
-                    {% if user.role == "ADMIN" or user.role == "HR" %}
+
+                    {% if user.role.name == "Admin" or user.role.name == "HR" %}
                         Employee Details
                     {% else %}
                         My Employee Details
                     {% endif %}
+
                 </h3>
 
                 <small class="text-muted">
                     Read Mode
                 </small>
+
             </div>
+
 
             <!-- Header Edit Button -->
             <a
                 href="{% url 'edit_employee' employee.pk %}"
                 class="btn btn-primary"
             >
+
                 <i class="bi bi-pencil-square"></i>
-                {% if user.role == "ADMIN" or user.role == "HR" %}
+
+                {% if user.role.name == "Admin" or user.role.name == "HR" %}
                     Edit Employee
                 {% else %}
                     Edit My Profile
                 {% endif %}
+
             </a>
 
         </div>
@@ -76,7 +83,9 @@ Employee Details
                                 font-size: 50px;
                             "
                         >
+
                             <i class="bi bi-person"></i>
+
                         </div>
 
                     {% endif %}
@@ -176,11 +185,17 @@ Employee Details
                     </label>
 
                     <div class="form-control bg-light">
+
                         {% if employee.date_of_birth %}
+
                             {{ employee.date_of_birth|date:"d-m-Y" }}
+
                         {% else %}
+
                             Not available
+
                         {% endif %}
+
                     </div>
 
                 </div>
@@ -208,13 +223,25 @@ Employee Details
                     </label>
 
                     <div class="form-control bg-light">
-                        {{ employee.department|default:"Not available" }}
+
+                        {% if employee.department %}
+
+                            {{ employee.department.name }}
+
+                        {% else %}
+
+                            Not available
+
+                        {% endif %}
+
                     </div>
 
                 </div>
 
 
                 <!-- Salary -->
+                <!-- Kept temporarily because salary exists in the
+                     current database and model for data preservation. -->
                 <div class="col-md-6 mb-3">
 
                     <label class="form-label fw-bold">
@@ -222,11 +249,17 @@ Employee Details
                     </label>
 
                     <div class="form-control bg-light">
+
                         {% if employee.salary %}
+
                             ₹ {{ employee.salary }}
+
                         {% else %}
+
                             Not available
+
                         {% endif %}
+
                     </div>
 
                 </div>
@@ -240,31 +273,139 @@ Employee Details
                     </label>
 
                     <div class="form-control bg-light">
+
                         {% if employee.joining_date %}
+
                             {{ employee.joining_date|date:"d-m-Y" }}
+
                         {% else %}
+
                             Not available
+
                         {% endif %}
+
                     </div>
 
                 </div>
 
 
-                <!-- Address -->
-                <div class="col-md-12 mb-3">
+                <!-- Address Line 1 -->
+                <div class="col-md-6 mb-3">
 
                     <label class="form-label fw-bold">
-                        Address
+                        Address Line 1
                     </label>
 
-                    <div
-                        class="form-control bg-light"
-                        style="min-height: 100px;"
-                    >
-                        {{ employee.address|default:"Not available" }}
+                    <div class="form-control bg-light">
+
+                        {{ employee.address_line_1|default:"Not available" }}
+
                     </div>
 
                 </div>
+
+
+                <!-- Address Line 2 -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label fw-bold">
+                        Address Line 2
+                    </label>
+
+                    <div class="form-control bg-light">
+
+                        {{ employee.address_line_2|default:"Not available" }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- City -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label fw-bold">
+                        City
+                    </label>
+
+                    <div class="form-control bg-light">
+
+                        {{ employee.city|default:"Not available" }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- State -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label fw-bold">
+                        State
+                    </label>
+
+                    <div class="form-control bg-light">
+
+                        {{ employee.state|default:"Not available" }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Country -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label fw-bold">
+                        Country
+                    </label>
+
+                    <div class="form-control bg-light">
+
+                        {{ employee.country|default:"Not available" }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Pincode -->
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label fw-bold">
+                        Pincode
+                    </label>
+
+                    <div class="form-control bg-light">
+
+                        {{ employee.pincode|default:"Not available" }}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Legacy Address -->
+                {% if employee.address %}
+
+                    <div class="col-md-12 mb-3">
+
+                        <label class="form-label fw-bold">
+                            Previous Address
+                        </label>
+
+                        <div
+                            class="form-control bg-light"
+                            style="min-height: 80px;"
+                        >
+
+                            {{ employee.address }}
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
 
 
                 <!-- Account Status -->
@@ -277,13 +418,17 @@ Employee Details
                     <div class="form-control bg-light">
 
                         {% if employee.is_active %}
+
                             <span class="badge bg-success">
                                 Active
                             </span>
+
                         {% else %}
+
                             <span class="badge bg-danger">
                                 Inactive
                             </span>
+
                         {% endif %}
 
                     </div>
@@ -299,11 +444,17 @@ Employee Details
                     </label>
 
                     <div class="form-control bg-light">
+
                         {% if employee.created_at %}
+
                             {{ employee.created_at|date:"d-m-Y H:i" }}
+
                         {% else %}
+
                             Not available
+
                         {% endif %}
+
                     </div>
 
                 </div>
@@ -317,11 +468,17 @@ Employee Details
                     </label>
 
                     <div class="form-control bg-light">
+
                         {% if employee.updated_at %}
+
                             {{ employee.updated_at|date:"d-m-Y H:i" }}
+
                         {% else %}
+
                             Not available
+
                         {% endif %}
+
                     </div>
 
                 </div>
@@ -336,21 +493,27 @@ Employee Details
                     href="{% url 'edit_employee' employee.pk %}"
                     class="btn btn-primary"
                 >
+
                     <i class="bi bi-pencil-square"></i>
 
-                    {% if user.role == "ADMIN" or user.role == "HR" %}
+                    {% if user.role.name == "Admin" or user.role.name == "HR" %}
                         Edit Employee
                     {% else %}
                         Edit My Profile
                     {% endif %}
+
                 </a>
+
 
                 <a
                     href="{% url 'employee_list' %}"
                     class="btn btn-secondary"
                 >
+
                     <i class="bi bi-arrow-left"></i>
+
                     Back to Employees
+
                 </a>
 
             </div>

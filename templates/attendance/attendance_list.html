@@ -6,63 +6,938 @@ Attendance Management
 
 {% block content %}
 
-<div class="container-fluid">
+<style>
 
-    <!-- PAGE HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold">Attendance Management</h2>
-            <p class="text-muted">
-                Manage employee attendance efficiently.
-            </p>
+/* =========================================================
+   ATTENDANCE MANAGEMENT PAGE
+========================================================= */
+
+.attendance-page {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.attendance-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.attendance-page-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.attendance-page-icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 23px;
+}
+
+.attendance-page-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.attendance-page-heading h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.attendance-page-heading p {
+    margin: 7px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   MARK ATTENDANCE BUTTON
+========================================================= */
+
+.attendance-add-button {
+    min-height: 43px;
+    padding: 10px 17px;
+    border: none;
+    border-radius: 9px;
+    background: #2563eb;
+    color: #ffffff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.18);
+    transition: all 0.2s ease;
+}
+
+.attendance-add-button:hover {
+    background: #1d4ed8;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.attendance-stat-card {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+    transition: all 0.2s ease;
+}
+
+.attendance-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.attendance-stat-card::after {
+    content: "";
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    top: -55px;
+    right: -45px;
+    border-radius: 50%;
+    background: #f8fafc;
+}
+
+.attendance-stat-top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.attendance-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+}
+
+.attendance-stat-icon.present {
+    background: #ecfdf5;
+    color: #16a34a;
+}
+
+.attendance-stat-icon.halfday {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.attendance-stat-content {
+    position: relative;
+    z-index: 1;
+    margin-top: 18px;
+}
+
+.attendance-stat-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.attendance-stat-number {
+    display: block;
+    color: #0f172a;
+    font-size: 29px;
+    line-height: 1;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   SEARCH CARD
+========================================================= */
+
+.attendance-search-card {
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+}
+
+.attendance-search-header {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 17px 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.attendance-search-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.attendance-search-header strong {
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.attendance-search-body {
+    padding: 19px 20px;
+}
+
+.attendance-search-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.attendance-search-input,
+.attendance-search-select {
+    width: 100%;
+    min-height: 43px;
+    padding: 9px 13px;
+    border: 1px solid #dbe3ed;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.attendance-search-input:focus,
+.attendance-search-select:focus {
+    background: #ffffff;
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+}
+
+.attendance-search-button {
+    width: 100%;
+    min-height: 43px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 9px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.attendance-search-button:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================================================
+   SUMMARY + CHART
+========================================================= */
+
+.attendance-panel {
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+
+.attendance-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 17px 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.attendance-panel-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.attendance-panel-header strong {
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.attendance-panel-body {
+    padding: 20px;
+}
+
+
+/* =========================================================
+   SUMMARY ITEMS
+========================================================= */
+
+.attendance-summary-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.attendance-summary-item:first-child {
+    padding-top: 0;
+}
+
+.attendance-summary-item:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.attendance-summary-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.attendance-summary-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.attendance-summary-dot.present {
+    background: #22c55e;
+}
+
+.attendance-summary-dot.halfday {
+    background: #3b82f6;
+}
+
+.attendance-summary-label {
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.attendance-summary-count {
+    min-width: 34px;
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.attendance-summary-count.present {
+    background: #ecfdf5;
+    color: #15803d;
+}
+
+.attendance-summary-count.halfday {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+
+/* =========================================================
+   CHART
+========================================================= */
+
+.attendance-chart-wrapper {
+    position: relative;
+    min-height: 245px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#attendancePieChart {
+    max-height: 245px;
+}
+
+
+/* =========================================================
+   ATTENDANCE TABLE
+========================================================= */
+
+.attendance-table-card {
+    margin-top: 24px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+
+.attendance-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 19px 21px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.attendance-table-title {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.attendance-table-title-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 16px;
+}
+
+.attendance-table-title strong {
+    display: block;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.attendance-table-title span {
+    display: block;
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.attendance-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.attendance-table {
+    width: 100%;
+    min-width: 1050px;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.attendance-table thead th {
+    padding: 13px 16px;
+    background: #f8fafc;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.attendance-table tbody td {
+    padding: 14px 16px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.attendance-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.attendance-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.attendance-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   EMPLOYEE CELL
+========================================================= */
+
+.attendance-employee {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.attendance-employee-avatar {
+    width: 39px;
+    height: 39px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 16px;
+}
+
+.attendance-employee-name {
+    display: block;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.attendance-employee-id {
+    display: block;
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.attendance-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.attendance-status.present {
+    background: #ecfdf5;
+    color: #15803d;
+}
+
+.attendance-status.halfday {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.attendance-status.not-marked {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.attendance-status.completed {
+    background: #ecfdf5;
+    color: #15803d;
+}
+
+
+/* =========================================================
+   TIME / HOURS
+========================================================= */
+
+.attendance-time {
+    color: #334155;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.attendance-time-muted {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.attendance-earliest {
+    display: block;
+    margin-top: 3px;
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.attendance-hours {
+    color: #0f172a;
+    font-weight: 750;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.attendance-action-button {
+    min-height: 32px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 750;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.attendance-checkin-button {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+    color: #15803d;
+}
+
+.attendance-checkin-button:hover {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.attendance-checkout-button {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #2563eb;
+}
+
+.attendance-checkout-button:hover {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.attendance-edit-button {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #b45309;
+}
+
+.attendance-edit-button:hover {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.attendance-empty-state {
+    padding: 65px 20px;
+    text-align: center;
+}
+
+.attendance-empty-icon {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 16px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    color: #94a3b8;
+    font-size: 30px;
+}
+
+.attendance-empty-state h3 {
+    margin: 0 0 6px;
+    color: #334155;
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.attendance-empty-state p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 992px) {
+
+    .attendance-page-header {
+        flex-direction: column;
+    }
+
+    .attendance-add-button {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .attendance-page-heading h2 {
+        font-size: 23px;
+    }
+
+    .attendance-table {
+        min-width: 1000px;
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .attendance-page-heading {
+        gap: 11px;
+    }
+
+    .attendance-page-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+
+    .attendance-page-heading h2 {
+        font-size: 21px;
+    }
+
+    .attendance-page-heading p {
+        font-size: 12px;
+    }
+
+    .attendance-search-body {
+        padding: 15px;
+    }
+
+    .attendance-panel-body {
+        padding: 16px;
+    }
+
+    .attendance-table-header {
+        padding: 16px;
+    }
+
+}
+
+</style>
+
+
+<div class="attendance-page">
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="attendance-page-header">
+
+        <div class="attendance-page-heading">
+
+            <div class="attendance-page-icon">
+
+                <i class="bi bi-calendar-check"></i>
+
+            </div>
+
+            <div>
+
+                <span class="attendance-page-label">
+                    HRMS PLATFORM
+                </span>
+
+                <h2>
+                    Attendance Management
+                </h2>
+
+                <p>
+                    Monitor employee attendance, working hours and daily activity.
+                </p>
+
+            </div>
+
         </div>
 
-        <a href="{% url 'add_attendance' %}"
-           class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i>
+
+        <!-- MARK ATTENDANCE -->
+
+        <a
+            href="{% url 'add_attendance' %}"
+            class="attendance-add-button"
+        >
+
+            <i class="bi bi-plus-lg"></i>
+
             Mark Attendance
+
         </a>
-    </div>
-
-   
-    <!-- STATISTICS -->
-    <div class="row mb-4">
-
-        <div class="col-lg-6">
-            <div class="card bg-success text-white shadow">
-                <div class="card-body">
-                    <h6>Present</h6>
-                    <h2>{{ present_count }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="card bg-info text-white shadow">
-                <div class="card-body">
-                    <h6>Half Day</h6>
-                    <h2>{{ halfday_count }}</h2>
-                </div>
-            </div>
-        </div>
 
     </div>
 
 
-    <!-- SEARCH -->
-    <div class="card shadow mb-4">
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
 
-        <div class="card-body">
+    <div class="row g-3 mb-4">
+
+
+        <!-- PRESENT -->
+
+        <div class="col-lg-6 col-md-6">
+
+            <div class="attendance-stat-card">
+
+                <div class="attendance-stat-top">
+
+                    <div class="attendance-stat-icon present">
+
+                        <i class="bi bi-check-circle"></i>
+
+                    </div>
+
+                    <i
+                        class="bi bi-three-dots"
+                        style="color:#cbd5e1;"
+                    ></i>
+
+                </div>
+
+                <div class="attendance-stat-content">
+
+                    <span class="attendance-stat-label">
+                        Present Today
+                    </span>
+
+                    <span class="attendance-stat-number">
+                        {{ present_count }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- HALF DAY -->
+
+        <div class="col-lg-6 col-md-6">
+
+            <div class="attendance-stat-card">
+
+                <div class="attendance-stat-top">
+
+                    <div class="attendance-stat-icon halfday">
+
+                        <i class="bi bi-clock-history"></i>
+
+                    </div>
+
+                    <i
+                        class="bi bi-three-dots"
+                        style="color:#cbd5e1;"
+                    ></i>
+
+                </div>
+
+                <div class="attendance-stat-content">
+
+                    <span class="attendance-stat-label">
+                        Half Day
+                    </span>
+
+                    <span class="attendance-stat-number">
+                        {{ halfday_count }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
+
+    <div class="attendance-search-card">
+
+        <div class="attendance-search-header">
+
+            <div class="attendance-search-icon">
+
+                <i class="bi bi-search"></i>
+
+            </div>
+
+            <strong>
+                Search Attendance
+            </strong>
+
+        </div>
+
+        <div class="attendance-search-body">
 
             <form method="GET">
 
                 <div class="row g-3">
 
-                    <div class="col-md-5">
+
+                    <!-- EMPLOYEE SEARCH -->
+
+                    <div class="col-lg-5 col-md-6">
+
+                        <label class="attendance-search-label">
+                            Employee
+                        </label>
 
                         <input
                             type="text"
-                            class="form-control"
+                            class="attendance-search-input"
                             name="search"
                             placeholder="Search Employee"
                             value="{{ search }}"
@@ -70,10 +945,17 @@ Attendance Management
 
                     </div>
 
-                    <div class="col-md-4">
+
+                    <!-- DEPARTMENT -->
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <label class="attendance-search-label">
+                            Department
+                        </label>
 
                         <select
-                            class="form-select"
+                            class="attendance-search-select"
                             name="department"
                         >
 
@@ -83,14 +965,16 @@ Attendance Management
 
                             {% for dept in departments %}
 
-                            <option
-                                value="{{ dept }}"
-                                {% if dept == selected_department %}
-                                selected
-                                {% endif %}
-                            >
-                                {{ dept }}
-                            </option>
+                                <option
+                                    value="{{ dept }}"
+                                    {% if dept == selected_department %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ dept }}
+
+                                </option>
 
                             {% endfor %}
 
@@ -98,14 +982,20 @@ Attendance Management
 
                     </div>
 
-                    <div class="col-md-3">
+
+                    <!-- SEARCH BUTTON -->
+
+                    <div class="col-lg-3 col-md-12">
 
                         <button
                             type="submit"
-                            class="btn btn-primary w-100"
+                            class="attendance-search-button"
                         >
+
                             <i class="bi bi-search"></i>
+
                             Search
+
                         </button>
 
                     </div>
@@ -119,42 +1009,76 @@ Attendance Management
     </div>
 
 
-    <!-- SUMMARY + CHART -->
-    <div class="row mb-4">
+    <!-- =====================================================
+         SUMMARY + CHART
+    ====================================================== -->
+
+    <div class="row g-3 mb-4">
+
+
+        <!-- SUMMARY -->
 
         <div class="col-lg-5">
 
-            <div class="card shadow">
+            <div class="attendance-panel">
 
-                <div class="card-header">
-                    Attendance Summary
+                <div class="attendance-panel-header">
+
+                    <div class="attendance-panel-icon">
+
+                        <i class="bi bi-pie-chart"></i>
+
+                    </div>
+
+                    <strong>
+                        Attendance Summary
+                    </strong>
+
                 </div>
 
-                <div class="card-body">
+                <div class="attendance-panel-body">
 
-                    <ul class="list-group">
 
-                        <li class="list-group-item d-flex justify-content-between">
+                    <!-- PRESENT -->
 
-                            Present
+                    <div class="attendance-summary-item">
 
-                            <span class="badge bg-success">
-                                {{ present_count }}
+                        <div class="attendance-summary-left">
+
+                            <span class="attendance-summary-dot present"></span>
+
+                            <span class="attendance-summary-label">
+                                Present
                             </span>
 
-                        </li>
+                        </div>
 
-                        <li class="list-group-item d-flex justify-content-between">
+                        <span class="attendance-summary-count present">
+                            {{ present_count }}
+                        </span>
 
-                            Half Day
+                    </div>
 
-                            <span class="badge bg-info">
-                                {{ halfday_count }}
+
+                    <!-- HALF DAY -->
+
+                    <div class="attendance-summary-item">
+
+                        <div class="attendance-summary-left">
+
+                            <span class="attendance-summary-dot halfday"></span>
+
+                            <span class="attendance-summary-label">
+                                Half Day
                             </span>
 
-                        </li>
+                        </div>
 
-                    </ul>
+                        <span class="attendance-summary-count halfday">
+                            {{ halfday_count }}
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -163,17 +1087,33 @@ Attendance Management
         </div>
 
 
+        <!-- CHART -->
+
         <div class="col-lg-7">
 
-            <div class="card shadow">
+            <div class="attendance-panel">
 
-                <div class="card-header">
-                    Attendance Overview
+                <div class="attendance-panel-header">
+
+                    <div class="attendance-panel-icon">
+
+                        <i class="bi bi-bar-chart"></i>
+
+                    </div>
+
+                    <strong>
+                        Attendance Overview
+                    </strong>
+
                 </div>
 
-                <div class="card-body">
+                <div class="attendance-panel-body">
 
-                    <canvas id="attendancePieChart"></canvas>
+                    <div class="attendance-chart-wrapper">
+
+                        <canvas id="attendancePieChart"></canvas>
+
+                    </div>
 
                 </div>
 
@@ -184,266 +1124,445 @@ Attendance Management
     </div>
 
 
-    <!-- ATTENDANCE TABLE -->
-    <div class="card shadow">
+    <!-- =====================================================
+         ATTENDANCE TABLE
+    ====================================================== -->
 
-        <div class="card-header">
-            Today's Attendance
+    <div class="attendance-table-card">
+
+
+        <!-- TABLE HEADER -->
+
+        <div class="attendance-table-header">
+
+            <div class="attendance-table-title">
+
+                <div class="attendance-table-title-icon">
+
+                    <i class="bi bi-calendar2-check"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Today's Attendance
+                    </strong>
+
+                    <span>
+                        Employee attendance and working hours
+                    </span>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="card-body">
 
-            <div class="table-responsive">
+        <!-- TABLE -->
 
-                <table class="table table-hover align-middle">
+        <div class="attendance-table-wrapper">
 
-                    <thead class="table-light">
+            <table class="attendance-table">
 
-                        <tr>
-
-                            <th>Employee</th>
-                            <th>Department</th>
-                            <th>Status</th>
-                            <th>Check In</th>
-                            <th>Check Out</th>
-                            <th>Working Hours</th>
-                            <th>Actions</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                    {% for item in attendance_data %}
+                <thead>
 
                     <tr>
 
-                        <!-- EMPLOYEE -->
-                        <td>
-                            {{ item.employee.first_name }}
-                            {{ item.employee.last_name }}
-                        </td>
+                        <th>
+                            Employee
+                        </th>
+
+                        <th>
+                            Department
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Check In
+                        </th>
+
+                        <th>
+                            Check Out
+                        </th>
+
+                        <th>
+                            Working Hours
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
 
 
-                        <!-- DEPARTMENT -->
-                        <td>
-                            {{ item.employee.department }}
-                        </td>
+                <tbody>
+
+                {% for item in attendance_data %}
+
+                <tr>
 
 
-                        <!-- STATUS -->
-                        <td>
+                    <!-- =================================================
+                         EMPLOYEE
+                    ================================================== -->
 
-                            {% if item.attendance %}
+                    <td>
 
-                                {% if item.attendance.status == "Present" %}
+                        <div class="attendance-employee">
 
-                                    <span class="badge bg-success">
-                                        Present
-                                    </span>
+                            <div class="attendance-employee-avatar">
 
-                                {% elif item.attendance.status == "Half Day" %}
+                                <i class="bi bi-person"></i>
 
-                                    <span class="badge bg-info">
-                                        Half Day
+                            </div>
+
+                            <div>
+
+                                <span class="attendance-employee-name">
+
+                                    {{ item.employee.first_name }}
+                                    {{ item.employee.last_name }}
+
+                                </span>
+
+                                {% if item.employee.employee_id %}
+
+                                    <span class="attendance-employee-id">
+
+                                        {{ item.employee.employee_id }}
+
                                     </span>
 
                                 {% endif %}
 
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- =================================================
+                         DEPARTMENT
+                    ================================================== -->
+
+                    <td>
+
+                        {% if item.employee.department %}
+
+                            {{ item.employee.department.name }}
+
+                        {% else %}
+
+                            <span class="attendance-time-muted">
+                                Not Assigned
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- =================================================
+                         STATUS
+                    ================================================== -->
+
+                    <td>
+
+                        {% if item.attendance %}
+
+                            {% if item.attendance.status == "Present" %}
+
+                                <span class="attendance-status present">
+
+                                    <i class="bi bi-check-circle"></i>
+
+                                    Present
+
+                                </span>
+
+                            {% elif item.attendance.status == "Half Day" %}
+
+                                <span class="attendance-status halfday">
+
+                                    <i class="bi bi-clock"></i>
+
+                                    Half Day
+
+                                </span>
+
                             {% else %}
 
-                                <span class="badge bg-secondary">
-                                    Not Marked
+                                <span class="attendance-status not-marked">
+
+                                    {{ item.attendance.status }}
+
                                 </span>
 
                             {% endif %}
 
-                        </td>
+                        {% else %}
+
+                            <span class="attendance-status not-marked">
+
+                                <i class="bi bi-dash-circle"></i>
+
+                                Not Marked
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
 
 
-                        <!-- CHECK IN -->
-                        <td>
+                    <!-- =================================================
+                         CHECK IN
+                    ================================================== -->
 
-                            {% if item.attendance %}
+                    <td>
 
-                                {% if item.attendance.check_in %}
+                        {% if item.attendance %}
+
+                            {% if item.attendance.check_in %}
+
+                                <span class="attendance-time">
 
                                     {{ item.attendance.check_in|time:"h:i A" }}
 
-                                {% else %}
+                                </span>
 
+                            {% else %}
+
+                                <span class="attendance-time-muted">
                                     --
-
-                                {% endif %}
-
-                            {% else %}
-
-                                --
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- CHECK OUT -->
-                        <td>
-
-                            {% if item.attendance %}
-
-                                {% if item.attendance.check_out %}
-
-                                    {{ item.attendance.check_out|time:"h:i A" }}
-
-                                {% else %}
-
-                                    <span class="text-muted">
-                                        Not Checked Out
-                                    </span>
-
-                                    {% if item.minimum_checkout %}
-
-                                    <br>
-
-                                    <small class="text-muted">
-                                        Earliest:
-                                        {{ item.minimum_checkout|time:"h:i A" }}
-                                    </small>
-
-                                    {% endif %}
-
-                                {% endif %}
-
-                            {% else %}
-
-                                --
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- WORKING HOURS -->
-                        <td>
-
-                            {% if item.attendance %}
-
-                                {{ item.attendance.working_hours }}
-                                hrs
-
-                            {% else %}
-
-                                --
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- ACTIONS -->
-                        <td>
-
-                            {% if not item.attendance %}
-
-                                <!-- CHECK IN -->
-                                <form
-                                    method="POST"
-                                    action="{% url 'check_in' item.employee.id %}"
-                                    class="d-inline"
-                                >
-
-                                    {% csrf_token %}
-
-                                    <button
-                                        type="submit"
-                                        class="btn btn-success btn-sm"
-                                    >
-
-                                        <i class="bi bi-box-arrow-in-right"></i>
-
-                                        Check In
-
-                                    </button>
-
-                                </form>
-
-
-                            {% elif not item.attendance.check_out %}
-
-                                <!-- CHECK OUT -->
-                                <form
-                                    method="POST"
-                                    action="{% url 'check_out' item.attendance.id %}"
-                                    class="d-inline"
-                                >
-
-                                    {% csrf_token %}
-
-                                    <button
-                                        type="submit"
-                                        class="btn btn-primary btn-sm"
-                                    >
-
-                                        <i class="bi bi-box-arrow-right"></i>
-
-                                        Check Out
-
-                                    </button>
-
-                                </form>
-
-                            {% else %}
-
-                                <span class="badge bg-success">
-                                    Completed
                                 </span>
 
                             {% endif %}
 
+                        {% else %}
 
-                            {% if item.attendance %}
+                            <span class="attendance-time-muted">
+                                --
+                            </span>
 
-                                <a
-                                    href="{% url 'edit_attendance' item.attendance.id %}"
-                                    class="btn btn-warning btn-sm"
-                                >
+                        {% endif %}
 
-                                    <i class="bi bi-pencil"></i>
-
-                                    Edit
-
-                                </a>
+                    </td>
 
 
-                                
+                    <!-- =================================================
+                         CHECK OUT
+                    ================================================== -->
+
+                    <td>
+
+                        {% if item.attendance %}
+
+                            {% if item.attendance.check_out %}
+
+                                <span class="attendance-time">
+
+                                    {{ item.attendance.check_out|time:"h:i A" }}
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="attendance-time-muted">
+                                    Not Checked Out
+                                </span>
+
+                                {% if item.minimum_checkout %}
+
+                                    <span class="attendance-earliest">
+
+                                        Earliest:
+                                        {{ item.minimum_checkout|time:"h:i A" }}
+
+                                    </span>
+
+                                {% endif %}
 
                             {% endif %}
 
-                        </td>
+                        {% else %}
 
-                    </tr>
+                            <span class="attendance-time-muted">
+                                --
+                            </span>
+
+                        {% endif %}
+
+                    </td>
 
 
-                    {% empty %}
+                    <!-- =================================================
+                         WORKING HOURS
+                    ================================================== -->
 
-                    <tr>
+                    <td>
 
-                        <td
-                            colspan="7"
-                            class="text-center py-4"
-                        >
-                            No Employees Found
-                        </td>
+                        {% if item.attendance %}
 
-                    </tr>
+                            <span class="attendance-hours">
 
-                    {% endfor %}
+                                {{ item.attendance.working_hours }} hrs
 
-                    </tbody>
+                            </span>
 
-                </table>
+                        {% else %}
 
-            </div>
+                            <span class="attendance-time-muted">
+                                --
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- =================================================
+                         ACTIONS
+                    ================================================== -->
+
+                    <td>
+
+
+                        {% if not item.attendance %}
+
+
+                            <!-- CHECK IN -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'check_in' item.employee.id %}"
+                                class="d-inline"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="attendance-action-button attendance-checkin-button"
+                                >
+
+                                    <i class="bi bi-box-arrow-in-right"></i>
+
+                                    Check In
+
+                                </button>
+
+                            </form>
+
+
+                        {% elif not item.attendance.check_out %}
+
+
+                            <!-- CHECK OUT -->
+
+                            <form
+                                method="POST"
+                                action="{% url 'check_out' item.attendance.id %}"
+                                class="d-inline"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="attendance-action-button attendance-checkout-button"
+                                >
+
+                                    <i class="bi bi-box-arrow-right"></i>
+
+                                    Check Out
+
+                                </button>
+
+                            </form>
+
+
+                        {% else %}
+
+
+                            <!-- COMPLETED -->
+
+                            <span class="attendance-status completed">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Completed
+
+                            </span>
+
+
+                        {% endif %}
+
+
+                        {% if item.attendance %}
+
+                            <!-- EDIT -->
+
+                            <a
+                                href="{% url 'edit_attendance' item.attendance.id %}"
+                                class="attendance-action-button attendance-edit-button"
+                            >
+
+                                <i class="bi bi-pencil"></i>
+
+                                Edit
+
+                            </a>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="7">
+
+                        <div class="attendance-empty-state">
+
+                            <div class="attendance-empty-icon">
+
+                                <i class="bi bi-calendar-x"></i>
+
+                            </div>
+
+                            <h3>
+                                No Employees Found
+                            </h3>
+
+                            <p>
+                                No employees match your current search.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
 
         </div>
 
@@ -458,15 +1577,18 @@ Attendance Management
 
 <script>
 
-const chartCanvas = document.getElementById(
-    "attendancePieChart"
-);
+const chartCanvas =
+    document.getElementById(
+        "attendancePieChart"
+    );
+
 
 if (chartCanvas) {
 
     new Chart(
         chartCanvas,
         {
+
             type: "pie",
 
             data: {
@@ -479,17 +1601,55 @@ if (chartCanvas) {
                 datasets: [
 
                     {
+
                         data: [
+
                             {{ present_count }},
+
                             {{ halfday_count }}
+
                         ]
+
                     }
 
                 ]
 
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom",
+
+                        labels: {
+
+                            padding: 18,
+
+                            usePointStyle: true,
+
+                            font: {
+
+                                size: 11
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
             }
 
         }
+
     );
 
 }

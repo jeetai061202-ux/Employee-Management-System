@@ -30,7 +30,7 @@ urlpatterns = [
     # ==========================================================
 
     path(
-        "<int:pk>/",
+        "<uuid:pk>/",
         views.employee_detail,
         name="employee_detail"
     ),
@@ -40,7 +40,7 @@ urlpatterns = [
     # ==========================================================
 
     path(
-        "<int:pk>/edit/",
+        "<uuid:pk>/edit/",
         views.edit_employee,
         name="edit_employee"
     ),
@@ -48,12 +48,9 @@ urlpatterns = [
     # ==========================================================
     # DELETE EMPLOYEE
     # ==========================================================
-    # This now performs SOFT DELETE.
-    # The employee is not removed from the database.
-    # is_active is changed from True to False.
 
     path(
-        "<int:pk>/delete/",
+        "<uuid:pk>/delete/",
         views.delete_employee,
         name="delete_employee"
     ),

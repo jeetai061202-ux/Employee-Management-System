@@ -11,6 +11,7 @@ class DepartmentForm(forms.ModelForm):
 
         fields = [
             "name",
+            "code",
             "description",
         ]
 
@@ -20,6 +21,13 @@ class DepartmentForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter department name",
+                }
+            ),
+
+            "code": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter department code",
                 }
             ),
 
@@ -43,3 +51,12 @@ class DepartmentForm(forms.ModelForm):
             )
 
         return name
+
+    def clean_code(self):
+
+        code = self.cleaned_data.get("code")
+
+        if code:
+            code = code.strip().upper()
+
+        return code

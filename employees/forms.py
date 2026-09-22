@@ -15,11 +15,6 @@ MAX_PROFILE_PICTURE_SIZE = 2 * 1024 * 1024  # 2 MB
 
 class EmployeeForm(forms.ModelForm):
 
-    STATUS_CHOICES = (
-        ("True", "Active"),
-        ("False", "Inactive"),
-    )
-
     # =============================================================
     # REGISTERED LOGIN ACCOUNT
     # =============================================================
@@ -44,6 +39,11 @@ class EmployeeForm(forms.ModelForm):
     # STATUS
     # =============================================================
 
+    STATUS_CHOICES = (
+        ("True", "Active"),
+        ("False", "Inactive"),
+    )
+
     status = forms.ChoiceField(
         choices=STATUS_CHOICES,
         widget=forms.Select(
@@ -66,6 +66,12 @@ class EmployeeForm(forms.ModelForm):
         "gender",
         "date_of_birth",
         "profile_picture",
+        "address_line_1",
+        "address_line_2",
+        "city",
+        "state",
+        "country",
+        "pincode",
         "address",
     }
 
@@ -88,6 +94,12 @@ class EmployeeForm(forms.ModelForm):
             "joining_date",
             "status",
             "profile_picture",
+            "address_line_1",
+            "address_line_2",
+            "city",
+            "state",
+            "country",
+            "pincode",
             "address",
         ]
 
@@ -173,6 +185,48 @@ class EmployeeForm(forms.ModelForm):
                 }
             ),
 
+            "address_line_1": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Address line 1",
+                }
+            ),
+
+            "address_line_2": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Address line 2",
+                }
+            ),
+
+            "city": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "City",
+                }
+            ),
+
+            "state": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "State",
+                }
+            ),
+
+            "country": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Country",
+                }
+            ),
+
+            "pincode": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Pincode",
+                }
+            ),
+
             "address": forms.Textarea(
                 attrs={
                     "class": "form-control",
@@ -210,18 +264,13 @@ class EmployeeForm(forms.ModelForm):
         available_users = (
             User.objects
             .filter(
-                role="EMPLOYEE"
+                role__name="Employee"
             )
             .order_by(
                 "username"
             )
         )
 
-        # When editing an existing Employee:
-        #
-        # - Show users that are not already linked.
-        # - Also keep this Employee's current linked user.
-        #
         if linked_user_id:
 
             available_users = available_users.filter(
@@ -236,11 +285,6 @@ class EmployeeForm(forms.ModelForm):
 
         else:
 
-            # Adding a new Employee:
-            #
-            # Only show registered Employee accounts that
-            # are not already linked.
-            #
             available_users = available_users.filter(
                 employee_profile__isnull=True
             )
@@ -332,7 +376,7 @@ class EmployeeForm(forms.ModelForm):
                 "Please select a registered Employee user."
             )
 
-        if user.role != "EMPLOYEE":
+        if not user.role or user.role.name != "Employee":
 
             raise ValidationError(
                 "Only users with the Employee role can be linked "
@@ -346,9 +390,6 @@ class EmployeeForm(forms.ModelForm):
         )
 
         if existing_employee:
-
-            # During editing, the Employee can keep its own
-            # existing linked user.
 
             if (
                 not self.instance
@@ -573,17 +614,7 @@ class EmployeeForm(forms.ModelForm):
             "user"
         )
 
-        # Explicitly connect the Employee record
-        # to the registered User account.
-        #
-        # This is the important relationship:
-        #
-        # User → Employee
-        #
-        # Once saved, account.employee_profile will work.
-        #
         if selected_user:
-
             employee.user = selected_user
 
         # =========================================================
@@ -603,7 +634,6 @@ class EmployeeForm(forms.ModelForm):
         # =========================================================
 
         if commit:
-
             employee.save()
 
         return employee

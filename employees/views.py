@@ -30,6 +30,24 @@ from .models import Employee
 
 
 # ==========================================================
+# ROLE HELPERS
+# ==========================================================
+
+def is_admin_or_hr(user):
+    return (
+        user.role
+        and user.role.name in ["Admin", "HR"]
+    )
+
+
+def is_employee(user):
+    return (
+        user.role
+        and user.role.name == "Employee"
+    )
+
+
+# ==========================================================
 # EMPLOYEE LIST
 # ==========================================================
 
@@ -39,7 +57,7 @@ def employee_list(request):
 
     user = request.user
 
-    if user.role in ["ADMIN", "HR"]:
+    if is_admin_or_hr(user):
 
         employees = Employee.objects.select_related(
             "department",
@@ -108,21 +126,12 @@ def employee_list(request):
             | Q(email__icontains=search)
         )
 
+    # UUID department IDs must not be converted to int.
     if department:
 
-        try:
-
-            department_id = int(
-                department
-            )
-
-            employees = employees.filter(
-                department_id=department_id
-            )
-
-        except (ValueError, TypeError):
-
-            employees = employees.none()
+        employees = employees.filter(
+            department_id=department
+        )
 
     if status == "Active":
 
@@ -136,7 +145,7 @@ def employee_list(request):
             is_active=False
         )
 
-    elif user.role in ["ADMIN", "HR"]:
+    elif is_admin_or_hr(user):
 
         employees = employees.filter(
             is_active=True
@@ -155,7 +164,7 @@ def employee_list(request):
         page_number
     )
 
-    if user.role in ["ADMIN", "HR"]:
+    if is_admin_or_hr(user):
 
         departments = Department.objects.filter(
             is_active=True
@@ -167,7 +176,7 @@ def employee_list(request):
 
         departments = Department.objects.none()
 
-    if user.role in ["ADMIN", "HR"]:
+    if is_admin_or_hr(user):
 
         total_employees = Employee.objects.count()
 
@@ -230,9 +239,6 @@ def employee_list(request):
 
 # ==========================================================
 # ADD EMPLOYEE
-#
-# Admin/HR select an existing registered Employee user.
-# That User account becomes linked to the new Employee record.
 # ==========================================================
 
 @login_required
@@ -244,28 +250,37 @@ def add_employee(request):
         form = EmployeeForm(
             request.POST,
             request.FILES,
+            current_user=request.user,
             self_edit=False,
         )
 
         if form.is_valid():
 
-            employee = form.save()
+            employee = form.save(commit=False)
 
-            # Keep the registered User's basic information aligned
-            # with the Employee record.
+            employee.created_by = request.user
+            employee.updated_by = request.user
+
+            employee.save()
+
             linked_user = employee.user
 
-            linked_user.first_name = employee.first_name
-            linked_user.last_name = employee.last_name
-            linked_user.email = employee.email
-            linked_user.phone = employee.phone
+            if linked_user:
 
-            if employee.profile_picture:
-                linked_user.profile_picture = (
-                    employee.profile_picture
+                linked_user.first_name = employee.first_name
+                linked_user.last_name = employee.last_name
+                linked_user.email = employee.email
+                linked_user.phone_number = employee.phone
+
+                linked_user.save(
+                    update_fields=[
+                        "first_name",
+                        "last_name",
+                        "email",
+                        "phone_number",
+                        "updated_at",
+                    ]
                 )
-
-            linked_user.save()
 
             try:
 
@@ -282,7 +297,7 @@ Welcome to our organization!
 Your employee profile has been created successfully.
 
 Employee ID: {employee.employee_id}
-Department: {employee.department}
+Department: {employee.department.name}
 Designation: {employee.designation}
 
 We wish you a successful journey with us.
@@ -298,7 +313,6 @@ HR Department
                 )
 
             except Exception:
-
                 pass
 
             messages.success(
@@ -313,6 +327,7 @@ HR Department
     else:
 
         form = EmployeeForm(
+            current_user=request.user,
             self_edit=False,
         )
 
@@ -341,7 +356,7 @@ def employee_detail(request, pk):
         pk=pk,
     )
 
-    if request.user.role == "EMPLOYEE":
+    if is_employee(request.user):
 
         if employee.user_id != request.user.id:
 
@@ -382,7 +397,7 @@ def edit_employee(request, pk):
         pk=pk,
     )
 
-    if request.user.role == "EMPLOYEE":
+    if is_employee(request.user):
 
         if employee.user_id != request.user.id:
 
@@ -416,10 +431,12 @@ def edit_employee(request, pk):
 
         if form.is_valid():
 
-            employee = form.save()
+            employee = form.save(commit=False)
 
-            # Keep the linked login account synchronized with
-            # editable personal Employee information.
+            employee.updated_by = request.user
+
+            employee.save()
+
             linked_user = employee.user
 
             if linked_user:
@@ -427,14 +444,17 @@ def edit_employee(request, pk):
                 linked_user.first_name = employee.first_name
                 linked_user.last_name = employee.last_name
                 linked_user.email = employee.email
-                linked_user.phone = employee.phone
+                linked_user.phone_number = employee.phone
 
-                if employee.profile_picture:
-                    linked_user.profile_picture = (
-                        employee.profile_picture
-                    )
-
-                linked_user.save()
+                linked_user.save(
+                    update_fields=[
+                        "first_name",
+                        "last_name",
+                        "email",
+                        "phone_number",
+                        "updated_at",
+                    ]
+                )
 
             messages.success(
                 request,
@@ -479,10 +499,13 @@ def delete_employee(request, pk):
     if request.method == "POST":
 
         employee.is_active = False
+        employee.updated_by = request.user
 
         employee.save(
             update_fields=[
                 "is_active",
+                "updated_by",
+                "updated_at",
             ]
         )
 
@@ -553,7 +576,11 @@ def export_employees_excel(request):
                 if employee.is_active
                 else "Inactive"
             ),
-            float(employee.salary),
+            (
+                float(employee.salary)
+                if employee.salary is not None
+                else ""
+            ),
         ])
 
     response = HttpResponse(
@@ -652,7 +679,11 @@ def export_employees_pdf(request):
                 if employee.is_active
                 else "Inactive"
             ),
-            f"₹ {employee.salary}",
+            (
+                f"₹ {employee.salary}"
+                if employee.salary is not None
+                else ""
+            ),
         ])
 
     table = Table(

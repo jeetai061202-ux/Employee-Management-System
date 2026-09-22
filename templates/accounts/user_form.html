@@ -1,345 +1,1008 @@
 {% extends "layouts/base.html" %}
 
-
 {% block title %}
     Update User
 {% endblock %}
 
-
 {% block content %}
 
-<div class="container-fluid">
+<div class="user-form-page">
 
-    <div class="row justify-content-center">
+    <!-- ========================================= -->
+    <!-- PAGE HEADER -->
+    <!-- ========================================= -->
 
-        <div class="col-lg-8 col-xl-7">
+    <div class="user-form-header">
 
-
-            <!-- ========================================= -->
-            <!-- PAGE HEADER -->
-            <!-- ========================================= -->
-
-            <div class="mb-4">
-
-                <h2 class="fw-bold">
-
-                    <i class="bi bi-person-gear"></i>
-
-                    Update User
-
-                </h2>
-
-                <p class="text-muted">
-
-                    Update the user's account information,
-                    User ID, contact details, role and status.
-
-                </p>
-
+        <div>
+            <div class="user-form-eyebrow">
+                <i class="bi bi-shield-check"></i>
+                User Management
             </div>
 
+            <h1>
+                <i class="bi bi-person-gear"></i>
+                Update User
+            </h1>
 
-            <!-- ========================================= -->
-            <!-- FORM CARD -->
-            <!-- ========================================= -->
+            <p>
+                Update the user's account information, User ID,
+                contact details, role and account status.
+            </p>
+        </div>
 
-            <div class="card shadow-sm border-0">
+        <a
+            href="{% url 'user_management' %}"
+            class="user-form-back-button"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Back to Users
+        </a>
 
-                <div class="card-header bg-primary text-white">
-
-                    <h5 class="mb-0">
-
-                        <i class="bi bi-person-fill-gear"></i>
-
-                        User Information
-
-                    </h5>
-
-                </div>
-
-
-                <div class="card-body p-4">
-
-
-                    <form method="POST">
-
-                        {% csrf_token %}
+    </div>
 
 
-                        <!-- ================================= -->
-                        <!-- FORM ERRORS -->
-                        <!-- ================================= -->
+    <!-- ========================================= -->
+    <!-- MAIN FORM CARD -->
+    <!-- ========================================= -->
 
-                        {% if form.non_field_errors %}
+    <div class="user-form-card">
 
-                            <div class="alert alert-danger">
+        <!-- CARD HEADER -->
 
-                                {% for error in form.non_field_errors %}
+        <div class="user-form-card-header">
 
-                                    <div>
-                                        {{ error }}
-                                    </div>
+            <div class="user-form-card-icon">
+                <i class="bi bi-person-fill-gear"></i>
+            </div>
 
-                                {% endfor %}
+            <div>
+                <h2>User Information</h2>
 
-                            </div>
+                <p>
+                    Update the account details below.
+                </p>
+            </div>
 
-                        {% endif %}
+        </div>
 
 
-                        <div class="row">
+        <!-- ========================================= -->
+        <!-- FORM BODY -->
+        <!-- ========================================= -->
+
+        <div class="user-form-card-body">
+
+            <form method="POST">
+
+                {% csrf_token %}
 
 
-                            <!-- =================================
-                                 FIRST NAME
-                                 ================================= -->
+                <!-- ================================= -->
+                <!-- NON FIELD ERRORS -->
+                <!-- ================================= -->
 
-                            <div class="col-md-6 mb-3">
+                {% if form.non_field_errors %}
 
-                                <label
-                                    for="{{ form.first_name.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    First Name
-                                </label>
+                    <div class="user-form-alert user-form-alert-danger">
+
+                        <div class="user-form-alert-icon">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Please correct the following:
+                            </strong>
+
+                            {% for error in form.non_field_errors %}
+
+                                <div class="mt-1">
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- ================================= -->
+                <!-- ACCOUNT DETAILS -->
+                <!-- ================================= -->
+
+                <div class="user-form-section">
+
+                    <div class="user-form-section-heading">
+
+                        <div class="user-form-section-icon">
+                            <i class="bi bi-person-vcard"></i>
+                        </div>
+
+                        <div>
+                            <h3>Account Details</h3>
+
+                            <p>
+                                Basic information associated with this account.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="user-form-grid">
+
+
+                        <!-- FIRST NAME -->
+
+                        <div class="user-form-field">
+
+                            <label
+                                for="{{ form.first_name.id_for_label }}"
+                                class="user-form-label"
+                            >
+                                First Name
+                            </label>
+
+                            <div class="user-form-input-wrapper">
+
+                                <i class="bi bi-person"></i>
 
                                 {{ form.first_name }}
 
-                                {% for error in form.first_name.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-
-                                {% endfor %}
-
                             </div>
 
+                            {% for error in form.first_name.errors %}
 
-                            <!-- =================================
-                                 LAST NAME
-                                 ================================= -->
+                                <div class="user-form-error">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    {{ error }}
+                                </div>
 
-                            <div class="col-md-6 mb-3">
+                            {% endfor %}
 
-                                <label
-                                    for="{{ form.last_name.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Last Name
-                                </label>
+                        </div>
+
+
+                        <!-- LAST NAME -->
+
+                        <div class="user-form-field">
+
+                            <label
+                                for="{{ form.last_name.id_for_label }}"
+                                class="user-form-label"
+                            >
+                                Last Name
+                            </label>
+
+                            <div class="user-form-input-wrapper">
+
+                                <i class="bi bi-person"></i>
 
                                 {{ form.last_name }}
 
-                                {% for error in form.last_name.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-
-                                {% endfor %}
-
                             </div>
 
+                            {% for error in form.last_name.errors %}
 
-                            <!-- =================================
-                                 USER ID
-                                 ================================= -->
+                                <div class="user-form-error">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    {{ error }}
+                                </div>
 
-                            <div class="col-md-6 mb-3">
+                            {% endfor %}
 
-                                <label
-                                    for="{{ form.username.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    User ID
-                                </label>
+                        </div>
+
+
+                        <!-- USER ID -->
+
+                        <div class="user-form-field">
+
+                            <label
+                                for="{{ form.username.id_for_label }}"
+                                class="user-form-label"
+                            >
+                                User ID
+                            </label>
+
+                            <div class="user-form-input-wrapper">
+
+                                <i class="bi bi-person-badge"></i>
 
                                 {{ form.username }}
 
-                                {% for error in form.username.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-
-                                {% endfor %}
-
                             </div>
 
+                            {% for error in form.username.errors %}
 
-                            <!-- =================================
-                                 EMAIL
-                                 ================================= -->
+                                <div class="user-form-error">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    {{ error }}
+                                </div>
 
-                            <div class="col-md-6 mb-3">
+                            {% endfor %}
 
-                                <label
-                                    for="{{ form.email.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Email
-                                </label>
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="user-form-field">
+
+                            <label
+                                for="{{ form.email.id_for_label }}"
+                                class="user-form-label"
+                            >
+                                Email Address
+                            </label>
+
+                            <div class="user-form-input-wrapper">
+
+                                <i class="bi bi-envelope"></i>
 
                                 {{ form.email }}
 
-                                {% for error in form.email.errors %}
+                            </div>
 
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
+                            {% for error in form.email.errors %}
 
-                                {% endfor %}
+                                <div class="user-form-error">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="user-form-field">
+
+                            <label
+                                for="{{ form.phone_number.id_for_label }}"
+                                class="user-form-label"
+                            >
+                                Phone Number
+                            </label>
+
+                            <div class="user-form-input-wrapper">
+
+                                <i class="bi bi-telephone"></i>
+
+                                {{ form.phone_number }}
 
                             </div>
 
+                            {% for error in form.phone_number.errors %}
 
-                            <!-- =================================
-                                 PHONE
-                                 ================================= -->
+                                <div class="user-form-error">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    {{ error }}
+                                </div>
 
-                            <div class="col-md-6 mb-3">
+                            {% endfor %}
 
-                                <label
-                                    for="{{ form.phone.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Phone Number
-                                </label>
-
-                                {{ form.phone }}
-
-                                {% for error in form.phone.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-
-                                {% endfor %}
-
-                            </div>
+                        </div>
 
 
-                            <!-- =================================
-                                 ROLE
-                                 ================================= -->
+                        <!-- ROLE -->
 
-                            <div class="col-md-6 mb-3">
+                        <div class="user-form-field">
 
-                                <label
-                                    for="{{ form.role.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Role
-                                </label>
+                            <label
+                                for="{{ form.role.id_for_label }}"
+                                class="user-form-label"
+                            >
+                                User Role
+                            </label>
+
+                            <div class="user-form-input-wrapper">
+
+                                <i class="bi bi-shield-check"></i>
 
                                 {{ form.role }}
 
-                                {% for error in form.role.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-
-                                {% endfor %}
-
                             </div>
 
+                            {% for error in form.role.errors %}
 
-                            <!-- =================================
-                                 ACCOUNT STATUS
-                                 ================================= -->
-
-                            <div class="col-md-12 mb-4">
-
-                                <div class="form-check">
-
-                                    {{ form.is_active }}
-
-                                    <label
-                                        for="{{ form.is_active.id_for_label }}"
-                                        class="form-check-label fw-semibold"
-                                    >
-                                        Active Account
-                                    </label>
-
+                                <div class="user-form-error">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    {{ error }}
                                 </div>
 
-                                <small class="text-muted">
-                                    Inactive users will not be able to log in.
-                                </small>
-
-                                {% for error in form.is_active.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-
-                                {% endfor %}
-
-                            </div>
+                            {% endfor %}
 
                         </div>
 
-
-                        <!-- =================================
-                             PASSWORD NOTICE
-                             ================================= -->
-
-                        <div class="alert alert-info">
-
-                            <i class="bi bi-info-circle"></i>
-
-                            <strong>Password:</strong>
-
-                            The user's existing password will remain
-                            unchanged when updating this information.
-
-                        </div>
-
-
-                        <!-- =================================
-                             BUTTONS
-                             ================================= -->
-
-                        <div class="d-flex justify-content-between">
-
-                            <a
-                                href="{% url 'user_management' %}"
-                                class="btn btn-secondary"
-                            >
-
-                                <i class="bi bi-arrow-left"></i>
-
-                                Back
-
-                            </a>
-
-
-                            <button
-                                type="submit"
-                                class="btn btn-primary"
-                            >
-
-                                <i class="bi bi-check-circle-fill"></i>
-
-                                Update User
-
-                            </button>
-
-                        </div>
-
-
-                    </form>
+                    </div>
 
                 </div>
 
-            </div>
+
+                <!-- ================================= -->
+                <!-- ACCOUNT STATUS -->
+                <!-- ================================= -->
+
+                <div class="user-form-section user-form-status-section">
+
+                    <div class="user-form-section-heading">
+
+                        <div class="user-form-section-icon">
+                            <i class="bi bi-toggle-on"></i>
+                        </div>
+
+                        <div>
+                            <h3>Account Status</h3>
+
+                            <p>
+                                Control whether this user can access the HRMS.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="user-form-status-box">
+
+                        <div class="user-form-status-control">
+
+                            {{ form.is_active }}
+
+                            <label
+                                for="{{ form.is_active.id_for_label }}"
+                                class="user-form-status-label"
+                            >
+                                <span class="user-form-status-title">
+                                    Active Account
+                                </span>
+
+                                <span class="user-form-status-description">
+                                    This user is allowed to log in to the HRMS.
+                                </span>
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    {% for error in form.is_active.errors %}
+
+                        <div class="user-form-error">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ error }}
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- ================================= -->
+                <!-- PASSWORD INFORMATION -->
+                <!-- ================================= -->
+
+                <div class="user-form-password-notice">
+
+                    <div class="user-form-password-icon">
+                        <i class="bi bi-lock-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Password remains unchanged
+                        </strong>
+
+                        <p>
+                            The user's existing password will remain
+                            unchanged when updating this information.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================= -->
+                <!-- FORM ACTIONS -->
+                <!-- ================================= -->
+
+                <div class="user-form-actions">
+
+                    <a
+                        href="{% url 'user_management' %}"
+                        class="user-form-cancel-button"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                        Cancel
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="user-form-submit-button"
+                    >
+                        <i class="bi bi-check-circle-fill"></i>
+                        Update User
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
 
     </div>
 
 </div>
+
+
+<!-- ========================================= -->
+<!-- PAGE-SPECIFIC STYLES -->
+<!-- ========================================= -->
+
+<style>
+
+    .user-form-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 10px 0 40px;
+    }
+
+
+    /* =========================================
+       HEADER
+       ========================================= */
+
+    .user-form-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 25px;
+        margin-bottom: 28px;
+    }
+
+    .user-form-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 9px;
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .user-form-header h1 {
+        margin: 0;
+        color: #0f172a;
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .user-form-header h1 i {
+        color: #2563eb;
+        margin-right: 7px;
+    }
+
+    .user-form-header p {
+        margin: 8px 0 0;
+        color: #64748b;
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    .user-form-back-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+        padding: 10px 16px;
+        border: 1px solid #dbe3ef;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #334155;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .user-form-back-button:hover {
+        border-color: #bfdbfe;
+        background: #eff6ff;
+        color: #2563eb;
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================
+       MAIN CARD
+       ========================================= */
+
+    .user-form-card {
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    }
+
+
+    /* =========================================
+       CARD HEADER
+       ========================================= */
+
+    .user-form-card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 22px 28px;
+        border-bottom: 1px solid #e2e8f0;
+        background: linear-gradient(
+            135deg,
+            #2563eb 0%,
+            #1d4ed8 100%
+        );
+        color: #ffffff;
+    }
+
+    .user-form-card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.16);
+        font-size: 21px;
+    }
+
+    .user-form-card-header h2 {
+        margin: 0;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .user-form-card-header p {
+        margin: 4px 0 0;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       CARD BODY
+       ========================================= */
+
+    .user-form-card-body {
+        padding: 30px;
+    }
+
+
+    /* =========================================
+       SECTIONS
+       ========================================= */
+
+    .user-form-section {
+        margin-bottom: 30px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .user-form-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .user-form-section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+        border-radius: 10px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 17px;
+    }
+
+    .user-form-section-heading h3 {
+        margin: 0;
+        color: #0f172a;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .user-form-section-heading p {
+        margin: 3px 0 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       FORM GRID
+       ========================================= */
+
+    .user-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px 20px;
+    }
+
+    .user-form-field {
+        min-width: 0;
+    }
+
+    .user-form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+       INPUT WRAPPER
+       ========================================= */
+
+    .user-form-input-wrapper {
+        position: relative;
+    }
+
+    .user-form-input-wrapper > i {
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        z-index: 2;
+        color: #94a3b8;
+        font-size: 15px;
+        pointer-events: none;
+        transform: translateY(-50%);
+    }
+
+    .user-form-input-wrapper input,
+    .user-form-input-wrapper select,
+    .user-form-input-wrapper textarea {
+        width: 100%;
+        min-height: 45px;
+        padding: 10px 14px 10px 40px;
+        border: 1px solid #dbe3ef;
+        border-radius: 10px;
+        outline: none;
+        background: #ffffff;
+        color: #0f172a;
+        font-size: 14px;
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .user-form-input-wrapper select {
+        cursor: pointer;
+        appearance: auto;
+    }
+
+    .user-form-input-wrapper input::placeholder,
+    .user-form-input-wrapper textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    .user-form-input-wrapper input:hover,
+    .user-form-input-wrapper select:hover,
+    .user-form-input-wrapper textarea:hover {
+        border-color: #bfdbfe;
+    }
+
+    .user-form-input-wrapper input:focus,
+    .user-form-input-wrapper select:focus,
+    .user-form-input-wrapper textarea:focus {
+        border-color: #2563eb;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+    }
+
+
+    /* =========================================
+       ERROR MESSAGES
+       ========================================= */
+
+    .user-form-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        margin-top: 7px;
+        color: #dc2626;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .user-form-error i {
+        margin-top: 2px;
+    }
+
+
+    /* =========================================
+       ALERT
+       ========================================= */
+
+    .user-form-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 25px;
+        padding: 14px 16px;
+        border-radius: 11px;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .user-form-alert-danger {
+        border: 1px solid #fecaca;
+        background: #fef2f2;
+        color: #991b1b;
+    }
+
+    .user-form-alert-icon {
+        padding-top: 1px;
+        font-size: 16px;
+    }
+
+
+    /* =========================================
+       STATUS
+       ========================================= */
+
+    .user-form-status-section {
+        margin-bottom: 25px;
+        padding-bottom: 25px;
+    }
+
+    .user-form-status-box {
+        padding: 16px 18px;
+        border: 1px solid #dbe3ef;
+        border-radius: 12px;
+        background: #f8fafc;
+    }
+
+    .user-form-status-control {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-form-status-control input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        margin: 0;
+        cursor: pointer;
+        accent-color: #2563eb;
+    }
+
+    .user-form-status-label {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        cursor: pointer;
+    }
+
+    .user-form-status-title {
+        color: #0f172a;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .user-form-status-description {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+
+    /* =========================================
+       PASSWORD NOTICE
+       ========================================= */
+
+    .user-form-password-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 13px;
+        margin-bottom: 28px;
+        padding: 16px 18px;
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        background: #eff6ff;
+        color: #1e3a8a;
+    }
+
+    .user-form-password-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        border-radius: 9px;
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .user-form-password-notice strong {
+        display: block;
+        margin-bottom: 3px;
+        color: #1e3a8a;
+        font-size: 13px;
+    }
+
+    .user-form-password-notice p {
+        margin: 0;
+        color: #475569;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================
+       ACTIONS
+       ========================================= */
+
+    .user-form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding-top: 5px;
+    }
+
+    .user-form-cancel-button,
+    .user-form-submit-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .user-form-cancel-button {
+        border: 1px solid #dbe3ef;
+        background: #ffffff;
+        color: #475569;
+    }
+
+    .user-form-cancel-button:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+        color: #0f172a;
+    }
+
+    .user-form-submit-button {
+        border: 1px solid #2563eb;
+        background: #2563eb;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18);
+    }
+
+    .user-form-submit-button:hover {
+        border-color: #1d4ed8;
+        background: #1d4ed8;
+        color: #ffffff;
+        box-shadow: 0 7px 18px rgba(37, 99, 235, 0.24);
+        transform: translateY(-1px);
+    }
+
+    .user-form-submit-button:active {
+        transform: translateY(0);
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+       ========================================= */
+
+    @media (max-width: 768px) {
+
+        .user-form-page {
+            padding-bottom: 25px;
+        }
+
+        .user-form-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .user-form-header h1 {
+            font-size: 25px;
+        }
+
+        .user-form-back-button {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .user-form-card-header {
+            padding: 18px 20px;
+        }
+
+        .user-form-card-body {
+            padding: 22px 20px;
+        }
+
+        .user-form-grid {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+    }
+
+
+    @media (max-width: 576px) {
+
+        .user-form-header h1 {
+            font-size: 22px;
+        }
+
+        .user-form-header p {
+            font-size: 13px;
+        }
+
+        .user-form-card-header {
+            gap: 11px;
+        }
+
+        .user-form-card-icon {
+            width: 42px;
+            height: 42px;
+        }
+
+        .user-form-card-header h2 {
+            font-size: 17px;
+        }
+
+        .user-form-card-body {
+            padding: 20px 15px;
+        }
+
+        .user-form-section-heading {
+            align-items: flex-start;
+        }
+
+        .user-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .user-form-cancel-button,
+        .user-form-submit-button {
+            width: 100%;
+        }
+
+    }
+
+</style>
 
 {% endblock %}

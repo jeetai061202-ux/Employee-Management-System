@@ -131,6 +131,36 @@ Edit Department
 
 
                         <!-- ========================================= -->
+                        <!-- Department Code -->
+                        <!-- ========================================= -->
+
+                        <div class="mb-3">
+
+                            <label
+                                for="{{ form.code.id_for_label }}"
+                                class="form-label fw-semibold">
+
+                                Department Code
+
+                            </label>
+
+                            {{ form.code }}
+
+
+                            {% if form.code.errors %}
+
+                                <div class="text-danger small mt-1">
+
+                                    {{ form.code.errors }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ========================================= -->
                         <!-- Description -->
                         <!-- ========================================= -->
 

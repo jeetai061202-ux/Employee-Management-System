@@ -14,13 +14,37 @@ from django.views.decorators.http import require_POST
 
 from accounts.decorators import role_required
 from employees.models import Employee
+from departments.models import Department
 
 from .forms import AttendanceForm
 from .models import Attendance
 
 
+# ==========================================================
+# ROLE HELPERS
+# ==========================================================
+
+def _role_name(user):
+    """
+    Returns the current user's role name.
+
+    The redesigned User model stores role as a ForeignKey
+    to the Role model.
+    """
+    role = getattr(user, "role", None)
+
+    if role is None:
+        return None
+
+    return getattr(role, "name", None)
+
+
 def _is_admin_or_hr(user):
-    return user.role in ["ADMIN", "HR"]
+    return _role_name(user) in ["Admin", "HR"]
+
+
+def _is_employee(user):
+    return _role_name(user) == "Employee"
 
 
 def _get_logged_in_employee(user):
@@ -36,6 +60,11 @@ def _get_logged_in_employee(user):
         None
     )
 
+
+# ==========================================================
+# ATTENDANCE LIST
+# ADMIN + HR + EMPLOYEE
+# ==========================================================
 
 @login_required
 @role_required("ADMIN", "HR", "EMPLOYEE")
@@ -53,22 +82,42 @@ def attendance_list(request):
         ""
     ).strip()
 
-    # =====================================================
-    # ADMIN / HR
-    # =====================================================
+    # ======================================================
+    # ACTIVE DEPARTMENTS
+    # ======================================================
 
     if _is_admin_or_hr(request.user):
 
-        employees = Employee.objects.select_related(
-            "department",
-            "user"
-        ).filter(
-            is_active=True
+        departments = (
+            Department.objects
+            .filter(is_active=True)
+            .order_by("name")
         )
 
-    # =====================================================
+    else:
+
+        departments = []
+
+    # ======================================================
+    # ADMIN / HR
+    # ======================================================
+
+    if _is_admin_or_hr(request.user):
+
+        employees = (
+            Employee.objects
+            .select_related(
+                "department",
+                "user"
+            )
+            .filter(
+                is_active=True
+            )
+        )
+
+    # ======================================================
     # EMPLOYEE
-    # =====================================================
+    # ======================================================
 
     else:
 
@@ -119,17 +168,21 @@ def attendance_list(request):
             )
 
         # Employee sees ONLY their own record.
-        employees = Employee.objects.select_related(
-            "department",
-            "user"
-        ).filter(
-            pk=employee.pk,
-            is_active=True
+        employees = (
+            Employee.objects
+            .select_related(
+                "department",
+                "user"
+            )
+            .filter(
+                pk=employee.pk,
+                is_active=True
+            )
         )
 
-    # =====================================================
+    # ======================================================
     # SEARCH
-    # =====================================================
+    # ======================================================
 
     if search:
 
@@ -139,29 +192,39 @@ def attendance_list(request):
             | Q(employee_id__icontains=search)
         )
 
-    # =====================================================
+    # ======================================================
     # DEPARTMENT FILTER
-    # =====================================================
+    # ======================================================
 
     if department:
 
-        try:
+        # Department IDs are now UUIDs.
+        if _is_admin_or_hr(request.user):
 
-            department_id = int(
-                department
-            )
+            valid_department = Department.objects.filter(
+                id=department,
+                is_active=True
+            ).exists()
+
+            if valid_department:
+
+                employees = employees.filter(
+                    department_id=department
+                )
+
+            else:
+
+                employees = employees.none()
+
+        else:
 
             employees = employees.filter(
-                department_id=department_id
+                department_id=department
             )
 
-        except (ValueError, TypeError):
-
-            employees = employees.none()
-
-    # =====================================================
+    # ======================================================
     # TODAY'S ATTENDANCE
-    # =====================================================
+    # ======================================================
 
     attendance_data = []
 
@@ -204,9 +267,9 @@ def attendance_list(request):
             }
         )
 
-    # =====================================================
+    # ======================================================
     # COUNTS
-    # =====================================================
+    # ======================================================
 
     if _is_admin_or_hr(request.user):
 
@@ -245,26 +308,9 @@ def attendance_list(request):
             present_count = 0
             halfday_count = 0
 
-    # =====================================================
-    # DEPARTMENTS
-    # =====================================================
-
-    if _is_admin_or_hr(request.user):
-
-        departments = (
-            Employee.objects
-            .filter(is_active=True)
-            .values_list(
-                "department",
-                flat=True
-            )
-            .distinct()
-            .order_by("department")
-        )
-
-    else:
-
-        departments = []
+    # ======================================================
+    # CONTEXT
+    # ======================================================
 
     context = {
         "attendance_data": attendance_data,
@@ -283,6 +329,10 @@ def attendance_list(request):
     )
 
 
+# ==========================================================
+# ADD ATTENDANCE
+# ==========================================================
+
 @login_required
 @role_required("ADMIN", "HR", "EMPLOYEE")
 def add_attendance(request):
@@ -291,11 +341,11 @@ def add_attendance(request):
 
     employee = None
 
-    # =====================================================
+    # ======================================================
     # EMPLOYEE
-    # =====================================================
+    # ======================================================
 
-    if request.user.role == "EMPLOYEE":
+    if _is_employee(request.user):
 
         employee = _get_logged_in_employee(
             request.user
@@ -323,9 +373,9 @@ def add_attendance(request):
                 "attendance_list"
             )
 
-    # =====================================================
+    # ======================================================
     # POST
-    # =====================================================
+    # ======================================================
 
     if request.method == "POST":
 
@@ -341,7 +391,7 @@ def add_attendance(request):
             )
 
             # Employee can ONLY mark their own attendance.
-            if request.user.role == "EMPLOYEE":
+            if _is_employee(request.user):
 
                 if (
                     selected_employee is None
@@ -383,9 +433,9 @@ def add_attendance(request):
                     "attendance_list"
                 )
 
-            # =================================================
+            # ==================================================
             # DUPLICATE CHECK
-            # =================================================
+            # ==================================================
 
             existing = Attendance.objects.filter(
                 employee=selected_employee,
@@ -403,9 +453,9 @@ def add_attendance(request):
                     "attendance_list"
                 )
 
-            # =================================================
+            # ==================================================
             # SERVER LIVE TIME
-            # =================================================
+            # ==================================================
 
             now = timezone.localtime()
 
@@ -426,6 +476,8 @@ def add_attendance(request):
                 remarks=form.cleaned_data.get(
                     "remarks"
                 ),
+                created_by=request.user,
+                updated_by=request.user,
             )
 
             attendance.full_clean()
@@ -441,9 +493,9 @@ def add_attendance(request):
                 "attendance_list"
             )
 
-    # =====================================================
+    # ======================================================
     # GET
-    # =====================================================
+    # ======================================================
 
     else:
 
@@ -469,6 +521,10 @@ def add_attendance(request):
     )
 
 
+# ==========================================================
+# EDIT ATTENDANCE
+# ==========================================================
+
 @login_required
 @role_required("ADMIN", "HR", "EMPLOYEE")
 def edit_attendance(request, pk):
@@ -481,11 +537,11 @@ def edit_attendance(request, pk):
         pk=pk
     )
 
-    # =====================================================
+    # ======================================================
     # EMPLOYEE OWNERSHIP CHECK
-    # =====================================================
+    # ======================================================
 
-    if request.user.role == "EMPLOYEE":
+    if _is_employee(request.user):
 
         employee = _get_logged_in_employee(
             request.user
@@ -513,9 +569,9 @@ def edit_attendance(request, pk):
                 "attendance_list"
             )
 
-    # =====================================================
+    # ======================================================
     # POST
-    # =====================================================
+    # ======================================================
 
     if request.method == "POST":
 
@@ -538,6 +594,8 @@ def edit_attendance(request, pk):
                     "remarks"
                 )
             )
+
+            attendance.updated_by = request.user
 
             # Check-In and Check-Out remain server-controlled.
 
@@ -587,9 +645,9 @@ def edit_attendance(request, pk):
                 "attendance_list"
             )
 
-    # =====================================================
+    # ======================================================
     # GET
-    # =====================================================
+    # ======================================================
 
     else:
 
@@ -608,6 +666,10 @@ def edit_attendance(request, pk):
     )
 
 
+# ==========================================================
+# DELETE ATTENDANCE
+# ==========================================================
+
 @login_required
 @role_required("ADMIN", "HR", "EMPLOYEE")
 @require_POST
@@ -618,11 +680,11 @@ def delete_attendance(request, pk):
         pk=pk
     )
 
-    # =====================================================
+    # ======================================================
     # EMPLOYEE OWNERSHIP CHECK
-    # =====================================================
+    # ======================================================
 
-    if request.user.role == "EMPLOYEE":
+    if _is_employee(request.user):
 
         employee = _get_logged_in_employee(
             request.user
@@ -662,6 +724,10 @@ def delete_attendance(request, pk):
     )
 
 
+# ==========================================================
+# CHECK IN
+# ==========================================================
+
 @login_required
 @role_required("ADMIN", "HR", "EMPLOYEE")
 @require_POST
@@ -673,11 +739,11 @@ def check_in(request, employee_id):
         is_active=True
     )
 
-    # =====================================================
+    # ======================================================
     # EMPLOYEE OWNERSHIP CHECK
-    # =====================================================
+    # ======================================================
 
-    if request.user.role == "EMPLOYEE":
+    if _is_employee(request.user):
 
         logged_in_employee = _get_logged_in_employee(
             request.user
@@ -707,9 +773,9 @@ def check_in(request, employee_id):
 
     today = timezone.localdate()
 
-    # =====================================================
+    # ======================================================
     # DUPLICATE CHECK
-    # =====================================================
+    # ======================================================
 
     existing = Attendance.objects.filter(
         employee=employee,
@@ -727,9 +793,9 @@ def check_in(request, employee_id):
             "attendance_list"
         )
 
-    # =====================================================
+    # ======================================================
     # ACTUAL SERVER LIVE CHECK-IN TIME
-    # =====================================================
+    # ======================================================
 
     now = timezone.localtime()
 
@@ -746,7 +812,9 @@ def check_in(request, employee_id):
         status="Present",
         working_hours=Decimal(
             "0.00"
-        )
+        ),
+        created_by=request.user,
+        updated_by=request.user,
     )
 
     attendance.full_clean()
@@ -763,6 +831,10 @@ def check_in(request, employee_id):
     )
 
 
+# ==========================================================
+# CHECK OUT
+# ==========================================================
+
 @login_required
 @role_required("ADMIN", "HR", "EMPLOYEE")
 @require_POST
@@ -776,11 +848,11 @@ def check_out(request, attendance_id):
         id=attendance_id
     )
 
-    # =====================================================
+    # ======================================================
     # EMPLOYEE OWNERSHIP CHECK
-    # =====================================================
+    # ======================================================
 
-    if request.user.role == "EMPLOYEE":
+    if _is_employee(request.user):
 
         employee = _get_logged_in_employee(
             request.user
@@ -808,9 +880,9 @@ def check_out(request, attendance_id):
                 "attendance_list"
             )
 
-    # =====================================================
+    # ======================================================
     # ALREADY CHECKED OUT
-    # =====================================================
+    # ======================================================
 
     if attendance.check_out:
 
@@ -823,9 +895,9 @@ def check_out(request, attendance_id):
             "attendance_list"
         )
 
-    # =====================================================
+    # ======================================================
     # CHECK-IN REQUIRED
-    # =====================================================
+    # ======================================================
 
     if not attendance.check_in:
 
@@ -838,9 +910,9 @@ def check_out(request, attendance_id):
             "attendance_list"
         )
 
-    # =====================================================
+    # ======================================================
     # ACTUAL SERVER LIVE CURRENT TIME
-    # =====================================================
+    # ======================================================
 
     now = timezone.localtime()
 
@@ -857,9 +929,9 @@ def check_out(request, attendance_id):
         timezone.get_current_timezone()
     )
 
-    # =====================================================
+    # ======================================================
     # MINIMUM CHECKOUT
-    # =====================================================
+    # ======================================================
 
     if attendance.status == "Present":
 
@@ -886,9 +958,9 @@ def check_out(request, attendance_id):
             "attendance_list"
         )
 
-    # =====================================================
+    # ======================================================
     # PREVENT EARLY CHECKOUT
-    # =====================================================
+    # ======================================================
 
     if current_datetime < minimum_checkout:
 
@@ -928,9 +1000,9 @@ def check_out(request, attendance_id):
             "attendance_list"
         )
 
-    # =====================================================
+    # ======================================================
     # RECORD ACTUAL LIVE CHECKOUT TIME
-    # =====================================================
+    # ======================================================
 
     checkout_time = current_datetime.time()
 
@@ -954,6 +1026,7 @@ def check_out(request, attendance_id):
 
     attendance.check_out = checkout_time
     attendance.working_hours = working_hours
+    attendance.updated_by = request.user
 
     attendance.full_clean()
     attendance.save()

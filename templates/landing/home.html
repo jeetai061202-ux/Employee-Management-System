@@ -1,0 +1,1138 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Professional Human Resource Management System"
+    >
+
+    <title>
+        Your Company Name | HRMS Portal
+    </title>
+
+
+    <!-- =========================================
+         GOOGLE FONT
+    ========================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =========================================
+         BOOTSTRAP ICONS
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+
+    <!-- =========================================
+         LANDING PAGE CSS
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{% static 'css/landing.css' %}"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     NAVBAR
+========================================= -->
+
+<header class="landing-navbar">
+
+    <div class="landing-container navbar-inner">
+
+
+        <!-- Company Brand -->
+
+        <a
+            href="#"
+            class="company-brand"
+        >
+
+            <div class="company-logo">
+
+                <i class="bi bi-buildings"></i>
+
+            </div>
+
+            <div class="company-brand-text">
+
+                <span class="company-name">
+                    Your Company Name
+                </span>
+
+                <span class="company-subtitle">
+                    HRMS PORTAL
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <!-- Desktop Navigation -->
+
+        <nav class="landing-nav">
+
+            <a href="#features">
+                Features
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
+
+            <a
+                href="{% url 'login' %}"
+                class="nav-login-button"
+            >
+
+                <i class="bi bi-box-arrow-in-right"></i>
+
+                Employee Login
+
+            </a>
+
+        </nav>
+
+
+        <!-- Mobile Menu Button -->
+
+        <button
+            type="button"
+            class="mobile-menu-button"
+            id="mobileMenuButton"
+            aria-label="Open navigation"
+        >
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================
+     MOBILE NAVIGATION
+========================================= -->
+
+<div
+    class="mobile-navigation"
+    id="mobileNavigation"
+>
+
+    <a href="#features">
+        Features
+    </a>
+
+    <a href="#about">
+        About
+    </a>
+
+    <a href="#contact">
+        Contact
+    </a>
+
+    <a
+        href="{% url 'login' %}"
+        class="mobile-login-button"
+    >
+
+        <i class="bi bi-box-arrow-in-right"></i>
+
+        Employee Login
+
+    </a>
+
+</div>
+
+
+
+<!-- =========================================
+     HERO SECTION
+========================================= -->
+
+<main>
+
+<section class="hero-section">
+
+    <div class="hero-background-shape hero-shape-one"></div>
+
+    <div class="hero-background-shape hero-shape-two"></div>
+
+
+    <div class="landing-container hero-container">
+
+
+        <!-- Hero Content -->
+
+        <div class="hero-content">
+
+
+            <div class="hero-badge">
+
+                <span class="hero-badge-dot"></span>
+
+                Employee Management Platform
+
+            </div>
+
+
+            <h1>
+
+                Empowering Your People.
+
+                <span>
+                    Simplifying HR.
+                </span>
+
+            </h1>
+
+
+            <p class="hero-description">
+
+                A secure, modern and centralized HRMS platform
+                designed to help your organization manage
+                employees, attendance, leave, payroll and
+                workforce operations with ease.
+
+            </p>
+
+
+            <div class="hero-actions">
+
+                <a
+                    href="{% url 'login' %}"
+                    class="primary-button"
+                >
+
+                    <i class="bi bi-box-arrow-in-right"></i>
+
+                    Employee Login
+
+                    <i class="bi bi-arrow-right button-arrow"></i>
+
+                </a>
+
+
+                <a
+                    href="#features"
+                    class="secondary-button"
+                >
+
+                    Explore Platform
+
+                    <i class="bi bi-arrow-down"></i>
+
+                </a>
+
+            </div>
+
+
+            <div class="hero-trust">
+
+                <div class="trust-icon">
+
+                    <i class="bi bi-shield-check"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Secure &amp; Private
+                    </strong>
+
+                    <span>
+                        Your workforce data stays protected.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================
+             DASHBOARD PREVIEW
+        ====================================== -->
+
+        <div class="hero-visual">
+
+            <div class="dashboard-window">
+
+
+                <div class="dashboard-window-header">
+
+                    <div class="window-controls">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                    <div class="window-title">
+
+                        HRMS Dashboard
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-preview">
+
+
+                    <!-- Preview Sidebar -->
+
+                    <div class="preview-sidebar">
+
+                        <div class="preview-logo">
+
+                            <i class="bi bi-buildings"></i>
+
+                        </div>
+
+                        <div class="preview-menu active">
+
+                            <i class="bi bi-grid"></i>
+
+                        </div>
+
+                        <div class="preview-menu">
+
+                            <i class="bi bi-people"></i>
+
+                        </div>
+
+                        <div class="preview-menu">
+
+                            <i class="bi bi-calendar-check"></i>
+
+                        </div>
+
+                        <div class="preview-menu">
+
+                            <i class="bi bi-file-earmark-text"></i>
+
+                        </div>
+
+                        <div class="preview-menu">
+
+                            <i class="bi bi-bar-chart"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Preview Content -->
+
+                    <div class="preview-content">
+
+
+                        <div class="preview-topbar">
+
+                            <div>
+
+                                <span class="preview-small-title">
+                                    Welcome back
+                                </span>
+
+                                <strong>
+                                    HR Dashboard
+                                </strong>
+
+                            </div>
+
+                            <div class="preview-user">
+
+                                <i class="bi bi-person-circle"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Preview Cards -->
+
+                        <div class="preview-cards">
+
+
+                            <div class="preview-card">
+
+                                <span>
+                                    Employees
+                                </span>
+
+                                <strong>
+                                    248
+                                </strong>
+
+                                <small>
+                                    <i class="bi bi-arrow-up"></i>
+                                    Workforce
+                                </small>
+
+                            </div>
+
+
+                            <div class="preview-card">
+
+                                <span>
+                                    Attendance
+                                </span>
+
+                                <strong>
+                                    94%
+                                </strong>
+
+                                <small>
+                                    <i class="bi bi-check-circle"></i>
+                                    Today
+                                </small>
+
+                            </div>
+
+
+                            <div class="preview-card">
+
+                                <span>
+                                    On Leave
+                                </span>
+
+                                <strong>
+                                    12
+                                </strong>
+
+                                <small>
+                                    Current
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Preview Chart -->
+
+                        <div class="preview-chart-card">
+
+                            <div class="preview-chart-header">
+
+                                <div>
+
+                                    <span>
+                                        Workforce Overview
+                                    </span>
+
+                                    <strong>
+                                        Employee Activity
+                                    </strong>
+
+                                </div>
+
+                                <i class="bi bi-three-dots"></i>
+
+                            </div>
+
+
+                            <div class="preview-chart">
+
+                                <div class="chart-bars">
+
+                                    <span style="height: 45%;"></span>
+
+                                    <span style="height: 65%;"></span>
+
+                                    <span style="height: 52%;"></span>
+
+                                    <span style="height: 78%;"></span>
+
+                                    <span style="height: 62%;"></span>
+
+                                    <span style="height: 88%;"></span>
+
+                                    <span style="height: 72%;"></span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Floating Security Card -->
+
+            <div class="floating-card floating-security-card">
+
+                <div class="floating-card-icon">
+
+                    <i class="bi bi-shield-check"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Secure Access
+                    </strong>
+
+                    <span>
+                        Protected employee data
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Floating Attendance Card -->
+
+            <div class="floating-card floating-attendance-card">
+
+                <div class="floating-card-icon">
+
+                    <i class="bi bi-calendar-check"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        94% Attendance
+                    </strong>
+
+                    <span>
+                        Workforce today
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     FEATURES
+========================================= -->
+
+<section
+    class="features-section"
+    id="features"
+>
+
+    <div class="landing-container">
+
+
+        <div class="section-heading">
+
+            <span class="section-label">
+                HRMS PLATFORM
+            </span>
+
+            <h2>
+                Everything your organization needs.
+            </h2>
+
+            <p>
+                A unified platform built to simplify
+                everyday workforce management.
+            </p>
+
+        </div>
+
+
+        <div class="features-grid">
+
+
+            <!-- Employee Management -->
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+
+                    <i class="bi bi-people"></i>
+
+                </div>
+
+                <h3>
+                    Employee Management
+                </h3>
+
+                <p>
+                    Manage employee profiles, departments,
+                    designations and workforce information
+                    from one centralized platform.
+                </p>
+
+            </div>
+
+
+            <!-- Attendance -->
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+
+                    <i class="bi bi-calendar-check"></i>
+
+                </div>
+
+                <h3>
+                    Attendance
+                </h3>
+
+                <p>
+                    Track employee attendance, working hours,
+                    check-in and check-out records with ease.
+                </p>
+
+            </div>
+
+
+            <!-- Leave -->
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+
+                    <i class="bi bi-calendar2-week"></i>
+
+                </div>
+
+                <h3>
+                    Leave Management
+                </h3>
+
+                <p>
+                    Simplify leave requests, approvals and
+                    employee leave tracking.
+                </p>
+
+            </div>
+
+
+            <!-- Payroll -->
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+
+                    <i class="bi bi-cash-stack"></i>
+
+                </div>
+
+                <h3>
+                    Payroll
+                </h3>
+
+                <p>
+                    Keep payroll operations organized with
+                    centralized employee compensation data.
+                </p>
+
+            </div>
+
+
+            <!-- Reports -->
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+
+                    <i class="bi bi-bar-chart-line"></i>
+
+                </div>
+
+                <h3>
+                    Reports &amp; Analytics
+                </h3>
+
+                <p>
+                    Access meaningful workforce insights
+                    through clear and actionable reports.
+                </p>
+
+            </div>
+
+
+            <!-- Security -->
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+
+                    <i class="bi bi-shield-lock"></i>
+
+                </div>
+
+                <h3>
+                    Secure Access
+                </h3>
+
+                <p>
+                    Role-based access helps keep sensitive
+                    employee and organizational information secure.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     ABOUT SECTION
+========================================= -->
+
+<section
+    class="about-section"
+    id="about"
+>
+
+    <div class="landing-container about-container">
+
+
+        <div class="about-content">
+
+            <span class="section-label">
+                ABOUT THE PLATFORM
+            </span>
+
+            <h2>
+                One platform.
+                <span>
+                    One connected workforce.
+                </span>
+            </h2>
+
+            <p>
+                Our HRMS platform brings essential workforce
+                operations together in one secure environment,
+                helping HR teams and employees work smarter,
+                faster and more efficiently.
+            </p>
+
+            <p>
+                From employee information and attendance to
+                leave, payroll and reporting, everything is
+                designed around a simple and professional
+                employee experience.
+            </p>
+
+            <a
+                href="{% url 'login' %}"
+                class="primary-button"
+            >
+
+                Access Employee Portal
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="about-highlights">
+
+
+            <div class="about-highlight">
+
+                <div class="about-highlight-icon">
+
+                    <i class="bi bi-lightning-charge"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Simple
+                    </strong>
+
+                    <span>
+                        Easy-to-use workforce tools
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-highlight">
+
+                <div class="about-highlight-icon">
+
+                    <i class="bi bi-shield-check"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Secure
+                    </strong>
+
+                    <span>
+                        Role-based access and protection
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-highlight">
+
+                <div class="about-highlight-icon">
+
+                    <i class="bi bi-graph-up-arrow"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Scalable
+                    </strong>
+
+                    <span>
+                        Built for growing organizations
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-highlight">
+
+                <div class="about-highlight-icon">
+
+                    <i class="bi bi-phone"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        Responsive
+                    </strong>
+
+                    <span>
+                        Works across modern devices
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     LOGIN CTA
+========================================= -->
+
+<section class="login-cta-section">
+
+    <div class="landing-container">
+
+        <div class="login-cta-card">
+
+            <div>
+
+                <span class="section-label">
+                    EMPLOYEE PORTAL
+                </span>
+
+                <h2>
+                    Ready to access your HRMS?
+                </h2>
+
+                <p>
+                    Sign in to manage your employee profile,
+                    attendance, leave and other workforce
+                    services.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'login' %}"
+                class="cta-login-button"
+            >
+
+                <i class="bi bi-box-arrow-in-right"></i>
+
+                Employee Login
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+
+<!-- =========================================
+     FOOTER
+========================================= -->
+
+<footer
+    class="landing-footer"
+    id="contact"
+>
+
+    <div class="landing-container footer-container">
+
+
+        <div class="footer-brand">
+
+            <div class="company-brand">
+
+                <div class="company-logo">
+
+                    <i class="bi bi-buildings"></i>
+
+                </div>
+
+                <div class="company-brand-text">
+
+                    <span class="company-name">
+                        Your Company Name
+                    </span>
+
+                    <span class="company-subtitle">
+                        HRMS PORTAL
+                    </span>
+
+                </div>
+
+            </div>
+
+            <p>
+                Professional workforce management,
+                designed for modern organizations.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <div>
+
+                <h4>
+                    Platform
+                </h4>
+
+                <a href="#features">
+                    Features
+                </a>
+
+                <a href="#about">
+                    About
+                </a>
+
+                <a href="{% url 'login' %}">
+                    Employee Login
+                </a>
+
+            </div>
+
+
+            <div>
+
+                <h4>
+                    Support
+                </h4>
+
+                <a href="#contact">
+                    Contact
+                </a>
+
+                <a href="#">
+                    Privacy
+                </a>
+
+                <a href="#">
+                    Terms
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <div class="landing-container footer-bottom-inner">
+
+            <span>
+                © {% now "Y" %} Your Company Name.
+                All rights reserved.
+            </span>
+
+            <span>
+                Human Resource Management System
+            </span>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+
+<!-- =========================================
+     MOBILE MENU SCRIPT
+========================================= -->
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const button =
+                document.getElementById(
+                    "mobileMenuButton"
+                );
+
+            const navigation =
+                document.getElementById(
+                    "mobileNavigation"
+                );
+
+
+            if (!button || !navigation) {
+
+                return;
+
+            }
+
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    navigation.classList.toggle(
+                        "show"
+                    );
+
+                }
+            );
+
+
+            const links =
+                navigation.querySelectorAll(
+                    "a"
+                );
+
+
+            links.forEach(
+                function (link) {
+
+                    link.addEventListener(
+                        "click",
+                        function () {
+
+                            navigation.classList.remove(
+                                "show"
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

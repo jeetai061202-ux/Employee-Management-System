@@ -6,71 +6,824 @@ Employees
 
 {% block content %}
 
-<div class="container-fluid">
+<style>
 
-    <!-- ========================================================= -->
-    <!-- PAGE HEADING -->
-    <!-- ========================================================= -->
+/* =========================================================
+   EMPLOYEE MANAGEMENT
+========================================================= */
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+.employee-page {
+    max-width: 1600px;
+    margin: 0 auto;
+}
 
-        <div>
 
-            <h2 class="fw-bold">
+/* =========================================================
+   PAGE HEADER
+========================================================= */
 
-                {% if user.role == "ADMIN" or user.role == "HR" %}
-                    Employee Management
+.employee-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.employee-page-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.employee-page-icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 23px;
+}
+
+.employee-page-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.employee-page-heading h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.employee-page-heading p {
+    margin: 7px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   HEADER BUTTONS
+========================================================= */
+
+.employee-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+
+.employee-header-actions .btn {
+    min-height: 42px;
+    padding: 9px 15px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+}
+
+.employee-header-actions .btn-primary {
+    background: #2563eb;
+    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.18);
+}
+
+.employee-header-actions .btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.employee-header-actions .btn-success {
+    background: #15803d;
+}
+
+.employee-header-actions .btn-danger {
+    background: #dc2626;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.employee-stat-card {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+    transition: all 0.2s ease;
+}
+
+.employee-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.employee-stat-card::after {
+    content: "";
+    position: absolute;
+    width: 110px;
+    height: 110px;
+    top: -50px;
+    right: -45px;
+    border-radius: 50%;
+    background: #f8fafc;
+}
+
+.employee-stat-top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.employee-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+}
+
+.employee-stat-icon.total {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.employee-stat-icon.active {
+    background: #ecfdf5;
+    color: #16a34a;
+}
+
+.employee-stat-icon.inactive {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.employee-stat-content {
+    position: relative;
+    z-index: 1;
+    margin-top: 18px;
+}
+
+.employee-stat-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.employee-stat-number {
+    display: block;
+    color: #0f172a;
+    font-size: 29px;
+    line-height: 1;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   FILTER CARD
+========================================================= */
+
+.employee-filter-card {
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+}
+
+.employee-filter-header {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 17px 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.employee-filter-header-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.employee-filter-header strong {
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.employee-filter-body {
+    padding: 19px 20px;
+}
+
+.employee-filter-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.employee-filter-body .form-control,
+.employee-filter-body .form-select {
+    min-height: 43px;
+    border: 1px solid #dbe3ed;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 13px;
+    box-shadow: none;
+}
+
+.employee-filter-body .form-control:focus,
+.employee-filter-body .form-select:focus {
+    background: #ffffff;
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+}
+
+.employee-search-button {
+    width: 100%;
+    min-height: 43px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 9px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    transition: background 0.2s ease;
+}
+
+.employee-search-button:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+
+.employee-table-card {
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+
+.employee-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 19px 21px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.employee-table-title {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.employee-table-title-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 16px;
+}
+
+.employee-table-title strong {
+    display: block;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.employee-table-title span {
+    display: block;
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.employee-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.employee-table {
+    width: 100%;
+    min-width: 850px;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.employee-table thead th {
+    padding: 13px 18px;
+    background: #f8fafc;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.employee-table tbody td {
+    padding: 14px 18px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.employee-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.employee-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.employee-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   EMPLOYEE PROFILE
+========================================================= */
+
+.employee-profile {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.employee-avatar {
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border: 2px solid #ffffff;
+    border-radius: 11px;
+    box-shadow: 0 2px 7px rgba(15, 23, 42, 0.12);
+}
+
+.employee-avatar-placeholder {
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 18px;
+}
+
+.employee-name {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.employee-you-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 6px;
+    padding: 3px 7px;
+    border-radius: 20px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.employee-id {
+    color: #475569;
+    font-family: monospace;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.employee-department {
+    color: #475569;
+    font-weight: 600;
+}
+
+.employee-not-assigned {
+    color: #94a3b8;
+    font-style: italic;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.employee-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.employee-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.employee-status.active {
+    background: #ecfdf5;
+    color: #15803d;
+}
+
+.employee-status.active .employee-status-dot {
+    background: #22c55e;
+}
+
+.employee-status.inactive {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.employee-status.inactive .employee-status-dot {
+    background: #ef4444;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.employee-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.employee-action-button {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.employee-action-button.view {
+    color: #2563eb;
+}
+
+.employee-action-button.view:hover {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+.employee-action-button.edit {
+    color: #d97706;
+}
+
+.employee-action-button.edit:hover {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #b45309;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.employee-empty-state {
+    padding: 65px 20px;
+    text-align: center;
+}
+
+.employee-empty-icon {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 16px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    color: #94a3b8;
+    font-size: 30px;
+}
+
+.employee-empty-state h3 {
+    margin: 0 0 6px;
+    color: #334155;
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.employee-empty-state p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   DATATABLES
+========================================================= */
+
+.dataTables_wrapper {
+    padding: 18px 20px 20px;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 14px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 7px;
+    padding: 7px 10px;
+    border: 1px solid #dbe3ed !important;
+    border-radius: 8px !important;
+    outline: none;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: #93c5fd !important;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    padding: 5px 8px;
+    border: 1px solid #dbe3ed;
+    border-radius: 7px;
+    outline: none;
+}
+
+.dataTables_wrapper .dt-buttons {
+    margin-bottom: 12px;
+}
+
+.dataTables_wrapper .dt-button {
+    padding: 5px 10px !important;
+    border: 1px solid #dbe3ed !important;
+    border-radius: 7px !important;
+    background: #ffffff !important;
+    color: #475569 !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+}
+
+.dataTables_wrapper .dt-button:hover {
+    background: #eff6ff !important;
+    border-color: #bfdbfe !important;
+    color: #2563eb !important;
+}
+
+.dataTables_wrapper .dataTables_info {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 7px !important;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .employee-filter-body .row > div {
+        margin-bottom: 5px;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .employee-page-header {
+        flex-direction: column;
+    }
+
+    .employee-header-actions {
+        width: 100%;
+    }
+
+    .employee-header-actions .btn {
+        flex: 1;
+    }
+
+    .employee-page-heading h2 {
+        font-size: 23px;
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .employee-page-heading {
+        gap: 11px;
+    }
+
+    .employee-page-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+
+    .employee-page-heading h2 {
+        font-size: 21px;
+    }
+
+    .employee-page-heading p {
+        font-size: 12px;
+    }
+
+    .employee-header-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .employee-header-actions .btn-primary {
+        grid-column: 1 / -1;
+    }
+
+    .employee-filter-body {
+        padding: 15px;
+    }
+
+    .employee-table-header {
+        padding: 16px;
+    }
+
+    .employee-table {
+        min-width: 780px;
+    }
+
+}
+
+</style>
+
+
+<div class="employee-page">
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="employee-page-header">
+
+        <div class="employee-page-heading">
+
+            <div class="employee-page-icon">
+
+                {% if user.role.name == "Admin" or user.role.name == "HR" %}
+
+                    <i class="bi bi-people-fill"></i>
+
                 {% else %}
-                    My Employee Profile
+
+                    <i class="bi bi-person-badge-fill"></i>
+
                 {% endif %}
 
-            </h2>
+            </div>
 
-            <p class="text-muted mb-0">
+            <div>
 
-                {% if user.role == "ADMIN" or user.role == "HR" %}
-                    Manage all employees in your organization.
-                {% else %}
-                    View and update your employee information.
-                {% endif %}
+                <span class="employee-page-label">
+                    HRMS PLATFORM
+                </span>
 
-            </p>
+                <h2>
+
+                    {% if user.role.name == "Admin" or user.role.name == "HR" %}
+
+                        Employee Management
+
+                    {% else %}
+
+                        My Employee Profile
+
+                    {% endif %}
+
+                </h2>
+
+                <p>
+
+                    {% if user.role.name == "Admin" or user.role.name == "HR" %}
+
+                        Manage your organization's workforce from one centralized platform.
+
+                    {% else %}
+
+                        View and manage your employee information.
+
+                    {% endif %}
+
+                </p>
+
+            </div>
 
         </div>
 
 
-        <!-- ========================================================= -->
-        <!-- ADMIN / HR ACTIONS -->
-        <!-- ========================================================= -->
+        <!-- =================================================
+             ADMIN / HR ACTIONS
+        ================================================== -->
 
-        {% if user.role == "ADMIN" or user.role == "HR" %}
+        {% if user.role.name == "Admin" or user.role.name == "HR" %}
 
-            <div>
+            <div class="employee-header-actions">
 
-                <!-- Excel -->
                 <a
                     href="{% url 'export_excel' %}"
-                    class="btn btn-success">
+                    class="btn btn-success"
+                >
+
                     <i class="bi bi-file-earmark-excel"></i>
+
                     Excel
+
                 </a>
 
-
-                <!-- PDF -->
                 <a
                     href="{% url 'export_pdf' %}"
-                    class="btn btn-danger">
+                    class="btn btn-danger"
+                >
+
                     <i class="bi bi-file-earmark-pdf"></i>
+
                     PDF
+
                 </a>
 
-
-                <!-- Add Employee -->
                 <a
                     href="{% url 'add_employee' %}"
-                    class="btn btn-primary">
+                    class="btn btn-primary"
+                >
+
                     <i class="bi bi-person-plus-fill"></i>
+
                     Add Employee
+
                 </a>
 
             </div>
@@ -80,26 +833,45 @@ Employees
     </div>
 
 
-    <!-- ========================================================= -->
-    <!-- ADMIN / HR STATISTICS -->
-    <!-- ========================================================= -->
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
 
-    {% if user.role == "ADMIN" or user.role == "HR" %}
+    {% if user.role.name == "Admin" or user.role.name == "HR" %}
 
-        <div class="row mb-4">
+        <div class="row g-3 mb-4">
 
-            <!-- Total Employees -->
-            <div class="col-lg-4 col-md-6 mb-3">
 
-                <div class="card bg-primary text-white shadow">
+            <!-- TOTAL -->
 
-                    <div class="card-body">
+            <div class="col-lg-4 col-md-6">
 
-                        <h6>Total Employees</h6>
+                <div class="employee-stat-card">
 
-                        <h2>
+                    <div class="employee-stat-top">
+
+                        <div class="employee-stat-icon total">
+
+                            <i class="bi bi-people-fill"></i>
+
+                        </div>
+
+                        <i
+                            class="bi bi-three-dots"
+                            style="color:#cbd5e1;"
+                        ></i>
+
+                    </div>
+
+                    <div class="employee-stat-content">
+
+                        <span class="employee-stat-label">
+                            Total Employees
+                        </span>
+
+                        <span class="employee-stat-number">
                             {{ total_employees }}
-                        </h2>
+                        </span>
 
                     </div>
 
@@ -108,18 +880,36 @@ Employees
             </div>
 
 
-            <!-- Active Employees -->
-            <div class="col-lg-4 col-md-6 mb-3">
+            <!-- ACTIVE -->
 
-                <div class="card bg-success text-white shadow">
+            <div class="col-lg-4 col-md-6">
 
-                    <div class="card-body">
+                <div class="employee-stat-card">
 
-                        <h6>Active</h6>
+                    <div class="employee-stat-top">
 
-                        <h2>
+                        <div class="employee-stat-icon active">
+
+                            <i class="bi bi-person-check-fill"></i>
+
+                        </div>
+
+                        <i
+                            class="bi bi-check-circle"
+                            style="color:#bbf7d0;"
+                        ></i>
+
+                    </div>
+
+                    <div class="employee-stat-content">
+
+                        <span class="employee-stat-label">
+                            Active Employees
+                        </span>
+
+                        <span class="employee-stat-number">
                             {{ active_employees }}
-                        </h2>
+                        </span>
 
                     </div>
 
@@ -128,18 +918,36 @@ Employees
             </div>
 
 
-            <!-- Inactive Employees -->
-            <div class="col-lg-4 col-md-6 mb-3">
+            <!-- INACTIVE -->
 
-                <div class="card bg-danger text-white shadow">
+            <div class="col-lg-4 col-md-6">
 
-                    <div class="card-body">
+                <div class="employee-stat-card">
 
-                        <h6>Inactive</h6>
+                    <div class="employee-stat-top">
 
-                        <h2>
+                        <div class="employee-stat-icon inactive">
+
+                            <i class="bi bi-person-x-fill"></i>
+
+                        </div>
+
+                        <i
+                            class="bi bi-dash-circle"
+                            style="color:#fecaca;"
+                        ></i>
+
+                    </div>
+
+                    <div class="employee-stat-content">
+
+                        <span class="employee-stat-label">
+                            Inactive Employees
+                        </span>
+
+                        <span class="employee-stat-number">
                             {{ inactive_employees }}
-                        </h2>
+                        </span>
 
                     </div>
 
@@ -150,37 +958,64 @@ Employees
         </div>
 
 
-        <!-- ========================================================= -->
-        <!-- SEARCH AND FILTER -->
-        <!-- ========================================================= -->
+        <!-- =================================================
+             SEARCH / FILTER
+        ================================================== -->
 
-        <div class="card shadow-sm mb-4">
+        <div class="employee-filter-card">
 
-            <div class="card-body">
+            <div class="employee-filter-header">
+
+                <div class="employee-filter-header-icon">
+
+                    <i class="bi bi-funnel-fill"></i>
+
+                </div>
+
+                <strong>
+                    Search &amp; Filter Employees
+                </strong>
+
+            </div>
+
+            <div class="employee-filter-body">
 
                 <form method="GET">
 
                     <div class="row g-3">
 
-                        <!-- Search -->
-                        <div class="col-md-4">
+
+                        <!-- SEARCH -->
+
+                        <div class="col-lg-4 col-md-6">
+
+                            <label class="employee-filter-label">
+                                Search Employee
+                            </label>
 
                             <input
                                 type="text"
                                 class="form-control"
                                 name="search"
-                                placeholder="Search Employee..."
-                                value="{{ search|default:'' }}">
+                                placeholder="Name, Employee ID or email..."
+                                value="{{ search|default:'' }}"
+                            >
 
                         </div>
 
 
-                        <!-- Department -->
-                        <div class="col-md-3">
+                        <!-- DEPARTMENT -->
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="employee-filter-label">
+                                Department
+                            </label>
 
                             <select
                                 class="form-select"
-                                name="department">
+                                name="department"
+                            >
 
                                 <option value="">
                                     All Departments
@@ -192,7 +1027,8 @@ Employees
                                         value="{{ dept.id }}"
                                         {% if department == dept.id|stringformat:"s" %}
                                             selected
-                                        {% endif %}>
+                                        {% endif %}
+                                    >
 
                                         {{ dept.name }}
 
@@ -205,20 +1041,25 @@ Employees
                         </div>
 
 
-                        <!-- Status -->
-                        <div class="col-md-3">
+                        <!-- STATUS -->
+
+                        <div class="col-lg-3 col-md-6">
+
+                            <label class="employee-filter-label">
+                                Employment Status
+                            </label>
 
                             <select
                                 class="form-select"
-                                name="status">
-
-                                
+                                name="status"
+                            >
 
                                 <option
                                     value="Active"
                                     {% if status == "Active" %}
                                         selected
-                                    {% endif %}>
+                                    {% endif %}
+                                >
 
                                     Active
 
@@ -228,7 +1069,8 @@ Employees
                                     value="Inactive"
                                     {% if status == "Inactive" %}
                                         selected
-                                    {% endif %}>
+                                    {% endif %}
+                                >
 
                                     Inactive
 
@@ -239,12 +1081,14 @@ Employees
                         </div>
 
 
-                        <!-- Search Button -->
-                        <div class="col-md-2">
+                        <!-- SEARCH -->
+
+                        <div class="col-lg-2 col-md-6">
 
                             <button
                                 type="submit"
-                                class="btn btn-primary w-100">
+                                class="employee-search-button"
+                            >
 
                                 <i class="bi bi-search"></i>
 
@@ -265,264 +1109,331 @@ Employees
     {% endif %}
 
 
-    <!-- ========================================================= -->
-    <!-- EMPLOYEE TABLE -->
-    <!-- ========================================================= -->
+    <!-- =====================================================
+         EMPLOYEE TABLE
+    ====================================================== -->
 
-    <div class="card shadow">
+    <div class="employee-table-card">
 
-        <div class="card-body">
 
-            <div class="table-responsive">
+        <!-- TABLE HEADER -->
 
-                <table
-                    id="employeeTable"
-                    class="table table-hover align-middle">
+        <div class="employee-table-header">
 
-                    <!-- ================================================= -->
-                    <!-- TABLE HEADER -->
-                    <!-- ================================================= -->
+            <div class="employee-table-title">
 
-                    <thead class="table-light">
+                <div class="employee-table-title-icon">
+
+                    {% if user.role.name == "Admin" or user.role.name == "HR" %}
+
+                        <i class="bi bi-people-fill"></i>
+
+                    {% else %}
+
+                        <i class="bi bi-person-badge-fill"></i>
+
+                    {% endif %}
+
+                </div>
+
+                <div>
+
+                    <strong>
+
+                        {% if user.role.name == "Admin" or user.role.name == "HR" %}
+
+                            Employee Directory
+
+                        {% else %}
+
+                            My Employee Information
+
+                        {% endif %}
+
+                    </strong>
+
+                    <span>
+
+                        {% if user.role.name == "Admin" or user.role.name == "HR" %}
+
+                            Organization workforce directory
+
+                        {% else %}
+
+                            Your employee profile
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div class="employee-table-wrapper">
+
+            <table
+                id="employeeTable"
+                class="employee-table"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Employee
+                        </th>
+
+                        <th>
+                            Employee ID
+                        </th>
+
+                        <th>
+                            Department
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th class="text-center">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for employee in employees %}
 
                         <tr>
 
-                            <th>
-                                Photo
-                            </th>
 
-                            <th>
-                                Employee ID
-                            </th>
+                            <!-- EMPLOYEE -->
 
-                            <th>
-                                Name
-                            </th>
+                            <td>
 
-                            <th>
-                                Department
-                            </th>
-
-                            <th>
-                                Status
-                            </th>
-
-                            <th class="text-center">
-                                Actions
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <!-- ================================================= -->
-                    <!-- TABLE BODY -->
-                    <!-- ================================================= -->
-
-                    <tbody>
-
-                        {% for employee in employees %}
-
-                            <tr>
-
-                                <!-- ================================================= -->
-                                <!-- PHOTO -->
-                                <!-- ================================================= -->
-
-                                <td>
+                                <div class="employee-profile">
 
                                     {% if employee.profile_picture %}
 
                                         <img
                                             src="{{ employee.profile_picture.url }}"
-                                            width="55"
-                                            height="55"
-                                            class="rounded-circle border"
-                                            alt="{{ employee.first_name }}">
+                                            class="employee-avatar"
+                                            alt="{{ employee.first_name }}"
+                                        >
 
                                     {% else %}
 
-                                        <div
-                                            class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
-                                            style="width:55px;height:55px;">
+                                        <div class="employee-avatar-placeholder">
 
-                                            <i class="bi bi-person-fill fs-4"></i>
+                                            <i class="bi bi-person-fill"></i>
 
                                         </div>
 
                                     {% endif %}
 
-                                </td>
 
+                                    <div>
 
-                                <!-- ================================================= -->
-                                <!-- EMPLOYEE ID -->
-                                <!-- ================================================= -->
+                                        <div class="employee-name">
 
-                                <td>
+                                            {{ employee.first_name }}
+                                            {{ employee.last_name }}
 
-                                    <strong>
-                                        {{ employee.employee_id }}
-                                    </strong>
+                                            {% if employee.user_id == user.id %}
 
-                                </td>
+                                                <span class="employee-you-badge">
+                                                    You
+                                                </span>
 
+                                            {% endif %}
 
-                                <!-- ================================================= -->
-                                <!-- NAME -->
-                                <!-- ================================================= -->
-
-                                <td>
-
-                                    {{ employee.first_name }}
-                                    {{ employee.last_name }}
-
-                                    {% if employee.user_id == user.id %}
-
-                                        <span class="badge bg-info ms-1">
-                                            You
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <!-- ================================================= -->
-                                <!-- DEPARTMENT -->
-                                <!-- ================================================= -->
-
-                                <td>
-
-                                    {% if employee.department %}
-                                        {{ employee.department.name }}
-                                    {% else %}
-                                        <span class="text-muted">
-                                            Not Assigned
-                                        </span>
-                                    {% endif %}
-
-                                </td>
-
-
-                                <!-- ================================================= -->
-                                <!-- STATUS -->
-                                <!-- ================================================= -->
-
-                                <td>
-
-                                    {% if employee.is_active %}
-
-                                        <span class="badge bg-success">
-                                            Active
-                                        </span>
-
-                                    {% else %}
-
-                                        <span class="badge bg-danger">
-                                            Inactive
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-
-                                <!-- ================================================= -->
-                                <!-- ACTIONS -->
-                                <!-- ================================================= -->
-
-                                <td class="text-center">
-
-                                    <div class="btn-group" role="group">
-
-                                        <!-- ================================================= -->
-                                        <!-- VIEW -->
-                                        <!-- ================================================= -->
-
-                                        <a
-                                            href="{% url 'employee_detail' employee.id %}"
-                                            class="btn btn-info btn-sm"
-                                            title="View Employee">
-
-                                            <i class="bi bi-eye"></i>
-
-                                            <span class="d-none d-md-inline">
-                                                View
-                                            </span>
-
-                                        </a>
-
-
-                                        <!-- ================================================= -->
-                                        <!-- EDIT -->
-                                        <!-- ================================================= -->
-
-                                        <a
-                                            href="{% url 'edit_employee' employee.id %}"
-                                            class="btn btn-warning btn-sm"
-                                            title="Edit Employee">
-
-                                            <i class="bi bi-pencil"></i>
-
-                                            <span class="d-none d-md-inline">
-                                                Edit
-                                            </span>
-
-                                        </a>
+                                        </div>
 
                                     </div>
 
-                                </td>
+                                </div>
 
-                            </tr>
+                            </td>
 
-                        {% empty %}
 
-                            <tr>
+                            <!-- EMPLOYEE ID -->
 
-                                <td
-                                    colspan="6"
-                                    class="text-center py-5">
+                            <td>
 
-                                    {% if user.role == "ADMIN" or user.role == "HR" %}
+                                <span class="employee-id">
 
-                                        <div class="text-muted">
+                                    {{ employee.employee_id }}
 
-                                            <i class="bi bi-people fs-1"></i>
+                                </span>
 
-                                            <p class="mt-2 mb-0">
-                                                No Employees Found.
-                                            </p>
+                            </td>
 
-                                        </div>
 
-                                    {% else %}
+                            <!-- DEPARTMENT -->
 
-                                        <div class="text-muted">
+                            <td>
 
-                                            <i class="bi bi-person-x fs-1"></i>
+                                {% if employee.department %}
 
-                                            <p class="mt-2 mb-0">
-                                                Your employee profile is not available.
-                                            </p>
+                                    <span class="employee-department">
 
-                                        </div>
+                                        {{ employee.department.name }}
 
-                                    {% endif %}
+                                    </span>
 
-                                </td>
+                                {% else %}
 
-                            </tr>
+                                    <span class="employee-not-assigned">
 
-                        {% endfor %}
+                                        Not Assigned
 
-                    </tbody>
+                                    </span>
 
-                </table>
+                                {% endif %}
 
-            </div>
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if employee.is_active %}
+
+                                    <span class="employee-status active">
+
+                                        <span class="employee-status-dot"></span>
+
+                                        Active
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="employee-status inactive">
+
+                                        <span class="employee-status-dot"></span>
+
+                                        Inactive
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ACTIONS -->
+
+                            <td>
+
+                                <div class="employee-actions">
+
+
+                                    <!-- VIEW -->
+
+                                    <a
+                                        href="{% url 'employee_detail' employee.id %}"
+                                        class="employee-action-button view"
+                                        title="View Employee"
+                                    >
+
+                                        <i class="bi bi-eye"></i>
+
+                                    </a>
+
+
+                                    <!-- EDIT -->
+
+                                    <a
+                                        href="{% url 'edit_employee' employee.id %}"
+                                        class="employee-action-button edit"
+                                        title="Edit Employee"
+                                    >
+
+                                        <i class="bi bi-pencil"></i>
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="5">
+
+                                <div class="employee-empty-state">
+
+                                    <div class="employee-empty-icon">
+
+                                        {% if user.role.name == "Admin" or user.role.name == "HR" %}
+
+                                            <i class="bi bi-people"></i>
+
+                                        {% else %}
+
+                                            <i class="bi bi-person-x"></i>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                    <h3>
+
+                                        {% if user.role.name == "Admin" or user.role.name == "HR" %}
+
+                                            No Employees Found
+
+                                        {% else %}
+
+                                            Employee Profile Not Available
+
+                                        {% endif %}
+
+                                    </h3>
+
+                                    <p>
+
+                                        {% if user.role.name == "Admin" or user.role.name == "HR" %}
+
+                                            No employees match your current search or filter.
+
+                                        {% else %}
+
+                                            Your employee profile is not currently available.
+
+                                        {% endif %}
+
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
 
         </div>
 
@@ -533,9 +1444,9 @@ Employees
 {% endblock %}
 
 
-<!-- ============================================================= -->
-<!-- DATATABLES JAVASCRIPT -->
-<!-- ============================================================= -->
+<!-- =========================================================
+     DATATABLES
+========================================================= -->
 
 {% block extra_js %}
 
@@ -543,9 +1454,11 @@ Employees
 
 $(document).ready(function () {
 
+    const roleName = "{{ user.role.name|default:'' }}";
+
     const isAdminOrHR =
-        "{{ user.role }}" === "ADMIN" ||
-        "{{ user.role }}" === "HR";
+        roleName === "Admin" ||
+        roleName === "HR";
 
 
     const dataTableOptions = {
@@ -563,9 +1476,7 @@ $(document).ready(function () {
 
 
     /*
-     * Admin / HR can use DataTables export buttons.
-     *
-     * Employee should NOT get client-side export buttons.
+     * Admin and HR get export buttons.
      */
 
     if (isAdminOrHR) {
@@ -573,17 +1484,21 @@ $(document).ready(function () {
         dataTableOptions.dom = 'Bfrtip';
 
         dataTableOptions.buttons = [
+
             'copy',
             'csv',
             'excel',
             'pdf',
             'print'
+
         ];
 
     }
 
 
-    $('#employeeTable').DataTable(dataTableOptions);
+    $('#employeeTable').DataTable(
+        dataTableOptions
+    );
 
 });
 

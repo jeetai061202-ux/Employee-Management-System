@@ -4,1159 +4,1600 @@
 Dashboard
 {% endblock %}
 
+
 {% block extra_css %}
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
->
-
-<link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500;600&display=swap"
-    rel="stylesheet"
->
-
 
 <style>
 
-    :root{
+/* ==========================================================
+   DASHBOARD THEME
+   Matches the public HRMS landing page
+========================================================== */
 
-        --rose:#a61b4a;
+.dashboard-page {
 
-        --rose-deep:#6e1338;
+    --dashboard-primary: #2563eb;
+    --dashboard-primary-dark: #1d4ed8;
+    --dashboard-primary-soft: #eff6ff;
 
-        --rose-bright:#c72459;
+    --dashboard-success: #16a34a;
+    --dashboard-warning: #d97706;
+    --dashboard-danger: #dc2626;
 
-        --gold:#c9a15a;
+    --dashboard-bg: #f8fafc;
+    --dashboard-card: #ffffff;
 
-        --canvas:#fbf3f1;
+    --dashboard-border: #e2e8f0;
 
-        --card:#ffffff;
+    --dashboard-heading: #0f172a;
+    --dashboard-text: #334155;
+    --dashboard-muted: #64748b;
 
-        --line:#f0dde2;
+    --dashboard-radius: 16px;
 
-        --ink:#241521;
+    --dashboard-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.04),
+        0 8px 24px rgba(15, 23, 42, 0.05);
+}
 
-        --text-muted:#8b6b76;
 
-        --success:#2e9e6d;
+/* ==========================================================
+   PAGE HEADER
+========================================================== */
 
-        --warning:#c98a2c;
+.dashboard-header {
+    margin-bottom: 28px;
+}
 
-        --danger:#b23a4e;
+.dashboard-header-top {
 
-        --radius:14px;
+    display: flex;
 
-        --shadow:
-            0 1px 2px rgba(36,21,33,0.04),
-            0 8px 24px -12px rgba(110,19,56,0.18);
+    align-items: flex-end;
 
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.dashboard-header h1 {
+
+    margin: 0;
+
+    color: var(--dashboard-heading);
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.7px;
+}
+
+.dashboard-header h1 span {
+    color: var(--dashboard-primary);
+}
+
+.dashboard-header p {
+
+    margin: 7px 0 0;
+
+    color: var(--dashboard-muted);
+
+    font-size: 14px;
+}
+
+.dashboard-date {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 13px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--dashboard-border);
+
+    border-radius: 10px;
+
+    color: var(--dashboard-muted);
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.dashboard-date i {
+    color: var(--dashboard-primary);
+}
+
+
+/* ==========================================================
+   STAT CARDS
+========================================================== */
+
+.dashboard-stat-link {
+
+    display: block;
+
+    height: 100%;
+
+    text-decoration: none;
+}
+
+.dashboard-stat {
+
+    position: relative;
+
+    height: 100%;
+
+    padding: 20px;
+
+    background: var(--dashboard-card);
+
+    border: 1px solid var(--dashboard-border);
+
+    border-radius: var(--dashboard-radius);
+
+    box-shadow: var(--dashboard-shadow);
+
+    overflow: hidden;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.dashboard-stat:hover {
+
+    transform: translateY(-3px);
+
+    border-color: #cbd5e1;
+
+    box-shadow:
+        0 10px 30px rgba(15, 23, 42, 0.09);
+}
+
+.dashboard-stat::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--dashboard-primary),
+            #60a5fa
+        );
+}
+
+.dashboard-stat-top {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.dashboard-stat-label {
+
+    display: block;
+
+    color: var(--dashboard-muted);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+
+    text-transform: uppercase;
+}
+
+.dashboard-stat-value {
+
+    margin-top: 7px;
+
+    color: var(--dashboard-heading);
+
+    font-size: 30px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: -0.8px;
+}
+
+.dashboard-stat-icon {
+
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: var(--dashboard-primary-soft);
+
+    color: var(--dashboard-primary);
+
+    font-size: 19px;
+}
+
+.dashboard-stat-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+.dashboard-stat-description {
+
+    color: var(--dashboard-muted);
+
+    font-size: 12px;
+}
+
+.dashboard-stat-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: var(--dashboard-success);
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+.dashboard-stat-status i {
+    font-size: 12px;
+}
+
+
+/* ==========================================================
+   GENERAL PANELS
+========================================================== */
+
+.dashboard-panel {
+
+    height: 100%;
+
+    background: var(--dashboard-card);
+
+    border: 1px solid var(--dashboard-border);
+
+    border-radius: var(--dashboard-radius);
+
+    box-shadow: var(--dashboard-shadow);
+
+    overflow: hidden;
+}
+
+.dashboard-panel-header {
+
+    min-height: 66px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 16px 20px;
+
+    border-bottom: 1px solid var(--dashboard-border);
+}
+
+.dashboard-panel-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+}
+
+.dashboard-panel-title-icon {
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: var(--dashboard-primary-soft);
+
+    color: var(--dashboard-primary);
+}
+
+.dashboard-panel-title h3 {
+
+    margin: 0;
+
+    color: var(--dashboard-heading);
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+.dashboard-panel-title p {
+
+    margin: 2px 0 0;
+
+    color: var(--dashboard-muted);
+
+    font-size: 11px;
+}
+
+.dashboard-panel-badge {
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    background: var(--dashboard-primary-soft);
+
+    color: var(--dashboard-primary);
+
+    font-size: 10px;
+
+    font-weight: 700;
+}
+
+
+/* ==========================================================
+   ATTENDANCE
+========================================================== */
+
+.attendance-body {
+    padding: 20px;
+}
+
+.attendance-summary {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.attendance-box {
+
+    padding: 18px;
+
+    border: 1px solid var(--dashboard-border);
+
+    border-radius: 13px;
+
+    background: #ffffff;
+}
+
+.attendance-box-label {
+
+    color: var(--dashboard-muted);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+    text-transform: uppercase;
+}
+
+.attendance-box-value {
+
+    margin-top: 7px;
+
+    color: var(--dashboard-heading);
+
+    font-size: 27px;
+
+    font-weight: 700;
+}
+
+.attendance-box-description {
+
+    margin-top: 4px;
+
+    color: var(--dashboard-muted);
+
+    font-size: 11px;
+}
+
+.attendance-icon {
+
+    width: 38px;
+    height: 38px;
+
+    margin-bottom: 13px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    font-size: 17px;
+}
+
+.attendance-present .attendance-icon {
+
+    background: #f0fdf4;
+
+    color: var(--dashboard-success);
+}
+
+.attendance-employees .attendance-icon {
+
+    background: var(--dashboard-primary-soft);
+
+    color: var(--dashboard-primary);
+}
+
+
+/* ==========================================================
+   CHARTS
+========================================================== */
+
+.dashboard-chart-row {
+
+    margin-top: 24px;
+}
+
+.dashboard-chart-panel {
+
+    min-height: 390px;
+}
+
+.dashboard-chart-body {
+
+    position: relative;
+
+    min-height: 320px;
+
+    padding: 20px;
+}
+
+.dashboard-chart-container {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 280px;
+}
+
+.dashboard-pie-container {
+
+    position: relative;
+
+    width: 100%;
+
+    max-width: 330px;
+
+    height: 280px;
+
+    margin: 0 auto;
+}
+
+.dashboard-chart-empty {
+
+    min-height: 280px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    color: var(--dashboard-muted);
+
+    font-size: 13px;
+}
+
+.dashboard-chart-note {
+
+    margin-top: 10px;
+
+    color: var(--dashboard-muted);
+
+    font-size: 11px;
+
+    text-align: center;
+}
+
+
+/* ==========================================================
+   SYSTEM SUMMARY
+========================================================== */
+
+.system-summary {
+
+    padding: 8px 20px 20px;
+}
+
+.summary-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 13px 0;
+
+    border-bottom: 1px dashed var(--dashboard-border);
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.summary-dot {
+
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: var(--dashboard-primary);
+
+    flex-shrink: 0;
+}
+
+.summary-row:nth-child(2) .summary-dot {
+    background: #60a5fa;
+}
+
+.summary-row:nth-child(3) .summary-dot {
+    background: var(--dashboard-success);
+}
+
+.summary-row:nth-child(4) .summary-dot {
+    background: var(--dashboard-warning);
+}
+
+.summary-name {
+
+    color: var(--dashboard-text);
+
+    font-size: 13px;
+}
+
+.summary-value {
+
+    margin-left: auto;
+
+    color: var(--dashboard-heading);
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+/* ==========================================================
+   USER ACCESS
+========================================================== */
+
+.user-access-card {
+    margin-top: 24px;
+}
+
+.access-grid {
+    padding: 20px;
+}
+
+.access-box {
+
+    height: 100%;
+
+    padding: 18px;
+
+    border: 1px solid var(--dashboard-border);
+
+    border-radius: 13px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.access-box:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 20px rgba(15, 23, 42, 0.07);
+}
+
+.access-box-top {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+.access-label {
+
+    color: var(--dashboard-muted);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+}
+
+.access-number {
+
+    margin-top: 5px;
+
+    color: var(--dashboard-heading);
+
+    font-size: 27px;
+
+    font-weight: 700;
+}
+
+.access-icon {
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    font-size: 17px;
+}
+
+.access-admin {
+
+    background: #fef2f2;
+
+    color: var(--dashboard-danger);
+}
+
+.access-hr {
+
+    background: #fffbeb;
+
+    color: var(--dashboard-warning);
+}
+
+.access-employee {
+
+    background: var(--dashboard-primary-soft);
+
+    color: var(--dashboard-primary);
+}
+
+.access-manage {
+
+    background: #f0fdf4;
+
+    color: var(--dashboard-success);
+}
+
+.access-description {
+
+    margin: 12px 0 0;
+
+    color: var(--dashboard-muted);
+
+    font-size: 12px;
+}
+
+.manage-access-button {
+
+    width: 100%;
+
+    margin-top: 16px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 9px 14px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: var(--dashboard-primary);
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.manage-access-button:hover {
+
+    background: var(--dashboard-primary-dark);
+
+    color: #ffffff;
+
+    transform: translateY(-1px);
+}
+
+
+/* ==========================================================
+   QUICK ACCESS
+========================================================== */
+
+.quick-actions {
+    padding: 18px 20px 20px;
+}
+
+.quick-action {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid var(--dashboard-border);
+
+    text-decoration: none;
+}
+
+.quick-action:last-child {
+    border-bottom: none;
+}
+
+.quick-action-icon {
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: var(--dashboard-primary-soft);
+
+    color: var(--dashboard-primary);
+}
+
+.quick-action-content {
+    flex: 1;
+}
+
+.quick-action-content strong {
+
+    display: block;
+
+    color: var(--dashboard-heading);
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+.quick-action-content span {
+
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--dashboard-muted);
+
+    font-size: 10px;
+}
+
+.quick-action-arrow {
+
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+.quick-action:hover .quick-action-arrow {
+    color: var(--dashboard-primary);
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 991px) {
+
+    .dashboard-header-top {
+
+        align-items: flex-start;
+
+        flex-direction: column;
     }
 
-
-    /* ======================================================
-       DASHBOARD HEADER
-       ====================================================== */
-
-    .dashboard-header h2{
-
-        font-family:'Fraunces', serif;
-
-        font-weight:600;
-
-        font-size:30px;
-
-        color:var(--ink);
-
-        letter-spacing:-0.3px;
-
-        margin-bottom:6px;
-
+    .dashboard-date {
+        display: none;
     }
 
+    .dashboard-chart-panel {
+        min-height: auto;
+    }
+}
 
-    .dashboard-header .rule{
 
-        width:60px;
+@media (max-width: 576px) {
 
-        height:3px;
-
-        border-radius:3px;
-
-        background:
-            linear-gradient(
-                90deg,
-                var(--rose-bright),
-                var(--gold)
-            );
-
-        margin:10px 0 12px 0;
-
+    .dashboard-header h1 {
+        font-size: 24px;
     }
 
-
-    .dashboard-header p.text-muted{
-
-        color:var(--text-muted) !important;
-
-        font-size:14.5px;
-
+    .dashboard-stat-value {
+        font-size: 26px;
     }
 
-
-    /* ======================================================
-       STAT CARDS
-       ====================================================== */
-
-    .stat-card{
-
-        background:var(--card);
-
-        border:1px solid var(--line);
-
-        border-radius:var(--radius);
-
-        box-shadow:var(--shadow);
-
-        padding:20px 22px 16px 22px;
-
-        position:relative;
-
-        overflow:hidden;
-
-        display:flex;
-
-        flex-direction:column;
-
-        gap:10px;
-
-        height:100%;
-
-        color:var(--ink);
-
-        transition:
-            transform .15s ease,
-            box-shadow .15s ease;
-
+    .attendance-summary {
+        grid-template-columns: 1fr;
     }
 
-
-    .stat-card:hover{
-
-        transform:translateY(-2px);
-
-        box-shadow:
-            0 4px 10px rgba(36,21,33,0.06),
-            0 14px 28px -12px rgba(110,19,56,0.24);
-
+    .dashboard-panel-header {
+        padding: 14px 16px;
     }
 
+    .attendance-body,
+    .system-summary,
+    .quick-actions,
+    .access-grid {
 
-    .stat-card::before{
-
-        content:"";
-
-        position:absolute;
-
-        top:0;
-
-        left:0;
-
-        right:0;
-
-        height:3px;
-
-        background:
-            linear-gradient(
-                90deg,
-                var(--rose-bright),
-                var(--gold)
-            );
-
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
-
-    .stat-card-top{
-
-        display:flex;
-
-        align-items:flex-start;
-
-        justify-content:space-between;
-
+    .dashboard-chart-body {
+        padding: 16px;
     }
 
-
-    .stat-card small{
-
-        text-transform:uppercase;
-
-        letter-spacing:1.1px;
-
-        color:var(--text-muted);
-
-        font-weight:600;
-
-        font-size:11.5px;
-
+    .dashboard-chart-container {
+        height: 250px;
     }
 
-
-    .stat-card h2{
-
-        font-family:'IBM Plex Mono', monospace;
-
-        font-weight:600;
-
-        font-size:30px;
-
-        letter-spacing:-0.5px;
-
-        margin:6px 0 0 0;
-
-        color:var(--ink);
-
+    .dashboard-pie-container {
+        height: 250px;
     }
 
-
-    .stat-card i{
-
-        width:38px;
-
-        height:38px;
-
-        border-radius:10px;
-
-        background:rgba(166,27,74,0.08);
-
-        color:var(--rose);
-
-        font-size:17px;
-
-        display:flex;
-
-        align-items:center;
-
-        justify-content:center;
-
-        flex-shrink:0;
-
-    }
-
-
-    .stat-card-foot{
-
-        display:flex;
-
-        align-items:center;
-
-        justify-content:space-between;
-
-        margin-top:4px;
-
-    }
-
-
-    .stat-delta{
-
-        font-size:12px;
-
-        font-weight:600;
-
-    }
-
-
-    .stat-delta.up{
-
-        color:var(--success);
-
-    }
-
-
-    .stat-delta.warn{
-
-        color:var(--warning);
-
-    }
-
-
-    .stat-delta.flat{
-
-        color:var(--text-muted);
-
-    }
-
-
-    .stat-spark{
-
-        width:66px;
-
-        height:22px;
-
-    }
-
-
-    a.stat-card-link{
-
-        text-decoration:none;
-
-        display:block;
-
-        height:100%;
-
-    }
-
-
-    /* ======================================================
-       NORMAL CARDS
-       ====================================================== */
-
-    .card.shadow.border-0.rounded-4{
-
-        border:1px solid var(--line) !important;
-
-        box-shadow:var(--shadow) !important;
-
-        border-radius:var(--radius) !important;
-
-    }
-
-
-    .card-header.bg-white{
-
-        background:var(--card) !important;
-
-        border-bottom:1px solid var(--line) !important;
-
-        display:flex;
-
-        align-items:center;
-
-        justify-content:space-between;
-
-        border-radius:
-            var(--radius)
-            var(--radius)
-            0
-            0 !important;
-
-    }
-
-
-    .card-header.bg-white h5{
-
-        font-family:'Fraunces', serif;
-
-        font-weight:600;
-
-        color:var(--ink);
-
-    }
-
-
-    .panel-tag{
-
-        font-family:'IBM Plex Mono', monospace;
-
-        font-size:11px;
-
-        color:var(--rose);
-
-        background:rgba(166,27,74,0.08);
-
-        padding:3px 10px;
-
-        border-radius:20px;
-
-    }
-
-
-    /* ======================================================
-       DEPARTMENT LEGEND
-       ====================================================== */
-
-    .dept-legend{
-
-        list-style:none;
-
-        margin:16px 0 0 0;
-
-        padding:0 4px;
-
-    }
-
-
-    .dept-legend li{
-
-        display:flex;
-
-        align-items:center;
-
-        gap:9px;
-
-        font-size:13px;
-
-        padding:7px 0;
-
-        border-bottom:1px dashed var(--line);
-
-        color:var(--ink);
-
-    }
-
-
-    .dept-legend li:last-child{
-
-        border-bottom:none;
-
-    }
-
-
-    .dept-swatch{
-
-        width:9px;
-
-        height:9px;
-
-        border-radius:2px;
-
-        flex-shrink:0;
-
-    }
-
-
-    .dept-legend .leg-val{
-
-        margin-left:auto;
-
-        font-family:'IBM Plex Mono', monospace;
-
-        font-size:12px;
-
-        color:var(--text-muted);
-
-    }
-
-
-    /* ======================================================
-       USER ACCESS MANAGEMENT
-       ====================================================== */
-
-    .access-card{
-
-        background:var(--card);
-
-        border:1px solid var(--line);
-
-        border-radius:var(--radius);
-
-        box-shadow:var(--shadow);
-
-    }
-
-
-    .access-stat{
-
-        border:1px solid var(--line);
-
-        border-radius:12px;
-
-        padding:18px;
-
-        height:100%;
-
-        transition:
-            transform .15s ease,
-            box-shadow .15s ease;
-
-    }
-
-
-    .access-stat:hover{
-
-        transform:translateY(-2px);
-
-        box-shadow:
-            0 5px 15px rgba(36,21,33,0.08);
-
-    }
-
-
-    .access-stat h3{
-
-        font-family:'IBM Plex Mono', monospace;
-
-        font-weight:600;
-
-        font-size:28px;
-
-        margin:4px 0;
-
-        color:var(--ink);
-
-    }
-
-
-    .access-stat small{
-
-        color:var(--text-muted);
-
-        font-size:11px;
-
-        font-weight:600;
-
-        letter-spacing:1px;
-
-    }
-
-
-    .access-stat p{
-
-        color:var(--text-muted);
-
-        font-size:13px;
-
-        margin-bottom:0;
-
-    }
-
-
-    .access-icon{
-
-        width:42px;
-
-        height:42px;
-
-        border-radius:10px;
-
-        display:flex;
-
-        align-items:center;
-
-        justify-content:center;
-
-        font-size:19px;
-
-    }
-
-
-    .access-admin{
-
-        background:rgba(178,58,78,0.10);
-
-        color:var(--danger);
-
-    }
-
-
-    .access-hr{
-
-        background:rgba(201,138,44,0.12);
-
-        color:var(--warning);
-
-    }
-
-
-    .access-employee{
-
-        background:rgba(39,143,181,0.10);
-
-        color:#278fb5;
-
-    }
-
-
-    .access-manage{
-
-        background:rgba(166,27,74,0.08);
-
-        color:var(--rose);
-
-    }
-
+}
 
 </style>
 
 {% endblock %}
 
 
+
 {% block content %}
 
-<div class="container-fluid">
+<div class="dashboard-page">
+
+    <div class="container-fluid">
 
 
-    <!-- ===================================================== -->
-    <!-- DASHBOARD HEADER -->
-    <!-- ===================================================== -->
+        <!-- ==================================================
+             DASHBOARD HEADER
+        ================================================== -->
 
-    <div class="dashboard-header mb-4">
+        <div class="dashboard-header">
 
-        <h2 class="fw-bold">
+            <div class="dashboard-header-top">
 
-            Welcome Back,
+                <div>
 
-            {{ user.first_name|default:user.username }}
+                    <h1>
 
-            👋
+                        Welcome back,
 
-        </h2>
+                        <span>
+                            {{ user.first_name|default:user.username }}
+                        </span>
 
+                        👋
 
-        <div class="rule"></div>
+                    </h1>
 
+                    <p>
+                        Here's what's happening with your workforce today.
+                    </p>
 
-        <p class="text-muted">
-
-            Enterprise Human Resource Management System
-
-        </p>
-
-    </div>
-
-
-
-    <!-- ===================================================== -->
-    <!-- STAT CARDS -->
-    <!-- ===================================================== -->
-
-    <div class="row g-4">
+                </div>
 
 
-        <!-- ================================================= -->
-        <!-- TOTAL EMPLOYEES -->
-        <!-- ================================================= -->
+                <div class="dashboard-date">
 
-        <div class="col-xl-4 col-md-6">
+                    <i class="bi bi-calendar3"></i>
 
-            <a
-                href="{% url 'employee_list' %}"
-                class="stat-card-link"
-            >
+                    <span>
+                        HRMS Dashboard
+                    </span>
 
-                <div class="stat-card primary">
+                </div>
 
-                    <div class="stat-card-top">
+            </div>
 
-                        <div>
+        </div>
 
-                            <small>
-                                Total Employees
-                            </small>
 
-                            <h2>
-                                {{ total_employees }}
-                            </h2>
+
+        <!-- ==================================================
+             STATISTICS
+        ================================================== -->
+
+        <div class="row g-4">
+
+
+            <!-- TOTAL EMPLOYEES -->
+
+            <div class="col-xl-4 col-md-6">
+
+                <a
+                    href="{% url 'employee_list' %}"
+                    class="dashboard-stat-link"
+                >
+
+                    <div class="dashboard-stat">
+
+                        <div class="dashboard-stat-top">
+
+                            <div>
+
+                                <span class="dashboard-stat-label">
+                                    Total Employees
+                                </span>
+
+                                <div class="dashboard-stat-value">
+                                    {{ total_employees }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-stat-icon">
+
+                                <i class="bi bi-people-fill"></i>
+
+                            </div>
 
                         </div>
 
 
-                        <i class="bi bi-people-fill"></i>
+                        <div class="dashboard-stat-footer">
+
+                            <span class="dashboard-stat-description">
+                                Active employee records
+                            </span>
+
+                            <span class="dashboard-stat-status">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Active
+
+                            </span>
+
+                        </div>
 
                     </div>
 
-
-                    <div class="stat-card-foot">
-
-                        <span class="stat-delta up">
-
-                            Total active employee records
-
-                        </span>
-
-
-                        <canvas
-                            class="stat-spark"
-                            id="spark-employees"
-                        ></canvas>
-
-                    </div>
-
-                </div>
-
-            </a>
-
-        </div>
-
-
-
-        <!-- ================================================= -->
-        <!-- PRESENT TODAY -->
-        <!-- ================================================= -->
-
-        <div class="col-xl-4 col-md-6">
-
-            <div class="stat-card success">
-
-                <div class="stat-card-top">
-
-                    <div>
-
-                        <small>
-                            Present Today
-                        </small>
-
-                        <h2>
-                            {{ present_today }}
-                        </h2>
-
-                    </div>
-
-
-                    <i class="bi bi-calendar-check-fill"></i>
-
-                </div>
-
-
-                <div class="stat-card-foot">
-
-                    <span class="stat-delta up">
-
-                        Today's attendance
-
-                    </span>
-
-
-                    <canvas
-                        class="stat-spark"
-                        id="spark-present"
-                    ></canvas>
-
-                </div>
+                </a>
 
             </div>
 
-        </div>
 
 
+            <!-- PRESENT TODAY -->
 
-        <!-- ================================================= -->
-        <!-- PENDING LEAVE -->
-        <!-- ================================================= -->
+            <div class="col-xl-4 col-md-6">
 
-        <div class="col-xl-4 col-md-6">
+                <div class="dashboard-stat">
 
-            <div class="stat-card warning">
-
-                <div class="stat-card-top">
-
-                    <div>
-
-                        <small>
-                            Pending Leave
-                        </small>
-
-                        <h2>
-                            {{ pending_leave }}
-                        </h2>
-
-                    </div>
-
-
-                    <i class="bi bi-airplane-fill"></i>
-
-                </div>
-
-
-                <div class="stat-card-foot">
-
-                    <span class="stat-delta warn">
-
-                        Leave requests pending
-
-                    </span>
-
-
-                    <canvas
-                        class="stat-spark"
-                        id="spark-leave"
-                    ></canvas>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- ================================================= -->
-        <!-- PAYROLL -->
-        <!-- ================================================= -->
-
-        <div class="col-xl-4 col-md-6">
-
-            <div class="stat-card danger">
-
-                <div class="stat-card-top">
-
-                    <div>
-
-                        <small>
-                            Payroll
-                        </small>
-
-                        <h2>
-                            {{ monthly_salary }}
-                        </h2>
-
-                    </div>
-
-
-                    <i class="bi bi-cash-stack"></i>
-
-                </div>
-
-
-                <div class="stat-card-foot">
-
-                    <span class="stat-delta flat">
-
-                        Monthly payroll
-
-                    </span>
-
-
-                    <canvas
-                        class="stat-spark"
-                        id="spark-payroll"
-                    ></canvas>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- ================================================= -->
-        <!-- DEPARTMENTS -->
-        <!-- ================================================= -->
-
-        <div class="col-xl-4 col-md-6">
-
-            <a
-                href="{% url 'department_list' %}"
-                class="stat-card-link"
-            >
-
-                <div class="stat-card info">
-
-                    <div class="stat-card-top">
+                    <div class="dashboard-stat-top">
 
                         <div>
 
-                            <small>
-                                Departments
-                            </small>
+                            <span class="dashboard-stat-label">
+                                Present Today
+                            </span>
 
-                            <h2>
-                                {{ departments }}
-                            </h2>
+                            <div class="dashboard-stat-value">
+                                {{ present_today }}
+                            </div>
 
                         </div>
 
 
-                        <i class="bi bi-diagram-3-fill"></i>
+                        <div class="dashboard-stat-icon">
+
+                            <i class="bi bi-calendar-check-fill"></i>
+
+                        </div>
 
                     </div>
 
 
-                    <div class="stat-card-foot">
+                    <div class="dashboard-stat-footer">
 
-                        <span class="stat-delta flat">
+                        <span class="dashboard-stat-description">
+                            Today's attendance
+                        </span>
 
-                            Active departments
+                        <span class="dashboard-stat-status">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            Recorded
 
                         </span>
 
-
-                        <canvas
-                            class="stat-spark"
-                            id="spark-departments"
-                        ></canvas>
-
                     </div>
-
-                </div>
-
-            </a>
-
-        </div>
-
-
-
-        <!-- ================================================= -->
-        <!-- PROJECTS -->
-        <!-- ================================================= -->
-
-        <div class="col-xl-4 col-md-6">
-
-            <div class="stat-card dark">
-
-                <div class="stat-card-top">
-
-                    <div>
-
-                        <small>
-                            Projects
-                        </small>
-
-                        <h2>
-                            17
-                        </h2>
-
-                    </div>
-
-
-                    <i class="bi bi-briefcase-fill"></i>
-
-                </div>
-
-
-                <div class="stat-card-foot">
-
-                    <span class="stat-delta warn">
-
-                        5 near deadline
-
-                    </span>
-
-
-                    <canvas
-                        class="stat-spark"
-                        id="spark-projects"
-                    ></canvas>
 
                 </div>
 
             </div>
 
+
+
+            <!-- DEPARTMENTS -->
+
+            <div class="col-xl-4 col-md-6">
+
+                <a
+                    href="{% url 'department_list' %}"
+                    class="dashboard-stat-link"
+                >
+
+                    <div class="dashboard-stat">
+
+                        <div class="dashboard-stat-top">
+
+                            <div>
+
+                                <span class="dashboard-stat-label">
+                                    Departments
+                                </span>
+
+                                <div class="dashboard-stat-value">
+                                    {{ departments }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-stat-icon">
+
+                                <i class="bi bi-diagram-3-fill"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-stat-footer">
+
+                            <span class="dashboard-stat-description">
+                                Active departments
+                            </span>
+
+                            <span class="dashboard-stat-status">
+
+                                <i class="bi bi-building"></i>
+
+                                Organization
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            </div>
+
         </div>
 
-    </div>
 
 
+        <!-- ==================================================
+             ADMIN USER ACCESS
+        ================================================== -->
 
-    <!-- ============================================================= -->
-    <!-- USER ACCESS MANAGEMENT -->
-    <!-- ADMIN ONLY -->
-    <!-- ============================================================= -->
+        {% if request.user.role and request.user.role.name == "Admin" %}
 
-    {% if request.user.role == "ADMIN" %}
+        <div class="dashboard-panel user-access-card">
 
-    <div class="row mt-4">
+            <div class="dashboard-panel-header">
 
-        <div class="col-12">
+                <div class="dashboard-panel-title">
 
-            <div class="card shadow border-0 rounded-4 access-card">
-
-
-                <!-- ============================================= -->
-                <!-- ACCESS HEADER -->
-                <!-- ============================================= -->
-
-                <div class="card-header bg-white">
-
-                    <h5 class="mb-0">
+                    <div class="dashboard-panel-title-icon">
 
                         <i class="bi bi-person-gear"></i>
 
-                        User Access Management
+                    </div>
 
-                    </h5>
+                    <div>
 
+                        <h3>
+                            User Access Management
+                        </h3>
 
-                    <span class="panel-tag">
+                        <p>
+                            Manage system roles and account access
+                        </p>
 
-                        {{ total_users }} Users
-
-                    </span>
+                    </div>
 
                 </div>
 
 
+                <span class="dashboard-panel-badge">
 
-                <!-- ============================================= -->
-                <!-- ACCESS BODY -->
-                <!-- ============================================= -->
+                    {{ total_users }} Users
 
-                <div class="card-body">
+                </span>
 
-                    <div class="row g-3">
+            </div>
 
 
-                        <!-- ===================================== -->
-                        <!-- ADMIN -->
-                        <!-- ===================================== -->
+            <div class="access-grid">
 
-                        <div class="col-xl-3 col-md-6">
+                <div class="row g-3">
 
-                            <div class="access-stat">
 
-                                <div class="d-flex justify-content-between">
+                    <!-- ADMIN -->
 
-                                    <div>
+                    <div class="col-xl-3 col-md-6">
 
-                                        <small>
-                                            ADMIN
-                                        </small>
+                        <div class="access-box">
 
-
-                                        <h3>
-                                            {{ admin_users }}
-                                        </h3>
-
-                                    </div>
-
-
-                                    <div class="access-icon access-admin">
-
-                                        <i class="bi bi-shield-fill"></i>
-
-                                    </div>
-
-                                </div>
-
-
-                                <p>
-                                    Full system access
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- ===================================== -->
-                        <!-- HR -->
-                        <!-- ===================================== -->
-
-                        <div class="col-xl-3 col-md-6">
-
-                            <div class="access-stat">
-
-                                <div class="d-flex justify-content-between">
-
-                                    <div>
-
-                                        <small>
-                                            HR
-                                        </small>
-
-
-                                        <h3>
-                                            {{ hr_users }}
-                                        </h3>
-
-                                    </div>
-
-
-                                    <div class="access-icon access-hr">
-
-                                        <i class="bi bi-person-badge-fill"></i>
-
-                                    </div>
-
-                                </div>
-
-
-                                <p>
-                                    HR management access
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- ===================================== -->
-                        <!-- EMPLOYEE -->
-                        <!-- ===================================== -->
-
-                        <div class="col-xl-3 col-md-6">
-
-                            <div class="access-stat">
-
-                                <div class="d-flex justify-content-between">
-
-                                    <div>
-
-                                        <small>
-                                            EMPLOYEE
-                                        </small>
-
-
-                                        <h3>
-                                            {{ employee_users }}
-                                        </h3>
-
-                                    </div>
-
-
-                                    <div class="access-icon access-employee">
-
-                                        <i class="bi bi-person-fill"></i>
-
-                                    </div>
-
-                                </div>
-
-
-                                <p>
-                                    Employee access
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- ===================================== -->
-                        <!-- MANAGE ACCESS -->
-                        <!-- ===================================== -->
-
-                        <div class="col-xl-3 col-md-6">
-
-                            <div class="access-stat d-flex flex-column">
-
+                            <div class="access-box-top">
 
                                 <div>
 
-                                    <small>
+                                    <div class="access-label">
+                                        ADMIN
+                                    </div>
+
+                                    <div class="access-number">
+                                        {{ admin_users }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="access-icon access-admin">
+
+                                    <i class="bi bi-shield-fill-check"></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <p class="access-description">
+                                Full system access
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- HR -->
+
+                    <div class="col-xl-3 col-md-6">
+
+                        <div class="access-box">
+
+                            <div class="access-box-top">
+
+                                <div>
+
+                                    <div class="access-label">
+                                        HR
+                                    </div>
+
+                                    <div class="access-number">
+                                        {{ hr_users }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="access-icon access-hr">
+
+                                    <i class="bi bi-person-badge-fill"></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <p class="access-description">
+                                HR management access
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- EMPLOYEE -->
+
+                    <div class="col-xl-3 col-md-6">
+
+                        <div class="access-box">
+
+                            <div class="access-box-top">
+
+                                <div>
+
+                                    <div class="access-label">
+                                        EMPLOYEE
+                                    </div>
+
+                                    <div class="access-number">
+                                        {{ employee_users }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="access-icon access-employee">
+
+                                    <i class="bi bi-person-fill"></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <p class="access-description">
+                                Employee portal access
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- MANAGE ACCESS -->
+
+                    <div class="col-xl-3 col-md-6">
+
+                        <div class="access-box">
+
+                            <div class="access-box-top">
+
+                                <div>
+
+                                    <div class="access-label">
                                         USER ACCESS
-                                    </small>
+                                    </div>
 
-
-                                    <p class="mt-2 mb-3">
-
-                                        Assign roles and manage
-                                        account access.
-
+                                    <p class="access-description">
+                                        Assign roles and manage account access.
                                     </p>
 
                                 </div>
 
 
-                                <a
-                                    href="{% url 'user_management' %}"
-                                    class="btn btn-primary mt-auto"
-                                >
+                                <div class="access-icon access-manage">
 
                                     <i class="bi bi-person-gear"></i>
 
-                                    Manage Access
-
-                                </a>
+                                </div>
 
                             </div>
+
+
+                            <a
+                                href="{% url 'user_management' %}"
+                                class="manage-access-button"
+                            >
+
+                                <i class="bi bi-person-gear"></i>
+
+                                Manage Access
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- ==================================================
+             ATTENDANCE + SYSTEM SUMMARY
+        ================================================== -->
+
+        <div class="row g-4 mt-1">
+
+
+            <!-- ATTENDANCE -->
+
+            <div class="col-lg-8">
+
+                <div class="dashboard-panel">
+
+                    <div class="dashboard-panel-header">
+
+                        <div class="dashboard-panel-title">
+
+                            <div class="dashboard-panel-title-icon">
+
+                                <i class="bi bi-calendar-check"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    Today's Attendance
+                                </h3>
+
+                                <p>
+                                    Current workforce attendance overview
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="dashboard-panel-badge">
+
+                            {{ present_today }} Present
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="attendance-body">
+
+                        <div class="attendance-summary">
+
+
+                            <div class="attendance-box attendance-present">
+
+                                <div class="attendance-icon">
+
+                                    <i class="bi bi-check-circle-fill"></i>
+
+                                </div>
+
+                                <div class="attendance-box-label">
+                                    Present Today
+                                </div>
+
+                                <div class="attendance-box-value">
+                                    {{ present_today }}
+                                </div>
+
+                                <div class="attendance-box-description">
+                                    Employees marked present today.
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="attendance-box attendance-employees">
+
+                                <div class="attendance-icon">
+
+                                    <i class="bi bi-people-fill"></i>
+
+                                </div>
+
+                                <div class="attendance-box-label">
+                                    Active Employees
+                                </div>
+
+                                <div class="attendance-box-value">
+                                    {{ total_employees }}
+                                </div>
+
+                                <div class="attendance-box-description">
+                                    Total active employee records.
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- SYSTEM SUMMARY -->
+
+            <div class="col-lg-4">
+
+                <div class="dashboard-panel">
+
+                    <div class="dashboard-panel-header">
+
+                        <div class="dashboard-panel-title">
+
+                            <div class="dashboard-panel-title-icon">
+
+                                <i class="bi bi-bar-chart-line"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    System Summary
+                                </h3>
+
+                                <p>
+                                    Current HRMS overview
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="dashboard-panel-badge">
+                            Live
+                        </span>
+
+                    </div>
+
+
+                    <div class="system-summary">
+
+
+                        <div class="summary-row">
+
+                            <span class="summary-dot"></span>
+
+                            <span class="summary-name">
+                                Employees
+                            </span>
+
+                            <span class="summary-value">
+                                {{ total_employees }}
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="summary-row">
+
+                            <span class="summary-dot"></span>
+
+                            <span class="summary-name">
+                                Departments
+                            </span>
+
+                            <span class="summary-value">
+                                {{ departments }}
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="summary-row">
+
+                            <span class="summary-dot"></span>
+
+                            <span class="summary-name">
+                                Present Today
+                            </span>
+
+                            <span class="summary-value">
+                                {{ present_today }}
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="summary-row">
+
+                            <span class="summary-dot"></span>
+
+                            <span class="summary-name">
+                                System Users
+                            </span>
+
+                            <span class="summary-value">
+                                {{ total_users }}
+                            </span>
 
                         </div>
 
@@ -1167,49 +1608,288 @@ Dashboard
 
             </div>
 
+
         </div>
 
-    </div>
-
-    {% endif %}
 
 
+        <!-- ==================================================
+             DASHBOARD CHARTS
+        ================================================== -->
 
-    <!-- ============================================================= -->
-    <!-- ATTENDANCE + DEPARTMENT SECTION -->
-    <!-- ============================================================= -->
-
-    <div class="row mt-4">
-
-
-        <!-- ========================================================= -->
-        <!-- ATTENDANCE OVERVIEW -->
-        <!-- ========================================================= -->
-
-        <div class="col-lg-8 mb-4">
-
-            <div class="card shadow border-0 rounded-4">
-
-                <div class="card-header bg-white">
-
-                    <h5 class="mb-0">
-                        Attendance Overview
-                    </h5>
+        <div class="row g-4 dashboard-chart-row">
 
 
-                    <span class="panel-tag">
-                        Last 6 months
-                    </span>
+            <!-- ==================================================
+                 LINE GRAPH
+            ================================================== -->
+
+            <div class="col-xl-8">
+
+                <div class="dashboard-panel dashboard-chart-panel">
+
+                    <div class="dashboard-panel-header">
+
+                        <div class="dashboard-panel-title">
+
+                            <div class="dashboard-panel-title-icon">
+
+                                <i class="bi bi-graph-up-arrow"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    HRMS Overview
+                                </h3>
+
+                                <p>
+                                    Current workforce and system metrics
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="dashboard-panel-badge">
+                            Overview
+                        </span>
+
+                    </div>
+
+
+                    <div class="dashboard-chart-body">
+
+                        <div class="dashboard-chart-container">
+
+                            <canvas id="dashboardOverviewChart"></canvas>
+
+                        </div>
+
+                        <div class="dashboard-chart-note">
+
+                            Current dashboard metrics across the HRMS system.
+
+                        </div>
+
+                    </div>
 
                 </div>
 
+            </div>
 
-                <div class="card-body">
 
-                    <canvas
-                        id="attendanceChart"
-                        height="110"
-                    ></canvas>
+
+            <!-- ==================================================
+                 PIE CHART
+            ================================================== -->
+
+            <div class="col-xl-4">
+
+                <div class="dashboard-panel dashboard-chart-panel">
+
+                    <div class="dashboard-panel-header">
+
+                        <div class="dashboard-panel-title">
+
+                            <div class="dashboard-panel-title-icon">
+
+                                <i class="bi bi-pie-chart-fill"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    Attendance Status
+                                </h3>
+
+                                <p>
+                                    Today's workforce distribution
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="dashboard-panel-badge">
+                            Today
+                        </span>
+
+                    </div>
+
+
+                    <div class="dashboard-chart-body">
+
+                        <div class="dashboard-pie-container">
+
+                            <canvas id="attendancePieChart"></canvas>
+
+                        </div>
+
+                        <div class="dashboard-chart-note">
+
+                            Present employees compared with remaining active employees.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ==================================================
+             QUICK ACCESS
+        ================================================== -->
+
+        <div class="row g-4 mt-1">
+
+            <div class="col-12">
+
+                <div class="dashboard-panel">
+
+                    <div class="dashboard-panel-header">
+
+                        <div class="dashboard-panel-title">
+
+                            <div class="dashboard-panel-title-icon">
+
+                                <i class="bi bi-lightning-charge"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    Quick Access
+                                </h3>
+
+                                <p>
+                                    Frequently used HRMS sections
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+                        <div class="row g-3">
+
+
+                            <div class="col-lg-4 col-md-6">
+
+                                <a
+                                    href="{% url 'employee_list' %}"
+                                    class="quick-action"
+                                >
+
+                                    <div class="quick-action-icon">
+
+                                        <i class="bi bi-people"></i>
+
+                                    </div>
+
+                                    <div class="quick-action-content">
+
+                                        <strong>
+                                            Employees
+                                        </strong>
+
+                                        <span>
+                                            View and manage employee records
+                                        </span>
+
+                                    </div>
+
+                                    <i class="bi bi-arrow-right quick-action-arrow"></i>
+
+                                </a>
+
+                            </div>
+
+
+
+                            <div class="col-lg-4 col-md-6">
+
+                                <a
+                                    href="{% url 'department_list' %}"
+                                    class="quick-action"
+                                >
+
+                                    <div class="quick-action-icon">
+
+                                        <i class="bi bi-diagram-3"></i>
+
+                                    </div>
+
+                                    <div class="quick-action-content">
+
+                                        <strong>
+                                            Departments
+                                        </strong>
+
+                                        <span>
+                                            View organizational departments
+                                        </span>
+
+                                    </div>
+
+                                    <i class="bi bi-arrow-right quick-action-arrow"></i>
+
+                                </a>
+
+                            </div>
+
+
+
+                            <div class="col-lg-4 col-md-6">
+
+                                <a
+                                    href="{% url 'attendance_list' %}"
+                                    class="quick-action"
+                                >
+
+                                    <div class="quick-action-icon">
+
+                                        <i class="bi bi-calendar-check"></i>
+
+                                    </div>
+
+                                    <div class="quick-action-content">
+
+                                        <strong>
+                                            Attendance
+                                        </strong>
+
+                                        <span>
+                                            Review workforce attendance
+                                        </span>
+
+                                    </div>
+
+                                    <i class="bi bi-arrow-right quick-action-arrow"></i>
+
+                                </a>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -1217,132 +1897,10 @@ Dashboard
 
         </div>
 
-
-
-        <!-- ========================================================= -->
-        <!-- DEPARTMENT CHART -->
-        <!-- ========================================================= -->
-
-        <div class="col-lg-4 mb-4">
-
-            <div class="card shadow border-0 rounded-4">
-
-                <div class="card-header bg-white">
-
-                    <h5 class="mb-0">
-                        Departments
-                    </h5>
-
-
-                    <span class="panel-tag">
-                        {{ total_employees }} total
-                    </span>
-
-                </div>
-
-
-                <div class="card-body">
-
-                    <canvas
-                        id="departmentChart"
-                    ></canvas>
-
-
-                    <ul class="dept-legend">
-
-
-                        <li>
-
-                            <span
-                                class="dept-swatch"
-                                style="background:#c72459"
-                            ></span>
-
-                            IT
-
-                            <span class="leg-val">
-                                40
-                            </span>
-
-                        </li>
-
-
-                        <li>
-
-                            <span
-                                class="dept-swatch"
-                                style="background:#6e1338"
-                            ></span>
-
-                            HR
-
-                            <span class="leg-val">
-                                15
-                            </span>
-
-                        </li>
-
-
-                        <li>
-
-                            <span
-                                class="dept-swatch"
-                                style="background:#a61b4a"
-                            ></span>
-
-                            Finance
-
-                            <span class="leg-val">
-                                20
-                            </span>
-
-                        </li>
-
-
-                        <li>
-
-                            <span
-                                class="dept-swatch"
-                                style="background:#c9a15a"
-                            ></span>
-
-                            Sales
-
-                            <span class="leg-val">
-                                15
-                            </span>
-
-                        </li>
-
-
-                        <li>
-
-                            <span
-                                class="dept-swatch"
-                                style="background:#e3a9bb"
-                            ></span>
-
-                            Marketing
-
-                            <span class="leg-val">
-                                10
-                            </span>
-
-                        </li>
-
-
-                    </ul>
-
-                </div>
-
-            </div>
-
-        </div>
 
     </div>
 
 </div>
-
 
 {% endblock %}
 
@@ -1350,497 +1908,411 @@ Dashboard
 
 {% block extra_js %}
 
+<!-- ==========================================================
+     CHART.JS
+========================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 <script>
 
-
-/* ==========================================================
-   ATTENDANCE CHART
-   ========================================================== */
-
-
-const attendanceChart = new Chart(
-
-    document.getElementById("attendanceChart"),
-
-    {
-
-        type:"line",
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
 
-        data:{
+        /* ======================================================
+           DASHBOARD VALUES
+        ====================================================== */
 
-            labels:[
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun"
-            ],
+        const totalEmployees =
+            Number("{{ total_employees|default:0 }}") || 0;
 
+        const presentToday =
+            Number("{{ present_today|default:0 }}") || 0;
 
-            datasets:[{
+        const totalDepartments =
+            Number("{{ departments|default:0 }}") || 0;
 
-                label:"Attendance",
-
-
-                data:[
-                    90,
-                    94,
-                    92,
-                    96,
-                    98,
-                    97
-                ],
+        const totalUsers =
+            Number("{{ total_users|default:0 }}") || 0;
 
 
-                borderColor:"#a61b4a",
+        /*
+         * Prevent negative values in the attendance chart.
+         *
+         * Example:
+         * Total Employees = 13
+         * Present Today   = 10
+         * Not Present     = 3
+         */
 
-                borderWidth:2.5,
-
-                pointBackgroundColor:"#c72459",
-
-                pointBorderColor:"#fff",
-
-                pointBorderWidth:2,
-
-                pointRadius:4,
-
-
-                backgroundColor:function(ctx){
-
-                    const {chartArea} = ctx.chart;
-
-                    if(!chartArea) return null;
+        const notPresentToday =
+            Math.max(
+                totalEmployees - presentToday,
+                0
+            );
 
 
-                    const g =
-                        ctx.chart.ctx.createLinearGradient(
-                            0,
-                            chartArea.top,
-                            0,
-                            chartArea.bottom
-                        );
+        /* ======================================================
+           COMMON CHART SETTINGS
+        ====================================================== */
+
+        Chart.defaults.font.family =
+            "Inter, -apple-system, BlinkMacSystemFont, " +
+            "\"Segoe UI\", sans-serif";
+
+        Chart.defaults.color = "#64748b";
 
 
-                    g.addColorStop(
-                        0,
-                        "rgba(199,36,89,0.28)"
-                    );
+
+        /* ======================================================
+           LINE GRAPH
+        ====================================================== */
+
+        const overviewCanvas =
+            document.getElementById(
+                "dashboardOverviewChart"
+            );
 
 
-                    g.addColorStop(
-                        1,
-                        "rgba(199,36,89,0.02)"
-                    );
+        if (overviewCanvas) {
 
+            new Chart(
+                overviewCanvas,
+                {
+                    type: "line",
 
-                    return g;
+                    data: {
 
-                },
+                        labels: [
+                            "Employees",
+                            "Departments",
+                            "Present Today",
+                            "System Users"
+                        ],
 
+                        datasets: [
 
-                fill:true,
+                            {
+                                label: "HRMS Metrics",
 
-                tension:.4
+                                data: [
+                                    totalEmployees,
+                                    totalDepartments,
+                                    presentToday,
+                                    totalUsers
+                                ],
 
-            }]
+                                borderColor:
+                                    "#2563eb",
 
-        },
+                                backgroundColor:
+                                    "rgba(37, 99, 235, 0.10)",
 
+                                borderWidth: 3,
 
-        options:{
+                                pointBackgroundColor:
+                                    "#2563eb",
 
-            responsive:true,
+                                pointBorderColor:
+                                    "#ffffff",
 
+                                pointBorderWidth: 2,
 
-            plugins:{
+                                pointRadius: 5,
 
-                legend:{
-                    display:false
-                }
+                                pointHoverRadius: 7,
 
-            },
+                                tension: 0.35,
 
+                                fill: true
+                            }
 
-            scales:{
+                        ]
 
-                y:{
-
-                    grid:{
-                        color:"#f0dde2"
                     },
 
+                    options: {
 
-                    ticks:{
+                        responsive: true,
 
-                        font:{
-                            family:"IBM Plex Mono",
-                            size:11
+                        maintainAspectRatio: false,
+
+                        interaction: {
+
+                            intersect: false,
+
+                            mode: "index"
+
                         },
 
+                        plugins: {
 
-                        color:"#8b6b76"
+                            legend: {
 
-                    }
+                                display: false
 
-                },
+                            },
 
+                            tooltip: {
 
-                x:{
+                                backgroundColor:
+                                    "#0f172a",
 
-                    grid:{
-                        display:false
-                    },
+                                titleColor:
+                                    "#ffffff",
 
+                                bodyColor:
+                                    "#e2e8f0",
 
-                    ticks:{
-                        color:"#8b6b76"
+                                padding: 12,
+
+                                displayColors: false,
+
+                                callbacks: {
+
+                                    label:
+                                        function (context) {
+
+                                            return (
+                                                " " +
+                                                context.parsed.y +
+                                                " records"
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        },
+
+                        scales: {
+
+                            x: {
+
+                                grid: {
+
+                                    display: false
+
+                                },
+
+                                ticks: {
+
+                                    color: "#64748b",
+
+                                    font: {
+
+                                        size: 11,
+
+                                        weight: "600"
+
+                                    }
+
+                                }
+
+                            },
+
+                            y: {
+
+                                beginAtZero: true,
+
+                                ticks: {
+
+                                    precision: 0,
+
+                                    color: "#64748b",
+
+                                    font: {
+
+                                        size: 11
+
+                                    }
+
+                                },
+
+                                grid: {
+
+                                    color:
+                                        "rgba(226, 232, 240, 0.75)"
+
+                                }
+
+                            }
+
+                        }
+
                     }
 
                 }
-
-            }
+            );
 
         }
+
+
+
+        /* ======================================================
+           ATTENDANCE PIE CHART
+        ====================================================== */
+
+        const attendanceCanvas =
+            document.getElementById(
+                "attendancePieChart"
+            );
+
+
+        if (attendanceCanvas) {
+
+            new Chart(
+                attendanceCanvas,
+                {
+                    type: "pie",
+
+                    data: {
+
+                        labels: [
+                            "Present",
+                            "Not Present"
+                        ],
+
+                        datasets: [
+
+                            {
+
+                                data: [
+                                    presentToday,
+                                    notPresentToday
+                                ],
+
+                                backgroundColor: [
+                                    "#16a34a",
+                                    "#e2e8f0"
+                                ],
+
+                                borderColor: [
+                                    "#ffffff",
+                                    "#ffffff"
+                                ],
+
+                                borderWidth: 3,
+
+                                hoverOffset: 6
+
+                            }
+
+                        ]
+
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        plugins: {
+
+                            legend: {
+
+                                position: "bottom",
+
+                                labels: {
+
+                                    usePointStyle: true,
+
+                                    pointStyle: "circle",
+
+                                    padding: 18,
+
+                                    color: "#334155",
+
+                                    font: {
+
+                                        size: 11,
+
+                                        weight: "600"
+
+                                    }
+
+                                }
+
+                            },
+
+                            tooltip: {
+
+                                backgroundColor:
+                                    "#0f172a",
+
+                                titleColor:
+                                    "#ffffff",
+
+                                bodyColor:
+                                    "#e2e8f0",
+
+                                padding: 12,
+
+                                callbacks: {
+
+                                    label:
+                                        function (context) {
+
+                                            const value =
+                                                context.raw;
+
+                                            const total =
+                                                context.dataset.data
+                                                    .reduce(
+                                                        function (
+                                                            sum,
+                                                            current
+                                                        ) {
+                                                            return (
+                                                                sum +
+                                                                current
+                                                            );
+                                                        },
+                                                        0
+                                                    );
+
+                                            const percentage =
+                                                total > 0
+                                                    ? (
+                                                        value /
+                                                        total *
+                                                        100
+                                                    ).toFixed(1)
+                                                    : 0;
+
+                                            return (
+                                                " " +
+                                                context.label +
+                                                ": " +
+                                                value +
+                                                " (" +
+                                                percentage +
+                                                "%)"
+                                            );
+
+                                        }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
 
     }
-
-);
-
-
-
-/* ==========================================================
-   DEPARTMENT CHART
-   ========================================================== */
-
-
-const departmentChart = new Chart(
-
-    document.getElementById("departmentChart"),
-
-    {
-
-        type:"doughnut",
-
-
-        data:{
-
-            labels:[
-
-                "IT",
-                "HR",
-                "Finance",
-                "Sales",
-                "Marketing"
-
-            ],
-
-
-            datasets:[{
-
-                data:[
-
-                    40,
-                    15,
-                    20,
-                    15,
-                    10
-
-                ],
-
-
-                backgroundColor:[
-
-                    "#c72459",
-                    "#6e1338",
-                    "#a61b4a",
-                    "#c9a15a",
-                    "#e3a9bb"
-
-                ],
-
-
-                borderWidth:3,
-
-                borderColor:"#ffffff"
-
-            }]
-
-        },
-
-
-        options:{
-
-            responsive:true,
-
-            cutout:"68%",
-
-
-            plugins:{
-
-                legend:{
-                    display:false
-                }
-
-            }
-
-        }
-
-    }
-
-);
-
-
-
-/* ==========================================================
-   SPARKLINE FUNCTION
-   ========================================================== */
-
-
-function renderSpark(id, data, color){
-
-    const el =
-        document.getElementById(id);
-
-
-    if(!el) return;
-
-
-    new Chart(
-
-        el,
-
-        {
-
-            type:"line",
-
-
-            data:{
-
-                labels:data.map(
-                    (_,i)=>i
-                ),
-
-
-                datasets:[{
-
-                    data:data,
-
-                    borderColor:color,
-
-                    borderWidth:2,
-
-                    pointRadius:0,
-
-                    tension:.4,
-
-                    fill:false
-
-                }]
-
-            },
-
-
-            options:{
-
-                responsive:true,
-
-                maintainAspectRatio:false,
-
-
-                plugins:{
-
-                    legend:{
-                        display:false
-                    },
-
-
-                    tooltip:{
-                        enabled:false
-                    }
-
-                },
-
-
-                scales:{
-
-                    x:{
-                        display:false
-                    },
-
-
-                    y:{
-                        display:false
-                    }
-
-                },
-
-
-                elements:{
-
-                    point:{
-                        radius:0
-                    }
-
-                }
-
-            }
-
-        }
-
-    );
-
-}
-
-
-
-/* ==========================================================
-   EMPLOYEE SPARKLINE
-   ========================================================== */
-
-
-renderSpark(
-
-    "spark-employees",
-
-    [
-        110,
-        112,
-        114,
-        115,
-        118,
-        119,
-        120
-    ],
-
-    "#2e9e6d"
-
-);
-
-
-
-/* ==========================================================
-   PRESENT SPARKLINE
-   ========================================================== */
-
-
-renderSpark(
-
-    "spark-present",
-
-    [
-        101,
-        104,
-        99,
-        106,
-        105,
-        108,
-        108
-    ],
-
-    "#2e9e6d"
-
-);
-
-
-
-/* ==========================================================
-   LEAVE SPARKLINE
-   ========================================================== */
-
-
-renderSpark(
-
-    "spark-leave",
-
-    [
-        4,
-        6,
-        5,
-        7,
-        8,
-        9,
-        9
-    ],
-
-    "#c98a2c"
-
-);
-
-
-
-/* ==========================================================
-   PAYROLL SPARKLINE
-   ========================================================== */
-
-
-renderSpark(
-
-    "spark-payroll",
-
-    [
-        7.9,
-        8.0,
-        8.1,
-        8.2,
-        8.3,
-        8.4,
-        8.5
-    ],
-
-    "#8b6b76"
-
-);
-
-
-
-/* ==========================================================
-   DEPARTMENT SPARKLINE
-   ========================================================== */
-
-
-renderSpark(
-
-    "spark-departments",
-
-    [
-        8,
-        8,
-        8,
-        8,
-        8,
-        8,
-        8
-    ],
-
-    "#8b6b76"
-
-);
-
-
-
-/* ==========================================================
-   PROJECT SPARKLINE
-   ========================================================== */
-
-
-renderSpark(
-
-    "spark-projects",
-
-    [
-        14,
-        15,
-        15,
-        16,
-        16,
-        17,
-        17
-    ],
-
-    "#c98a2c"
-
 );
 
 </script>
