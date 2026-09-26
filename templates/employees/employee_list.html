@@ -40,37 +40,53 @@ Employees
     width: 52px;
     height: 52px;
     flex-shrink: 0;
-    border-radius: 14px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #eff6ff;
-    color: #2563eb;
-    font-size: 23px;
+
+    border-radius: 13px;
+
+    background: #ff6b00;
+    color: #ffffff;
+
+    font-size: 22px;
+
+    box-shadow: 0 8px 20px rgba(255, 107, 0, .16);
 }
 
 .employee-page-label {
     display: block;
+
     margin-bottom: 5px;
-    color: #2563eb;
-    font-size: 11px;
+
+    color: #ff6b00;
+
+    font-size: 10px;
     font-weight: 800;
-    letter-spacing: 1.4px;
+
+    letter-spacing: 1.6px;
+
     text-transform: uppercase;
 }
 
 .employee-page-heading h2 {
     margin: 0;
-    color: #0f172a;
+
+    color: #111111;
+
     font-size: 28px;
     font-weight: 800;
-    letter-spacing: -0.5px;
+
+    letter-spacing: -.7px;
 }
 
 .employee-page-heading p {
     margin: 7px 0 0;
-    color: #64748b;
-    font-size: 14px;
+
+    color: #737373;
+
+    font-size: 13px;
 }
 
 
@@ -87,28 +103,53 @@ Employees
 
 .employee-header-actions .btn {
     min-height: 42px;
+
     padding: 9px 15px;
-    border-radius: 9px;
-    font-size: 13px;
-    font-weight: 700;
+
+    border-radius: 8px;
+
     border: none;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        background .18s ease;
+}
+
+.employee-header-actions .btn:hover {
+    transform: translateY(-1px);
 }
 
 .employee-header-actions .btn-primary {
-    background: #2563eb;
-    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.18);
+    background: #ff6b00;
+    color: #ffffff;
+
+    box-shadow: 0 6px 16px rgba(255, 107, 0, .18);
 }
 
 .employee-header-actions .btn-primary:hover {
-    background: #1d4ed8;
+    background: #e85f00;
 }
 
 .employee-header-actions .btn-success {
-    background: #15803d;
+    background: #171717;
+    color: #ffffff;
+}
+
+.employee-header-actions .btn-success:hover {
+    background: #000000;
 }
 
 .employee-header-actions .btn-danger {
-    background: #dc2626;
+    background: #333333;
+    color: #ffffff;
+}
+
+.employee-header-actions .btn-danger:hover {
+    background: #111111;
 }
 
 
@@ -118,35 +159,65 @@ Employees
 
 .employee-stat-card {
     position: relative;
-    overflow: hidden;
+
     height: 100%;
+
     padding: 20px;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
+
+    overflow: hidden;
+
+    border: 1px solid #e4e4e4;
+    border-radius: 14px;
+
     background: #ffffff;
-    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
-    transition: all 0.2s ease;
+
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .045);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.employee-stat-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background: #ff6b00;
 }
 
 .employee-stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .08);
 }
 
 .employee-stat-card::after {
     content: "";
+
     position: absolute;
-    width: 110px;
-    height: 110px;
-    top: -50px;
+
+    width: 115px;
+    height: 115px;
+
+    top: -55px;
     right: -45px;
+
     border-radius: 50%;
-    background: #f8fafc;
+
+    background: #fafafa;
 }
 
 .employee-stat-top {
     position: relative;
     z-index: 1;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -155,47 +226,57 @@ Employees
 .employee-stat-icon {
     width: 44px;
     height: 44px;
-    border-radius: 12px;
+
+    border-radius: 11px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 19px;
+
+    font-size: 18px;
 }
 
 .employee-stat-icon.total {
-    background: #eff6ff;
-    color: #2563eb;
+    background: #fff1e8;
+    color: #ff6b00;
 }
 
 .employee-stat-icon.active {
-    background: #ecfdf5;
-    color: #16a34a;
+    background: #f1f5f2;
+    color: #218739;
 }
 
 .employee-stat-icon.inactive {
-    background: #fef2f2;
-    color: #dc2626;
+    background: #f8f0f0;
+    color: #b33b3b;
 }
 
 .employee-stat-content {
     position: relative;
     z-index: 1;
+
     margin-top: 18px;
 }
 
 .employee-stat-label {
     display: block;
+
     margin-bottom: 5px;
-    color: #64748b;
-    font-size: 12px;
+
+    color: #777777;
+
+    font-size: 11px;
     font-weight: 600;
 }
 
 .employee-stat-number {
     display: block;
-    color: #0f172a;
+
+    color: #111111;
+
     font-size: 29px;
     line-height: 1;
+
     font-weight: 800;
 }
 
@@ -206,35 +287,48 @@ Employees
 
 .employee-filter-card {
     margin-bottom: 24px;
+
     overflow: hidden;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
+
+    border: 1px solid #e4e4e4;
+    border-radius: 14px;
+
     background: #ffffff;
-    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .04);
 }
 
 .employee-filter-header {
     display: flex;
     align-items: center;
+
     gap: 11px;
+
     padding: 17px 20px;
-    border-bottom: 1px solid #f1f5f9;
+
+    border-bottom: 1px solid #eeeeee;
+
+    background: #111111;
 }
 
 .employee-filter-header-icon {
     width: 35px;
     height: 35px;
-    border-radius: 9px;
+
+    border-radius: 8px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #eff6ff;
-    color: #2563eb;
+
+    background: #ff6b00;
+    color: #ffffff;
 }
 
 .employee-filter-header strong {
-    color: #0f172a;
-    font-size: 14px;
+    color: #ffffff;
+
+    font-size: 13px;
     font-weight: 750;
 }
 
@@ -244,46 +338,69 @@ Employees
 
 .employee-filter-label {
     display: block;
+
     margin-bottom: 7px;
-    color: #475569;
-    font-size: 11px;
+
+    color: #444444;
+
+    font-size: 10px;
     font-weight: 800;
-    letter-spacing: 0.3px;
+
+    letter-spacing: .4px;
+
+    text-transform: uppercase;
 }
 
 .employee-filter-body .form-control,
 .employee-filter-body .form-select {
     min-height: 43px;
-    border: 1px solid #dbe3ed;
-    border-radius: 9px;
-    background: #f8fafc;
-    color: #334155;
-    font-size: 13px;
+
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+
+    background: #fafafa;
+
+    color: #333333;
+
+    font-size: 12px;
+
     box-shadow: none;
 }
 
 .employee-filter-body .form-control:focus,
 .employee-filter-body .form-select:focus {
     background: #ffffff;
-    border-color: #93c5fd;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+
+    border-color: #ff9a5c;
+
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, .09);
 }
 
 .employee-search-button {
     width: 100%;
+
     min-height: 43px;
+
     margin-top: 18px;
+
     border: none;
-    border-radius: 9px;
-    background: #2563eb;
+    border-radius: 8px;
+
+    background: #ff6b00;
     color: #ffffff;
-    font-size: 13px;
+
+    font-size: 12px;
     font-weight: 700;
-    transition: background 0.2s ease;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
 }
 
 .employee-search-button:hover {
-    background: #1d4ed8;
+    background: #e85f00;
+
+    transform: translateY(-1px);
 }
 
 
@@ -293,51 +410,67 @@ Employees
 
 .employee-table-card {
     overflow: hidden;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
+
+    border: 1px solid #e4e4e4;
+    border-radius: 14px;
+
     background: #ffffff;
-    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .045);
 }
 
 .employee-table-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     gap: 15px;
+
     padding: 19px 21px;
-    border-bottom: 1px solid #f1f5f9;
+
+    border-bottom: 1px solid #eeeeee;
 }
 
 .employee-table-title {
     display: flex;
     align-items: center;
+
     gap: 11px;
 }
 
 .employee-table-title-icon {
     width: 38px;
     height: 38px;
-    border-radius: 10px;
+
+    border-radius: 9px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #eff6ff;
-    color: #2563eb;
+
+    background: #ff6b00;
+    color: #ffffff;
+
     font-size: 16px;
 }
 
 .employee-table-title strong {
     display: block;
-    color: #0f172a;
+
+    color: #111111;
+
     font-size: 14px;
     font-weight: 750;
 }
 
 .employee-table-title span {
     display: block;
+
     margin-top: 2px;
-    color: #94a3b8;
-    font-size: 11px;
+
+    color: #999999;
+
+    font-size: 10px;
 }
 
 
@@ -347,42 +480,61 @@ Employees
 
 .employee-table-wrapper {
     width: 100%;
+
     overflow-x: auto;
 }
 
 .employee-table {
     width: 100%;
+
     min-width: 850px;
+
     margin: 0;
+
     border-collapse: collapse;
 }
 
 .employee-table thead th {
     padding: 13px 18px;
-    background: #f8fafc;
-    color: #64748b;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 10px;
+
+    background: #111111;
+
+    color: #bcbcbc;
+
+    border-bottom: 1px solid #292929;
+
+    font-size: 9px;
     font-weight: 800;
-    letter-spacing: 0.8px;
+
+    letter-spacing: .9px;
+
     text-transform: uppercase;
+
     white-space: nowrap;
+}
+
+.employee-table thead th:first-child {
+    color: #ffffff;
 }
 
 .employee-table tbody td {
     padding: 14px 18px;
-    color: #334155;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 13px;
+
+    color: #333333;
+
+    border-bottom: 1px solid #eeeeee;
+
+    font-size: 12px;
+
     vertical-align: middle;
 }
 
 .employee-table tbody tr {
-    transition: background 0.15s ease;
+    transition: background .15s ease;
 }
 
 .employee-table tbody tr:hover {
-    background: #f8fbff;
+    background: #fffaf6;
 }
 
 .employee-table tbody tr:last-child td {
@@ -397,65 +549,87 @@ Employees
 .employee-profile {
     display: flex;
     align-items: center;
+
     gap: 11px;
 }
 
 .employee-avatar {
     width: 43px;
     height: 43px;
+
     flex-shrink: 0;
+
     object-fit: cover;
+
     border: 2px solid #ffffff;
-    border-radius: 11px;
-    box-shadow: 0 2px 7px rgba(15, 23, 42, 0.12);
+    border-radius: 10px;
+
+    box-shadow: 0 2px 7px rgba(0, 0, 0, .12);
 }
 
 .employee-avatar-placeholder {
     width: 43px;
     height: 43px;
+
     flex-shrink: 0;
-    border-radius: 11px;
+
+    border-radius: 10px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #eff6ff;
-    color: #2563eb;
+
+    background: #fff1e8;
+    color: #ff6b00;
+
     font-size: 18px;
 }
 
 .employee-name {
-    color: #0f172a;
+    color: #111111;
+
     font-weight: 700;
 }
 
 .employee-you-badge {
     display: inline-flex;
     align-items: center;
+
     margin-left: 6px;
+
     padding: 3px 7px;
+
     border-radius: 20px;
-    background: #eff6ff;
-    color: #2563eb;
-    font-size: 9px;
+
+    background: #fff1e8;
+    color: #ff6b00;
+
+    font-size: 8px;
     font-weight: 800;
-    letter-spacing: 0.4px;
+
+    letter-spacing: .4px;
+
     text-transform: uppercase;
 }
 
 .employee-id {
-    color: #475569;
+    color: #555555;
+
     font-family: monospace;
-    font-size: 12px;
+
+    font-size: 11px;
     font-weight: 700;
 }
 
 .employee-department {
-    color: #475569;
+    color: #555555;
+
     font-weight: 600;
 }
 
 .employee-not-assigned {
-    color: #94a3b8;
+    color: #999999;
+
     font-style: italic;
 }
 
@@ -467,35 +641,40 @@ Employees
 .employee-status {
     display: inline-flex;
     align-items: center;
+
     gap: 6px;
+
     padding: 6px 10px;
+
     border-radius: 20px;
-    font-size: 10px;
+
+    font-size: 9px;
     font-weight: 800;
 }
 
 .employee-status-dot {
     width: 6px;
     height: 6px;
+
     border-radius: 50%;
 }
 
 .employee-status.active {
-    background: #ecfdf5;
-    color: #15803d;
+    background: #f0f8f2;
+    color: #217a36;
 }
 
 .employee-status.active .employee-status-dot {
-    background: #22c55e;
+    background: #28a745;
 }
 
 .employee-status.inactive {
-    background: #fef2f2;
-    color: #b91c1c;
+    background: #f9eeee;
+    color: #a33a3a;
 }
 
 .employee-status.inactive .employee-status-dot {
-    background: #ef4444;
+    background: #d9534f;
 }
 
 
@@ -507,40 +686,54 @@ Employees
     display: flex;
     align-items: center;
     justify-content: center;
+
     gap: 7px;
 }
 
 .employee-action-button {
     width: 34px;
     height: 34px;
-    border: 1px solid #e2e8f0;
-    border-radius: 9px;
+
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+
     background: #ffffff;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
+
     text-decoration: none;
-    transition: all 0.2s ease;
+
+    transition:
+        background .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+.employee-action-button:hover {
+    transform: translateY(-1px);
 }
 
 .employee-action-button.view {
-    color: #2563eb;
+    color: #333333;
 }
 
 .employee-action-button.view:hover {
-    background: #eff6ff;
-    border-color: #bfdbfe;
-    color: #1d4ed8;
+    background: #111111;
+    border-color: #111111;
+    color: #ffffff;
 }
 
 .employee-action-button.edit {
-    color: #d97706;
+    color: #ff6b00;
 }
 
 .employee-action-button.edit:hover {
-    background: #fffbeb;
-    border-color: #fde68a;
-    color: #b45309;
+    background: #fff1e8;
+    border-color: #ffb37f;
+    color: #e85f00;
 }
 
 
@@ -550,33 +743,43 @@ Employees
 
 .employee-empty-state {
     padding: 65px 20px;
+
     text-align: center;
 }
 
 .employee-empty-icon {
     width: 68px;
     height: 68px;
+
     margin: 0 auto 16px;
-    border-radius: 18px;
+
+    border-radius: 17px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f8fafc;
-    color: #94a3b8;
-    font-size: 30px;
+
+    background: #fff6f0;
+    color: #ff6b00;
+
+    font-size: 28px;
 }
 
 .employee-empty-state h3 {
     margin: 0 0 6px;
-    color: #334155;
+
+    color: #333333;
+
     font-size: 16px;
     font-weight: 750;
 }
 
 .employee-empty-state p {
     margin: 0;
-    color: #94a3b8;
-    font-size: 13px;
+
+    color: #999999;
+
+    font-size: 12px;
 }
 
 
@@ -595,21 +798,33 @@ Employees
 
 .dataTables_wrapper .dataTables_filter input {
     margin-left: 7px;
+
     padding: 7px 10px;
-    border: 1px solid #dbe3ed !important;
-    border-radius: 8px !important;
+
+    border: 1px solid #dddddd !important;
+    border-radius: 7px !important;
+
     outline: none;
+
+    font-size: 11px;
 }
 
 .dataTables_wrapper .dataTables_filter input:focus {
-    border-color: #93c5fd !important;
+    border-color: #ff9a5c !important;
+
+    box-shadow: 0 0 0 2px rgba(255, 107, 0, .07);
 }
 
 .dataTables_wrapper .dataTables_length select {
     padding: 5px 8px;
-    border: 1px solid #dbe3ed;
+
+    border: 1px solid #dddddd;
+
     border-radius: 7px;
+
     outline: none;
+
+    font-size: 11px;
 }
 
 .dataTables_wrapper .dt-buttons {
@@ -618,28 +833,54 @@ Employees
 
 .dataTables_wrapper .dt-button {
     padding: 5px 10px !important;
-    border: 1px solid #dbe3ed !important;
+
+    border: 1px solid #dddddd !important;
     border-radius: 7px !important;
+
     background: #ffffff !important;
-    color: #475569 !important;
-    font-size: 11px !important;
+
+    color: #444444 !important;
+
+    font-size: 10px !important;
     font-weight: 600 !important;
+
+    box-shadow: none !important;
 }
 
 .dataTables_wrapper .dt-button:hover {
-    background: #eff6ff !important;
-    border-color: #bfdbfe !important;
-    color: #2563eb !important;
+    background: #ff6b00 !important;
+
+    border-color: #ff6b00 !important;
+
+    color: #ffffff !important;
 }
 
 .dataTables_wrapper .dataTables_info {
-    color: #94a3b8;
-    font-size: 11px;
+    color: #999999;
+
+    font-size: 10px;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
     border-radius: 7px !important;
-    font-size: 11px;
+
+    font-size: 10px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #ff6b00 !important;
+
+    border-color: #ff6b00 !important;
+
+    color: #ffffff !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #111111 !important;
+
+    border-color: #111111 !important;
+
+    color: #ffffff !important;
 }
 
 
@@ -654,6 +895,7 @@ Employees
     }
 
 }
+
 
 @media (max-width: 768px) {
 
@@ -675,6 +917,7 @@ Employees
 
 }
 
+
 @media (max-width: 576px) {
 
     .employee-page-heading {
@@ -684,7 +927,8 @@ Employees
     .employee-page-icon {
         width: 44px;
         height: 44px;
-        font-size: 20px;
+
+        font-size: 19px;
     }
 
     .employee-page-heading h2 {
@@ -697,6 +941,7 @@ Employees
 
     .employee-header-actions {
         display: grid;
+
         grid-template-columns: 1fr 1fr;
     }
 
@@ -717,6 +962,20 @@ Employees
     }
 
 }
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+.employee-page a:focus-visible,
+.employee-page button:focus-visible,
+.employee-page input:focus-visible,
+.employee-page select:focus-visible {
+    outline: 2px solid #ff6b00;
+    outline-offset: 2px;
+}
+
 
 </style>
 
@@ -858,7 +1117,7 @@ Employees
 
                         <i
                             class="bi bi-three-dots"
-                            style="color:#cbd5e1;"
+                            style="color:#cccccc;"
                         ></i>
 
                     </div>
@@ -896,7 +1155,7 @@ Employees
 
                         <i
                             class="bi bi-check-circle"
-                            style="color:#bbf7d0;"
+                            style="color:#a9d8b2;"
                         ></i>
 
                     </div>
@@ -934,7 +1193,7 @@ Employees
 
                         <i
                             class="bi bi-dash-circle"
-                            style="color:#fecaca;"
+                            style="color:#e6b3b3;"
                         ></i>
 
                     </div>

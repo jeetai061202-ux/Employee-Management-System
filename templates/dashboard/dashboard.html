@@ -10,34 +10,36 @@ Dashboard
 <style>
 
 /* ==========================================================
-   DASHBOARD THEME
-   Matches the public HRMS landing page
+   ARND IT / HRMS DASHBOARD
+   Black + Orange + White
 ========================================================== */
 
 .dashboard-page {
 
-    --dashboard-primary: #2563eb;
-    --dashboard-primary-dark: #1d4ed8;
-    --dashboard-primary-soft: #eff6ff;
+    --dash-black: #080808;
+    --dash-black-soft: #111111;
+    --dash-black-card: #171717;
 
-    --dashboard-success: #16a34a;
-    --dashboard-warning: #d97706;
-    --dashboard-danger: #dc2626;
+    --dash-orange: #ff6b00;
+    --dash-orange-dark: #e85f00;
+    --dash-orange-soft: #fff1e7;
 
-    --dashboard-bg: #f8fafc;
-    --dashboard-card: #ffffff;
+    --dash-white: #ffffff;
+    --dash-off-white: #f7f7f5;
 
-    --dashboard-border: #e2e8f0;
+    --dash-border: #e7e7e4;
+    --dash-dark-border: #2a2a2a;
 
-    --dashboard-heading: #0f172a;
-    --dashboard-text: #334155;
-    --dashboard-muted: #64748b;
+    --dash-heading: #111111;
+    --dash-text: #363636;
+    --dash-muted: #777777;
 
-    --dashboard-radius: 16px;
+    --dash-green: #169b55;
+    --dash-red: #d64545;
 
-    --dashboard-shadow:
-        0 1px 2px rgba(15, 23, 42, 0.04),
-        0 8px 24px rgba(15, 23, 42, 0.05);
+    --dash-radius: 16px;
+
+    color: var(--dash-text);
 }
 
 
@@ -46,71 +48,51 @@ Dashboard
 ========================================================== */
 
 .dashboard-header {
-    margin-bottom: 28px;
+    margin-bottom: 30px;
 }
 
 .dashboard-header-top {
-
     display: flex;
-
     align-items: flex-end;
-
     justify-content: space-between;
-
-    gap: 20px;
+    gap: 24px;
 }
 
 .dashboard-header h1 {
-
     margin: 0;
-
-    color: var(--dashboard-heading);
-
-    font-size: 30px;
-
-    font-weight: 700;
-
-    letter-spacing: -0.7px;
+    color: var(--dash-heading);
+    font-size: 34px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -1.3px;
 }
 
 .dashboard-header h1 span {
-    color: var(--dashboard-primary);
+    color: var(--dash-orange);
 }
 
 .dashboard-header p {
-
-    margin: 7px 0 0;
-
-    color: var(--dashboard-muted);
-
+    margin: 9px 0 0;
+    color: var(--dash-muted);
     font-size: 14px;
 }
 
 .dashboard-date {
-
     display: inline-flex;
-
     align-items: center;
-
-    gap: 8px;
-
-    padding: 9px 13px;
-
-    background: #ffffff;
-
-    border: 1px solid var(--dashboard-border);
-
-    border-radius: 10px;
-
-    color: var(--dashboard-muted);
-
-    font-size: 12px;
-
-    font-weight: 600;
+    gap: 9px;
+    padding: 10px 15px;
+    background: var(--dash-black);
+    color: var(--dash-white);
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    text-transform: uppercase;
 }
 
 .dashboard-date i {
-    color: var(--dashboard-primary);
+    color: var(--dash-orange);
 }
 
 
@@ -119,167 +101,113 @@ Dashboard
 ========================================================== */
 
 .dashboard-stat-link {
-
     display: block;
-
     height: 100%;
-
     text-decoration: none;
 }
 
 .dashboard-stat {
-
     position: relative;
-
     height: 100%;
-
-    padding: 20px;
-
-    background: var(--dashboard-card);
-
-    border: 1px solid var(--dashboard-border);
-
-    border-radius: var(--dashboard-radius);
-
-    box-shadow: var(--dashboard-shadow);
-
+    min-height: 160px;
+    padding: 23px;
+    background: var(--dash-white);
+    border: 1px solid var(--dash-border);
+    border-radius: var(--dash-radius);
     overflow: hidden;
 
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease;
+        transform .22s ease,
+        box-shadow .22s ease,
+        border-color .22s ease;
 }
 
 .dashboard-stat:hover {
-
-    transform: translateY(-3px);
-
-    border-color: #cbd5e1;
-
-    box-shadow:
-        0 10px 30px rgba(15, 23, 42, 0.09);
+    transform: translateY(-4px);
+    border-color: #d6d6d2;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .08);
 }
 
 .dashboard-stat::before {
-
     content: "";
-
     position: absolute;
-
     top: 0;
     left: 0;
-    right: 0;
-
-    height: 3px;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--dashboard-primary),
-            #60a5fa
-        );
+    width: 100%;
+    height: 4px;
+    background: var(--dash-orange);
 }
 
 .dashboard-stat-top {
-
     display: flex;
-
     align-items: flex-start;
-
     justify-content: space-between;
-
     gap: 15px;
 }
 
 .dashboard-stat-label {
-
     display: block;
-
-    color: var(--dashboard-muted);
-
-    font-size: 11px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.8px;
-
+    color: var(--dash-muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
     text-transform: uppercase;
 }
 
 .dashboard-stat-value {
-
-    margin-top: 7px;
-
-    color: var(--dashboard-heading);
-
-    font-size: 30px;
-
+    margin-top: 9px;
+    color: var(--dash-heading);
+    font-size: 34px;
     line-height: 1;
-
-    font-weight: 700;
-
-    letter-spacing: -0.8px;
+    font-weight: 800;
+    letter-spacing: -1px;
 }
 
 .dashboard-stat-icon {
-
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     flex-shrink: 0;
 
-    border-radius: 12px;
+    border-radius: 11px;
 
-    background: var(--dashboard-primary-soft);
-
-    color: var(--dashboard-primary);
+    background: var(--dash-black);
+    color: var(--dash-orange);
 
     font-size: 19px;
 }
 
 .dashboard-stat-footer {
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     gap: 10px;
-
-    margin-top: 18px;
+    margin-top: 24px;
 }
 
 .dashboard-stat-description {
-
-    color: var(--dashboard-muted);
-
-    font-size: 12px;
+    color: var(--dash-muted);
+    font-size: 11px;
 }
 
 .dashboard-stat-status {
-
     display: inline-flex;
-
     align-items: center;
-
     gap: 5px;
 
-    color: var(--dashboard-success);
+    color: var(--dash-orange);
 
-    font-size: 11px;
-
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
 }
 
 .dashboard-stat-status i {
-    font-size: 12px;
+    font-size: 11px;
 }
 
 
@@ -288,96 +216,84 @@ Dashboard
 ========================================================== */
 
 .dashboard-panel {
-
     height: 100%;
 
-    background: var(--dashboard-card);
+    background: var(--dash-white);
 
-    border: 1px solid var(--dashboard-border);
-
-    border-radius: var(--dashboard-radius);
-
-    box-shadow: var(--dashboard-shadow);
+    border: 1px solid var(--dash-border);
+    border-radius: var(--dash-radius);
 
     overflow: hidden;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .035);
 }
 
 .dashboard-panel-header {
-
-    min-height: 66px;
+    min-height: 70px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     gap: 15px;
 
-    padding: 16px 20px;
+    padding: 16px 21px;
 
-    border-bottom: 1px solid var(--dashboard-border);
+    border-bottom: 1px solid var(--dash-border);
 }
 
 .dashboard-panel-title {
-
     display: flex;
-
     align-items: center;
-
-    gap: 11px;
+    gap: 12px;
 }
 
 .dashboard-panel-title-icon {
-
-    width: 34px;
-    height: 34px;
+    width: 37px;
+    height: 37px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     border-radius: 9px;
 
-    background: var(--dashboard-primary-soft);
+    background: var(--dash-black);
+    color: var(--dash-orange);
 
-    color: var(--dashboard-primary);
+    font-size: 16px;
 }
 
 .dashboard-panel-title h3 {
-
     margin: 0;
 
-    color: var(--dashboard-heading);
+    color: var(--dash-heading);
 
     font-size: 15px;
-
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .dashboard-panel-title p {
+    margin: 3px 0 0;
 
-    margin: 2px 0 0;
+    color: var(--dash-muted);
 
-    color: var(--dashboard-muted);
-
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .dashboard-panel-badge {
+    padding: 6px 10px;
 
-    padding: 5px 9px;
+    background: var(--dash-orange-soft);
+    color: var(--dash-orange-dark);
 
     border-radius: 20px;
 
-    background: var(--dashboard-primary-soft);
+    font-size: 9px;
+    font-weight: 800;
 
-    color: var(--dashboard-primary);
-
-    font-size: 10px;
-
-    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
 }
 
 
@@ -386,92 +302,74 @@ Dashboard
 ========================================================== */
 
 .attendance-body {
-    padding: 20px;
+    padding: 21px;
 }
 
 .attendance-summary {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
 }
 
 .attendance-box {
+    padding: 19px;
 
-    padding: 18px;
-
-    border: 1px solid var(--dashboard-border);
-
+    border: 1px solid var(--dash-border);
     border-radius: 13px;
 
-    background: #ffffff;
+    background: var(--dash-off-white);
 }
 
 .attendance-box-label {
+    color: var(--dash-muted);
 
-    color: var(--dashboard-muted);
+    font-size: 9px;
+    font-weight: 800;
 
-    font-size: 10px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.7px;
-
+    letter-spacing: .9px;
     text-transform: uppercase;
 }
 
 .attendance-box-value {
-
     margin-top: 7px;
 
-    color: var(--dashboard-heading);
+    color: var(--dash-heading);
 
-    font-size: 27px;
-
-    font-weight: 700;
+    font-size: 29px;
+    font-weight: 800;
 }
 
 .attendance-box-description {
-
     margin-top: 4px;
 
-    color: var(--dashboard-muted);
+    color: var(--dash-muted);
 
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .attendance-icon {
+    width: 39px;
+    height: 39px;
 
-    width: 38px;
-    height: 38px;
-
-    margin-bottom: 13px;
+    margin-bottom: 14px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     border-radius: 10px;
 
-    font-size: 17px;
+    font-size: 16px;
 }
 
 .attendance-present .attendance-icon {
-
-    background: #f0fdf4;
-
-    color: var(--dashboard-success);
+    background: #e9f8ef;
+    color: var(--dash-green);
 }
 
 .attendance-employees .attendance-icon {
-
-    background: var(--dashboard-primary-soft);
-
-    color: var(--dashboard-primary);
+    background: var(--dash-orange-soft);
+    color: var(--dash-orange);
 }
 
 
@@ -480,71 +378,41 @@ Dashboard
 ========================================================== */
 
 .dashboard-chart-row {
-
     margin-top: 24px;
 }
 
 .dashboard-chart-panel {
-
     min-height: 390px;
 }
 
 .dashboard-chart-body {
-
     position: relative;
-
     min-height: 320px;
-
     padding: 20px;
 }
 
 .dashboard-chart-container {
-
     position: relative;
-
     width: 100%;
-
     height: 280px;
 }
 
 .dashboard-pie-container {
-
     position: relative;
 
     width: 100%;
-
     max-width: 330px;
-
     height: 280px;
 
     margin: 0 auto;
 }
 
-.dashboard-chart-empty {
-
-    min-height: 280px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    text-align: center;
-
-    color: var(--dashboard-muted);
-
-    font-size: 13px;
-}
-
 .dashboard-chart-note {
-
     margin-top: 10px;
 
-    color: var(--dashboard-muted);
+    color: var(--dash-muted);
 
-    font-size: 11px;
-
+    font-size: 10px;
     text-align: center;
 }
 
@@ -554,21 +422,17 @@ Dashboard
 ========================================================== */
 
 .system-summary {
-
-    padding: 8px 20px 20px;
+    padding: 8px 21px 20px;
 }
 
 .summary-row {
-
     display: flex;
-
     align-items: center;
-
     gap: 11px;
 
-    padding: 13px 0;
+    padding: 14px 0;
 
-    border-bottom: 1px dashed var(--dashboard-border);
+    border-bottom: 1px dashed var(--dash-border);
 }
 
 .summary-row:last-child {
@@ -576,45 +440,40 @@ Dashboard
 }
 
 .summary-dot {
-
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
 
     border-radius: 50%;
 
-    background: var(--dashboard-primary);
+    background: var(--dash-orange);
 
     flex-shrink: 0;
 }
 
 .summary-row:nth-child(2) .summary-dot {
-    background: #60a5fa;
+    background: #222222;
 }
 
 .summary-row:nth-child(3) .summary-dot {
-    background: var(--dashboard-success);
+    background: var(--dash-green);
 }
 
 .summary-row:nth-child(4) .summary-dot {
-    background: var(--dashboard-warning);
+    background: #999999;
 }
 
 .summary-name {
-
-    color: var(--dashboard-text);
-
-    font-size: 13px;
+    color: var(--dash-text);
+    font-size: 12px;
 }
 
 .summary-value {
-
     margin-left: auto;
 
-    color: var(--dashboard-heading);
+    color: var(--dash-heading);
 
-    font-size: 13px;
-
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 800;
 }
 
 
@@ -627,157 +486,130 @@ Dashboard
 }
 
 .access-grid {
-    padding: 20px;
+    padding: 21px;
 }
 
 .access-box {
-
     height: 100%;
 
-    padding: 18px;
+    padding: 19px;
 
-    border: 1px solid var(--dashboard-border);
-
+    border: 1px solid var(--dash-border);
     border-radius: 13px;
 
+    background: var(--dash-white);
+
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+        transform .2s ease,
+        box-shadow .2s ease;
 }
 
 .access-box:hover {
+    transform: translateY(-3px);
 
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 7px 20px rgba(15, 23, 42, 0.07);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, .07);
 }
 
 .access-box-top {
-
     display: flex;
-
     align-items: flex-start;
-
     justify-content: space-between;
-
     gap: 12px;
 }
 
 .access-label {
+    color: var(--dash-muted);
 
-    color: var(--dashboard-muted);
+    font-size: 9px;
+    font-weight: 800;
 
-    font-size: 10px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.8px;
+    letter-spacing: .9px;
 }
 
 .access-number {
-
     margin-top: 5px;
 
-    color: var(--dashboard-heading);
+    color: var(--dash-heading);
 
-    font-size: 27px;
-
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 800;
 }
 
 .access-icon {
-
     width: 40px;
     height: 40px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     border-radius: 10px;
 
-    font-size: 17px;
+    font-size: 16px;
 }
 
 .access-admin {
-
-    background: #fef2f2;
-
-    color: var(--dashboard-danger);
+    background: #111111;
+    color: var(--dash-orange);
 }
 
 .access-hr {
-
-    background: #fffbeb;
-
-    color: var(--dashboard-warning);
+    background: var(--dash-orange-soft);
+    color: var(--dash-orange);
 }
 
 .access-employee {
-
-    background: var(--dashboard-primary-soft);
-
-    color: var(--dashboard-primary);
+    background: #f2f2f0;
+    color: #222222;
 }
 
 .access-manage {
-
-    background: #f0fdf4;
-
-    color: var(--dashboard-success);
+    background: #e9f8ef;
+    color: var(--dash-green);
 }
 
 .access-description {
-
     margin: 12px 0 0;
 
-    color: var(--dashboard-muted);
+    color: var(--dash-muted);
 
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .manage-access-button {
-
     width: 100%;
 
     margin-top: 16px;
 
     display: inline-flex;
-
     align-items: center;
-
     justify-content: center;
-
     gap: 8px;
 
-    padding: 9px 14px;
+    padding: 10px 14px;
 
     border: 0;
+    border-radius: 8px;
 
-    border-radius: 9px;
+    background: var(--dash-black);
+    color: var(--dash-white);
 
-    background: var(--dashboard-primary);
-
-    color: #ffffff;
-
-    font-size: 12px;
-
-    font-weight: 600;
+    font-size: 10px;
+    font-weight: 800;
 
     text-decoration: none;
 
+    text-transform: uppercase;
+    letter-spacing: .4px;
+
     transition:
-        background 0.2s ease,
-        transform 0.2s ease;
+        background .2s ease,
+        transform .2s ease;
 }
 
 .manage-access-button:hover {
-
-    background: var(--dashboard-primary-dark);
-
-    color: #ffffff;
+    background: var(--dash-orange);
+    color: var(--dash-white);
 
     transform: translateY(-1px);
 }
@@ -788,43 +620,54 @@ Dashboard
 ========================================================== */
 
 .quick-actions {
-    padding: 18px 20px 20px;
+    padding: 18px 21px 21px;
 }
 
 .quick-action {
-
     display: flex;
-
     align-items: center;
-
     gap: 12px;
 
-    padding: 12px 0;
+    padding: 13px;
 
-    border-bottom: 1px solid var(--dashboard-border);
+    border: 1px solid var(--dash-border);
+    border-radius: 11px;
+
+    background: var(--dash-white);
 
     text-decoration: none;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        transform .2s ease;
 }
 
-.quick-action:last-child {
-    border-bottom: none;
+.quick-action:hover {
+    background: var(--dash-black);
+    border-color: var(--dash-black);
+
+    transform: translateY(-2px);
 }
 
 .quick-action-icon {
-
-    width: 36px;
-    height: 36px;
+    width: 37px;
+    height: 37px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
+    flex-shrink: 0;
+
     border-radius: 9px;
 
-    background: var(--dashboard-primary-soft);
+    background: var(--dash-orange-soft);
+    color: var(--dash-orange);
 
-    color: var(--dashboard-primary);
+    transition:
+        background .2s ease,
+        color .2s ease;
 }
 
 .quick-action-content {
@@ -832,36 +675,44 @@ Dashboard
 }
 
 .quick-action-content strong {
-
     display: block;
 
-    color: var(--dashboard-heading);
+    color: var(--dash-heading);
 
-    font-size: 12px;
-
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 .quick-action-content span {
-
     display: block;
 
     margin-top: 2px;
 
-    color: var(--dashboard-muted);
+    color: var(--dash-muted);
 
-    font-size: 10px;
+    font-size: 9px;
 }
 
 .quick-action-arrow {
+    color: #999999;
+    font-size: 12px;
+}
 
-    color: #94a3b8;
+.quick-action:hover .quick-action-icon {
+    background: var(--dash-orange);
+    color: var(--dash-white);
+}
 
-    font-size: 13px;
+.quick-action:hover .quick-action-content strong {
+    color: var(--dash-white);
+}
+
+.quick-action:hover .quick-action-content span {
+    color: #aaaaaa;
 }
 
 .quick-action:hover .quick-action-arrow {
-    color: var(--dashboard-primary);
+    color: var(--dash-orange);
 }
 
 
@@ -872,9 +723,7 @@ Dashboard
 @media (max-width: 991px) {
 
     .dashboard-header-top {
-
         align-items: flex-start;
-
         flex-direction: column;
     }
 
@@ -885,17 +734,36 @@ Dashboard
     .dashboard-chart-panel {
         min-height: auto;
     }
+
 }
 
 
 @media (max-width: 576px) {
 
+    .dashboard-header {
+        margin-bottom: 22px;
+    }
+
     .dashboard-header h1 {
-        font-size: 24px;
+        font-size: 27px;
+    }
+
+    .dashboard-header p {
+        font-size: 12px;
+    }
+
+    .dashboard-stat {
+        min-height: 145px;
+        padding: 19px;
     }
 
     .dashboard-stat-value {
-        font-size: 26px;
+        font-size: 29px;
+    }
+
+    .dashboard-stat-icon {
+        width: 41px;
+        height: 41px;
     }
 
     .attendance-summary {
@@ -906,11 +774,18 @@ Dashboard
         padding: 14px 16px;
     }
 
+    .dashboard-panel-title h3 {
+        font-size: 13px;
+    }
+
+    .dashboard-panel-title p {
+        display: none;
+    }
+
     .attendance-body,
     .system-summary,
     .quick-actions,
     .access-grid {
-
         padding-left: 16px;
         padding-right: 16px;
     }
@@ -925,6 +800,28 @@ Dashboard
 
     .dashboard-pie-container {
         height: 250px;
+    }
+
+}
+
+
+/* ==========================================================
+   ACCESSIBILITY
+========================================================== */
+
+.dashboard-page a:focus-visible {
+    outline: 3px solid rgba(255, 107, 0, .35);
+    outline-offset: 3px;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    .dashboard-stat,
+    .access-box,
+    .manage-access-button,
+    .quick-action {
+        transition: none;
     }
 
 }
@@ -953,15 +850,11 @@ Dashboard
                 <div>
 
                     <h1>
-
                         Welcome back,
-
                         <span>
                             {{ user.first_name|default:user.username }}
                         </span>
-
                         👋
-
                     </h1>
 
                     <p>
@@ -973,10 +866,10 @@ Dashboard
 
                 <div class="dashboard-date">
 
-                    <i class="bi bi-calendar3"></i>
+                    <i class="bi bi-grid-1x2-fill"></i>
 
                     <span>
-                        HRMS Dashboard
+                        ARND IT HRMS
                     </span>
 
                 </div>
@@ -1200,9 +1093,7 @@ Dashboard
 
 
                 <span class="dashboard-panel-badge">
-
                     {{ total_users }} Users
-
                 </span>
 
             </div>
@@ -1620,9 +1511,7 @@ Dashboard
         <div class="row g-4 dashboard-chart-row">
 
 
-            <!-- ==================================================
-                 LINE GRAPH
-            ================================================== -->
+            <!-- LINE GRAPH -->
 
             <div class="col-xl-8">
 
@@ -1682,9 +1571,7 @@ Dashboard
 
 
 
-            <!-- ==================================================
-                 PIE CHART
-            ================================================== -->
+            <!-- PIE CHART -->
 
             <div class="col-xl-4">
 
@@ -1908,10 +1795,6 @@ Dashboard
 
 {% block extra_js %}
 
-<!-- ==========================================================
-     CHART.JS
-========================================================== -->
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
@@ -1920,7 +1803,6 @@ Dashboard
 document.addEventListener(
     "DOMContentLoaded",
     function () {
-
 
         /* ======================================================
            DASHBOARD VALUES
@@ -1939,15 +1821,6 @@ document.addEventListener(
             Number("{{ total_users|default:0 }}") || 0;
 
 
-        /*
-         * Prevent negative values in the attendance chart.
-         *
-         * Example:
-         * Total Employees = 13
-         * Present Today   = 10
-         * Not Present     = 3
-         */
-
         const notPresentToday =
             Math.max(
                 totalEmployees - presentToday,
@@ -1956,19 +1829,18 @@ document.addEventListener(
 
 
         /* ======================================================
-           COMMON CHART SETTINGS
+           CHART DEFAULTS
         ====================================================== */
 
         Chart.defaults.font.family =
             "Inter, -apple-system, BlinkMacSystemFont, " +
             "\"Segoe UI\", sans-serif";
 
-        Chart.defaults.color = "#64748b";
-
+        Chart.defaults.color = "#777777";
 
 
         /* ======================================================
-           LINE GRAPH
+           HRMS OVERVIEW
         ====================================================== */
 
         const overviewCanvas =
@@ -2006,15 +1878,15 @@ document.addEventListener(
                                 ],
 
                                 borderColor:
-                                    "#2563eb",
+                                    "#ff6b00",
 
                                 backgroundColor:
-                                    "rgba(37, 99, 235, 0.10)",
+                                    "rgba(255, 107, 0, 0.08)",
 
                                 borderWidth: 3,
 
                                 pointBackgroundColor:
-                                    "#2563eb",
+                                    "#ff6b00",
 
                                 pointBorderColor:
                                     "#ffffff",
@@ -2051,21 +1923,19 @@ document.addEventListener(
                         plugins: {
 
                             legend: {
-
                                 display: false
-
                             },
 
                             tooltip: {
 
                                 backgroundColor:
-                                    "#0f172a",
+                                    "#080808",
 
                                 titleColor:
                                     "#ffffff",
 
                                 bodyColor:
-                                    "#e2e8f0",
+                                    "#eeeeee",
 
                                 padding: 12,
 
@@ -2095,21 +1965,17 @@ document.addEventListener(
                             x: {
 
                                 grid: {
-
                                     display: false
-
                                 },
 
                                 ticks: {
 
-                                    color: "#64748b",
+                                    color:
+                                        "#777777",
 
                                     font: {
-
-                                        size: 11,
-
+                                        size: 10,
                                         weight: "600"
-
                                     }
 
                                 }
@@ -2124,12 +1990,11 @@ document.addEventListener(
 
                                     precision: 0,
 
-                                    color: "#64748b",
+                                    color:
+                                        "#777777",
 
                                     font: {
-
-                                        size: 11
-
+                                        size: 10
                                     }
 
                                 },
@@ -2137,7 +2002,7 @@ document.addEventListener(
                                 grid: {
 
                                     color:
-                                        "rgba(226, 232, 240, 0.75)"
+                                        "rgba(0, 0, 0, 0.07)"
 
                                 }
 
@@ -2153,9 +2018,8 @@ document.addEventListener(
         }
 
 
-
         /* ======================================================
-           ATTENDANCE PIE CHART
+           ATTENDANCE PIE
         ====================================================== */
 
         const attendanceCanvas =
@@ -2188,8 +2052,8 @@ document.addEventListener(
                                 ],
 
                                 backgroundColor: [
-                                    "#16a34a",
-                                    "#e2e8f0"
+                                    "#ff6b00",
+                                    "#e7e7e4"
                                 ],
 
                                 borderColor: [
@@ -2227,11 +2091,11 @@ document.addEventListener(
 
                                     padding: 18,
 
-                                    color: "#334155",
+                                    color: "#363636",
 
                                     font: {
 
-                                        size: 11,
+                                        size: 10,
 
                                         weight: "600"
 
@@ -2244,13 +2108,13 @@ document.addEventListener(
                             tooltip: {
 
                                 backgroundColor:
-                                    "#0f172a",
+                                    "#080808",
 
                                 titleColor:
                                     "#ffffff",
 
                                 bodyColor:
-                                    "#e2e8f0",
+                                    "#eeeeee",
 
                                 padding: 12,
 
@@ -2269,10 +2133,12 @@ document.addEventListener(
                                                             sum,
                                                             current
                                                         ) {
+
                                                             return (
                                                                 sum +
                                                                 current
                                                             );
+
                                                         },
                                                         0
                                                     );
@@ -2310,7 +2176,6 @@ document.addEventListener(
             );
 
         }
-
 
     }
 );

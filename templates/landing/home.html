@@ -2,230 +2,143 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <title>ARNDIT | Smart HRMS & Technology Solutions</title>
 
     <meta
         name="description"
-        content="Professional Human Resource Management System"
+        content="ARND IT delivers innovative technology solutions and a modern Human Resource Management System for smarter employee management, attendance, leave, payroll and reporting."
     >
 
-    <title>
-        Your Company Name | HRMS Portal
-    </title>
-
-
-    <!-- =========================================
-         GOOGLE FONT
-    ========================================== -->
-
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
+    <meta
+        name="keywords"
+        content="ARND IT, HRMS, Human Resource Management System, Employee Management, Attendance, Payroll, Leave Management, HR Software, Technology Solutions"
     >
 
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet"
     >
 
-
-    <!-- =========================================
-         BOOTSTRAP ICONS
-    ========================================== -->
-
+    <!-- Bootstrap Icons -->
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     >
 
-
-    <!-- =========================================
-         LANDING PAGE CSS
-    ========================================== -->
-
+    <!-- Landing Page CSS -->
     <link
         rel="stylesheet"
         href="{% static 'css/landing.css' %}"
     >
-
 </head>
-
 
 <body>
 
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
 
-<!-- =========================================
-     NAVBAR
-========================================= -->
+<header class="landing-header">
 
-<header class="landing-navbar">
+    <nav class="landing-navbar">
 
-    <div class="landing-container navbar-inner">
+        <a href="{% url 'landing' %}" class="brand">
 
-
-        <!-- Company Brand -->
-
-        <a
-            href="#"
-            class="company-brand"
-        >
-
-            <div class="company-logo">
-
-                <i class="bi bi-buildings"></i>
-
+            <div class="brand-logo">
+                <img
+                    src="{% static 'images/arndit_logo.jpg' %}"
+                    alt="ARND IT Logo"
+                >
             </div>
 
-            <div class="company-brand-text">
-
-                <span class="company-name">
-                    Your Company Name
+            <div class="brand-text">
+                <span class="brand-name">ARND IT</span>
+                <span class="brand-tagline">
+                    Technology & Innovation
                 </span>
-
-                <span class="company-subtitle">
-                    HRMS PORTAL
-                </span>
-
             </div>
 
         </a>
 
 
-        <!-- Desktop Navigation -->
+        <button
+            class="mobile-menu-toggle"
+            id="mobileMenuToggle"
+            type="button"
+            aria-label="Open navigation"
+        >
+            <i class="bi bi-list"></i>
+        </button>
 
-        <nav class="landing-nav">
 
-            <a href="#features">
-                Features
-            </a>
+        <div class="navigation-menu" id="navigationMenu">
 
-            <a href="#about">
-                About
-            </a>
+            <a href="#features">Features</a>
 
-            <a href="#contact">
-                Contact
-            </a>
+            <a href="#solutions">Solutions</a>
+
+            <a href="#technology">Technology</a>
+
+            <a href="#about">About</a>
+
+            <a href="#contact">Contact</a>
 
             <a
                 href="{% url 'login' %}"
-                class="nav-login-button"
+                class="nav-login"
             >
-
-                <i class="bi bi-box-arrow-in-right"></i>
-
                 Employee Login
-
+                <i class="bi bi-arrow-up-right"></i>
             </a>
 
-        </nav>
+        </div>
 
-
-        <!-- Mobile Menu Button -->
-
-        <button
-            type="button"
-            class="mobile-menu-button"
-            id="mobileMenuButton"
-            aria-label="Open navigation"
-        >
-
-            <i class="bi bi-list"></i>
-
-        </button>
-
-    </div>
+    </nav>
 
 </header>
 
 
-
-<!-- =========================================
-     MOBILE NAVIGATION
-========================================= -->
-
-<div
-    class="mobile-navigation"
-    id="mobileNavigation"
->
-
-    <a href="#features">
-        Features
-    </a>
-
-    <a href="#about">
-        About
-    </a>
-
-    <a href="#contact">
-        Contact
-    </a>
-
-    <a
-        href="{% url 'login' %}"
-        class="mobile-login-button"
-    >
-
-        <i class="bi bi-box-arrow-in-right"></i>
-
-        Employee Login
-
-    </a>
-
-</div>
-
-
-
-<!-- =========================================
-     HERO SECTION
-========================================= -->
+<!-- =========================================================
+     HERO
+========================================================= -->
 
 <main>
 
 <section class="hero-section">
 
-    <div class="hero-background-shape hero-shape-one"></div>
+    <div class="hero-background-grid"></div>
 
-    <div class="hero-background-shape hero-shape-two"></div>
-
-
-    <div class="landing-container hero-container">
-
-
-        <!-- Hero Content -->
+    <div class="hero-container">
 
         <div class="hero-content">
 
-
-            <div class="hero-badge">
-
-                <span class="hero-badge-dot"></span>
-
-                Employee Management Platform
-
+            <div class="hero-label">
+                <span class="hero-label-dot"></span>
+                SMART HUMAN RESOURCE MANAGEMENT
             </div>
 
 
             <h1>
 
-                Empowering Your People.
+                HR that's
+                <span class="orange-text">simple.</span>
 
-                <span>
-                    Simplifying HR.
+                <br>
+
+                Fast.
+
+                <br>
+
+                <span class="outline-text">
+                    Built for people.
                 </span>
 
             </h1>
@@ -233,10 +146,9 @@
 
             <p class="hero-description">
 
-                A secure, modern and centralized HRMS platform
-                designed to help your organization manage
-                employees, attendance, leave, payroll and
-                workforce operations with ease.
+                A modern Human Resource Management System designed
+                to simplify employee management, attendance, leave,
+                payroll and reporting — all from one secure platform.
 
             </p>
 
@@ -247,13 +159,8 @@
                     href="{% url 'login' %}"
                     class="primary-button"
                 >
-
-                    <i class="bi bi-box-arrow-in-right"></i>
-
-                    Employee Login
-
-                    <i class="bi bi-arrow-right button-arrow"></i>
-
+                    Access HRMS
+                    <i class="bi bi-arrow-right"></i>
                 </a>
 
 
@@ -261,11 +168,8 @@
                     href="#features"
                     class="secondary-button"
                 >
-
-                    Explore Platform
-
+                    Explore Features
                     <i class="bi bi-arrow-down"></i>
-
                 </a>
 
             </div>
@@ -273,22 +177,19 @@
 
             <div class="hero-trust">
 
-                <div class="trust-icon">
-
+                <div class="trust-item">
                     <i class="bi bi-shield-check"></i>
-
+                    <span>Secure</span>
                 </div>
 
-                <div>
+                <div class="trust-item">
+                    <i class="bi bi-lightning-charge"></i>
+                    <span>Fast</span>
+                </div>
 
-                    <strong>
-                        Secure &amp; Private
-                    </strong>
-
-                    <span>
-                        Your workforce data stays protected.
-                    </span>
-
+                <div class="trust-item">
+                    <i class="bi bi-people"></i>
+                    <span>People Focused</span>
                 </div>
 
             </div>
@@ -296,183 +197,233 @@
         </div>
 
 
+        <!-- =================================================
+             PRODUCT PREVIEW
+        ================================================== -->
 
-        <!-- =====================================
-             DASHBOARD PREVIEW
-        ====================================== -->
+        <div class="hero-product">
 
-        <div class="hero-visual">
+            <div class="product-glow"></div>
 
-            <div class="dashboard-window">
+            <div class="dashboard-card">
 
+                <!-- Dashboard Header -->
 
-                <div class="dashboard-window-header">
+                <div class="dashboard-topbar">
 
-                    <div class="window-controls">
+                    <div class="dashboard-brand">
 
-                        <span></span>
-                        <span></span>
-                        <span></span>
+                        <div class="dashboard-logo">
+
+                            <img
+                                src="{% static 'images/arndit_logo.jpg' %}"
+                                alt="ARND IT"
+                            >
+
+                        </div>
+
+                        <span>HRMS</span>
 
                     </div>
 
-                    <div class="window-title">
 
-                        HRMS Dashboard
+                    <div class="dashboard-window-controls">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
 
                     </div>
 
                 </div>
 
 
-                <div class="dashboard-preview">
+                <!-- Dashboard Content -->
+
+                <div class="dashboard-body">
+
+                    <!-- Sidebar -->
+
+                    <aside class="dashboard-sidebar">
+
+                        <div class="dashboard-sidebar-title">
+                            HRMS
+                        </div>
 
 
-                    <!-- Preview Sidebar -->
+                        <div class="dashboard-menu active">
 
-                    <div class="preview-sidebar">
+                            <i class="bi bi-grid-1x2-fill"></i>
 
-                        <div class="preview-logo">
-
-                            <i class="bi bi-buildings"></i>
+                            Dashboard
 
                         </div>
 
-                        <div class="preview-menu active">
 
-                            <i class="bi bi-grid"></i>
-
-                        </div>
-
-                        <div class="preview-menu">
+                        <div class="dashboard-menu">
 
                             <i class="bi bi-people"></i>
 
+                            Employees
+
                         </div>
 
-                        <div class="preview-menu">
+
+                        <div class="dashboard-menu">
+
+                            <i class="bi bi-building"></i>
+
+                            Departments
+
+                        </div>
+
+
+                        <div class="dashboard-menu">
 
                             <i class="bi bi-calendar-check"></i>
 
-                        </div>
-
-                        <div class="preview-menu">
-
-                            <i class="bi bi-file-earmark-text"></i>
+                            Attendance
 
                         </div>
 
-                        <div class="preview-menu">
 
-                            <i class="bi bi-bar-chart"></i>
+                        <div class="dashboard-menu">
+
+                            <i class="bi bi-calendar2-event"></i>
+
+                            Leave
 
                         </div>
 
-                    </div>
+
+                        <div class="dashboard-menu">
+
+                            <i class="bi bi-wallet2"></i>
+
+                            Payroll
+
+                        </div>
+
+                    </aside>
 
 
-                    <!-- Preview Content -->
+                    <!-- Dashboard Main -->
 
-                    <div class="preview-content">
+                    <div class="dashboard-main">
 
-
-                        <div class="preview-topbar">
+                        <div class="dashboard-heading">
 
                             <div>
 
-                                <span class="preview-small-title">
+                                <small>
+                                    OVERVIEW
+                                </small>
+
+                                <h3>
                                     Welcome back
-                                </span>
-
-                                <strong>
-                                    HR Dashboard
-                                </strong>
+                                </h3>
 
                             </div>
 
-                            <div class="preview-user">
 
-                                <i class="bi bi-person-circle"></i>
+                            <div class="dashboard-avatar">
+
+                                <i class="bi bi-person"></i>
 
                             </div>
 
                         </div>
 
 
-                        <!-- Preview Cards -->
+                        <!-- Statistics -->
 
-                        <div class="preview-cards">
+                        <div class="dashboard-stat-grid">
 
+                            <div class="dashboard-stat">
 
-                            <div class="preview-card">
+                                <div class="stat-icon">
 
-                                <span>
-                                    Employees
-                                </span>
+                                    <i class="bi bi-people-fill"></i>
 
-                                <strong>
-                                    248
-                                </strong>
-
-                                <small>
-                                    <i class="bi bi-arrow-up"></i>
-                                    Workforce
-                                </small>
-
-                            </div>
-
-
-                            <div class="preview-card">
-
-                                <span>
-                                    Attendance
-                                </span>
-
-                                <strong>
-                                    94%
-                                </strong>
-
-                                <small>
-                                    <i class="bi bi-check-circle"></i>
-                                    Today
-                                </small>
-
-                            </div>
-
-
-                            <div class="preview-card">
-
-                                <span>
-                                    On Leave
-                                </span>
-
-                                <strong>
-                                    12
-                                </strong>
-
-                                <small>
-                                    Current
-                                </small>
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- Preview Chart -->
-
-                        <div class="preview-chart-card">
-
-                            <div class="preview-chart-header">
+                                </div>
 
                                 <div>
 
                                     <span>
-                                        Workforce Overview
+                                        Employees
                                     </span>
 
                                     <strong>
-                                        Employee Activity
+                                        1,248
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-stat">
+
+                                <div class="stat-icon orange">
+
+                                    <i class="bi bi-person-check-fill"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Present Today
+                                    </span>
+
+                                    <strong>
+                                        1,176
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-stat">
+
+                                <div class="stat-icon">
+
+                                    <i class="bi bi-building"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Departments
+                                    </span>
+
+                                    <strong>
+                                        18
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Attendance Chart -->
+
+                        <div class="dashboard-chart">
+
+                            <div class="chart-header">
+
+                                <div>
+
+                                    <span>
+                                        ATTENDANCE
+                                    </span>
+
+                                    <strong>
+                                        Weekly Overview
                                     </strong>
 
                                 </div>
@@ -482,23 +433,51 @@
                             </div>
 
 
-                            <div class="preview-chart">
+                            <div class="chart-area">
+
+                                <div class="chart-line chart-line-one"></div>
+
+                                <div class="chart-line chart-line-two"></div>
+
+                                <div class="chart-line chart-line-three"></div>
+
 
                                 <div class="chart-bars">
 
-                                    <span style="height: 45%;"></span>
+                                    <div
+                                        class="chart-bar"
+                                        style="height:52%;"
+                                    ></div>
 
-                                    <span style="height: 65%;"></span>
+                                    <div
+                                        class="chart-bar"
+                                        style="height:70%;"
+                                    ></div>
 
-                                    <span style="height: 52%;"></span>
+                                    <div
+                                        class="chart-bar"
+                                        style="height:62%;"
+                                    ></div>
 
-                                    <span style="height: 78%;"></span>
+                                    <div
+                                        class="chart-bar orange"
+                                        style="height:84%;"
+                                    ></div>
 
-                                    <span style="height: 62%;"></span>
+                                    <div
+                                        class="chart-bar"
+                                        style="height:74%;"
+                                    ></div>
 
-                                    <span style="height: 88%;"></span>
+                                    <div
+                                        class="chart-bar"
+                                        style="height:91%;"
+                                    ></div>
 
-                                    <span style="height: 72%;"></span>
+                                    <div
+                                        class="chart-bar orange"
+                                        style="height:80%;"
+                                    ></div>
 
                                 </div>
 
@@ -506,6 +485,53 @@
 
                         </div>
 
+
+                        <!-- Dashboard Bottom -->
+
+                        <div class="dashboard-bottom">
+
+                            <div class="mini-dashboard-card">
+
+                                <div class="mini-icon">
+                                    <i class="bi bi-calendar-check"></i>
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Attendance
+                                    </span>
+
+                                    <strong>
+                                        94.2%
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="mini-dashboard-card">
+
+                                <div class="mini-icon orange">
+                                    <i class="bi bi-person-workspace"></i>
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        On Leave
+                                    </span>
+
+                                    <strong>
+                                        24
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -516,11 +542,11 @@
 
             <!-- Floating Security Card -->
 
-            <div class="floating-card floating-security-card">
+            <div class="floating-card security-card">
 
-                <div class="floating-card-icon">
+                <div class="floating-icon">
 
-                    <i class="bi bi-shield-check"></i>
+                    <i class="bi bi-shield-lock-fill"></i>
 
                 </div>
 
@@ -531,7 +557,7 @@
                     </strong>
 
                     <span>
-                        Protected employee data
+                        Protected HR data
                     </span>
 
                 </div>
@@ -541,22 +567,22 @@
 
             <!-- Floating Attendance Card -->
 
-            <div class="floating-card floating-attendance-card">
+            <div class="floating-card attendance-card">
 
-                <div class="floating-card-icon">
+                <div class="floating-icon orange">
 
-                    <i class="bi bi-calendar-check"></i>
+                    <i class="bi bi-check-circle-fill"></i>
 
                 </div>
 
                 <div>
 
                     <strong>
-                        94% Attendance
+                        Attendance
                     </strong>
 
                     <span>
-                        Workforce today
+                        94.2% today
                     </span>
 
                 </div>
@@ -570,48 +596,114 @@
 </section>
 
 
+<!-- =========================================================
+     BRAND / INTRODUCTION
+========================================================= -->
 
-<!-- =========================================
-     FEATURES
-========================================= -->
+<section class="intro-section">
+
+    <div class="container">
+
+        <div class="section-label">
+            ARND IT
+        </div>
+
+
+        <div class="intro-grid">
+
+            <div>
+
+                <h2>
+                    Technology that
+                    <span class="orange-text">
+                        works for people.
+                    </span>
+                </h2>
+
+            </div>
+
+
+            <div>
+
+                <p>
+
+                    ARND IT is a technology and research-driven
+                    company focused on developing innovative,
+                    practical and reliable technology solutions.
+
+                </p>
+
+
+                <p>
+
+                    From software development and web applications
+                    to artificial intelligence, analytics and
+                    custom technology solutions, our focus is on
+                    turning ideas into useful digital products.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     HRMS FEATURES
+========================================================= -->
 
 <section
     class="features-section"
     id="features"
 >
 
-    <div class="landing-container">
-
+    <div class="container">
 
         <div class="section-heading">
 
-            <span class="section-label">
-                HRMS PLATFORM
-            </span>
+            <div>
 
-            <h2>
-                Everything your organization needs.
-            </h2>
+                <span class="section-label">
+                    HRMS PLATFORM
+                </span>
+
+                <h2>
+                    Everything your
+                    <span class="orange-text">
+                        HR team needs.
+                    </span>
+                </h2>
+
+            </div>
+
 
             <p>
-                A unified platform built to simplify
-                everyday workforce management.
+
+                One connected platform for managing
+                your organization's most important asset —
+                your people.
+
             </p>
 
         </div>
 
 
-        <div class="features-grid">
-
+        <div class="feature-grid">
 
             <!-- Employee Management -->
 
-            <div class="feature-card">
+            <article class="feature-card">
+
+                <div class="feature-number">
+                    01
+                </div>
 
                 <div class="feature-icon">
-
-                    <i class="bi bi-people"></i>
-
+                    <i class="bi bi-people-fill"></i>
                 </div>
 
                 <h3>
@@ -619,22 +711,32 @@
                 </h3>
 
                 <p>
-                    Manage employee profiles, departments,
-                    designations and workforce information
-                    from one centralized platform.
+
+                    Maintain employee information,
+                    departments, job details, contact
+                    information and employment records
+                    from one centralized system.
+
                 </p>
 
-            </div>
+                <a href="#solutions">
+                    Explore
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </article>
 
 
             <!-- Attendance -->
 
-            <div class="feature-card">
+            <article class="feature-card">
 
-                <div class="feature-icon">
+                <div class="feature-number">
+                    02
+                </div>
 
-                    <i class="bi bi-calendar-check"></i>
-
+                <div class="feature-icon orange">
+                    <i class="bi bi-calendar-check-fill"></i>
                 </div>
 
                 <h3>
@@ -642,21 +744,31 @@
                 </h3>
 
                 <p>
-                    Track employee attendance, working hours,
-                    check-in and check-out records with ease.
+
+                    Track daily attendance, check-in,
+                    check-out, working hours and
+                    attendance status with ease.
+
                 </p>
 
-            </div>
+                <a href="#solutions">
+                    Explore
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </article>
 
 
             <!-- Leave -->
 
-            <div class="feature-card">
+            <article class="feature-card">
+
+                <div class="feature-number">
+                    03
+                </div>
 
                 <div class="feature-icon">
-
-                    <i class="bi bi-calendar2-week"></i>
-
+                    <i class="bi bi-calendar2-event-fill"></i>
                 </div>
 
                 <h3>
@@ -664,21 +776,31 @@
                 </h3>
 
                 <p>
-                    Simplify leave requests, approvals and
-                    employee leave tracking.
+
+                    Organize employee leave requests,
+                    approvals and leave records through
+                    a centralized HR workflow.
+
                 </p>
 
-            </div>
+                <a href="#solutions">
+                    Explore
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </article>
 
 
             <!-- Payroll -->
 
-            <div class="feature-card">
+            <article class="feature-card">
 
-                <div class="feature-icon">
+                <div class="feature-number">
+                    04
+                </div>
 
-                    <i class="bi bi-cash-stack"></i>
-
+                <div class="feature-icon orange">
+                    <i class="bi bi-wallet2"></i>
                 </div>
 
                 <h3>
@@ -686,43 +808,64 @@
                 </h3>
 
                 <p>
-                    Keep payroll operations organized with
-                    centralized employee compensation data.
+
+                    Keep payroll information organized
+                    and accessible while giving HR teams
+                    better visibility into employee
+                    compensation data.
+
                 </p>
 
-            </div>
+                <a href="#solutions">
+                    Explore
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </article>
 
 
             <!-- Reports -->
 
-            <div class="feature-card">
+            <article class="feature-card">
+
+                <div class="feature-number">
+                    05
+                </div>
 
                 <div class="feature-icon">
-
-                    <i class="bi bi-bar-chart-line"></i>
-
+                    <i class="bi bi-bar-chart-fill"></i>
                 </div>
 
                 <h3>
-                    Reports &amp; Analytics
+                    Reports & Analytics
                 </h3>
 
                 <p>
-                    Access meaningful workforce insights
-                    through clear and actionable reports.
+
+                    Turn HR data into useful insights
+                    through dashboards, reports and
+                    meaningful workforce information.
+
                 </p>
 
-            </div>
+                <a href="#technology">
+                    Explore
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </article>
 
 
             <!-- Security -->
 
-            <div class="feature-card">
+            <article class="feature-card">
 
-                <div class="feature-icon">
+                <div class="feature-number">
+                    06
+                </div>
 
-                    <i class="bi bi-shield-lock"></i>
-
+                <div class="feature-icon orange">
+                    <i class="bi bi-shield-lock-fill"></i>
                 </div>
 
                 <h3>
@@ -730,8 +873,453 @@
                 </h3>
 
                 <p>
-                    Role-based access helps keep sensitive
-                    employee and organizational information secure.
+
+                    Role-based access helps ensure that
+                    employees, HR teams and administrators
+                    see the information relevant to them.
+
+                </p>
+
+                <a href="#technology">
+                    Explore
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     SOLUTIONS
+========================================================= -->
+
+<section
+    class="solutions-section"
+    id="solutions"
+>
+
+    <div class="container">
+
+        <div class="solutions-grid">
+
+            <div class="solutions-content">
+
+                <span class="section-label">
+                    BUSINESS SOLUTIONS
+                </span>
+
+                <h2>
+
+                    One platform.
+                    <br>
+
+                    <span class="orange-text">
+                        Connected workflows.
+                    </span>
+
+                </h2>
+
+
+                <p>
+
+                    HR teams can manage employee information,
+                    attendance, departments, leave, payroll
+                    and reporting from a unified environment.
+
+                </p>
+
+
+                <div class="solution-list">
+
+                    <div class="solution-item">
+
+                        <span class="solution-check">
+                            <i class="bi bi-check"></i>
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Centralized Employee Data
+                            </strong>
+
+                            <span>
+                                Keep workforce information organized.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="solution-item">
+
+                        <span class="solution-check">
+                            <i class="bi bi-check"></i>
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Simplified HR Operations
+                            </strong>
+
+                            <span>
+                                Reduce repetitive administrative work.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="solution-item">
+
+                        <span class="solution-check">
+                            <i class="bi bi-check"></i>
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Data-Driven Reporting
+                            </strong>
+
+                            <span>
+                                Understand your workforce through reports.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="solution-item">
+
+                        <span class="solution-check">
+                            <i class="bi bi-check"></i>
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Role-Based Access
+                            </strong>
+
+                            <span>
+                                Give each user appropriate system access.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Solution Visual -->
+
+            <div class="solutions-visual">
+
+                <div class="solution-window">
+
+                    <div class="solution-window-header">
+
+                        <span>
+                            HRMS WORKSPACE
+                        </span>
+
+                        <i class="bi bi-three-dots"></i>
+
+                    </div>
+
+
+                    <div class="solution-workspace">
+
+                        <div class="workspace-column">
+
+                            <div class="workspace-card large">
+
+                                <div class="workspace-card-top">
+
+                                    <span>
+                                        Workforce
+                                    </span>
+
+                                    <i class="bi bi-people"></i>
+
+                                </div>
+
+                                <strong>
+                                    1,248
+                                </strong>
+
+                                <small>
+                                    Active employees
+                                </small>
+
+                            </div>
+
+
+                            <div class="workspace-card">
+
+                                <div class="workspace-card-top">
+
+                                    <span>
+                                        Departments
+                                    </span>
+
+                                    <i class="bi bi-building"></i>
+
+                                </div>
+
+                                <strong>
+                                    18
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="workspace-column">
+
+                            <div class="workspace-card orange-card">
+
+                                <div class="workspace-card-top">
+
+                                    <span>
+                                        Attendance
+                                    </span>
+
+                                    <i class="bi bi-calendar-check"></i>
+
+                                </div>
+
+                                <strong>
+                                    94.2%
+                                </strong>
+
+                                <small>
+                                    Today's attendance
+                                </small>
+
+                            </div>
+
+
+                            <div class="workspace-card">
+
+                                <div class="workspace-card-top">
+
+                                    <span>
+                                        Leave
+                                    </span>
+
+                                    <i class="bi bi-calendar-event"></i>
+
+                                </div>
+
+                                <strong>
+                                    24
+                                </strong>
+
+                                <small>
+                                    Employees on leave
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     TECHNOLOGY / ARND IT
+========================================================= -->
+
+<section
+    class="technology-section"
+    id="technology"
+>
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-label">
+                    TECHNOLOGY & R&D
+                </span>
+
+                <h2>
+
+                    Built with
+                    <span class="orange-text">
+                        innovation
+                    </span>
+                    in mind.
+
+                </h2>
+
+            </div>
+
+
+            <p>
+
+                ARND IT's technology capabilities extend
+                beyond HR software, covering software
+                development, research, analytics and
+                emerging technologies.
+
+            </p>
+
+        </div>
+
+
+        <div class="technology-grid">
+
+            <div class="technology-card">
+
+                <i class="bi bi-code-slash"></i>
+
+                <h3>
+                    Software Development
+                </h3>
+
+                <p>
+                    Custom software applications designed
+                    around business requirements.
+                </p>
+
+            </div>
+
+
+            <div class="technology-card">
+
+                <i class="bi bi-globe2"></i>
+
+                <h3>
+                    Web Applications
+                </h3>
+
+                <p>
+                    Modern web-based applications and
+                    digital platforms.
+                </p>
+
+            </div>
+
+
+            <div class="technology-card">
+
+                <i class="bi bi-phone"></i>
+
+                <h3>
+                    Mobile Applications
+                </h3>
+
+                <p>
+                    Mobile technology solutions for
+                    connected digital experiences.
+                </p>
+
+            </div>
+
+
+            <div class="technology-card">
+
+                <i class="bi bi-robot"></i>
+
+                <h3>
+                    AI & Machine Learning
+                </h3>
+
+                <p>
+                    Intelligent technologies for automation,
+                    analysis and decision support.
+                </p>
+
+            </div>
+
+
+            <div class="technology-card">
+
+                <i class="bi bi-graph-up-arrow"></i>
+
+                <h3>
+                    Predictive Analytics
+                </h3>
+
+                <p>
+                    Data-driven approaches for discovering
+                    patterns and supporting decisions.
+                </p>
+
+            </div>
+
+
+            <div class="technology-card">
+
+                <i class="bi bi-headset"></i>
+
+                <h3>
+                    Support & Maintenance
+                </h3>
+
+                <p>
+                    Ongoing technical support and software
+                    maintenance for reliable systems.
+                </p>
+
+            </div>
+
+
+            <div class="technology-card">
+
+                <i class="bi bi-lightbulb"></i>
+
+                <h3>
+                    Technology Consultancy
+                </h3>
+
+                <p>
+                    Technology guidance and custom solutions
+                    aligned with business objectives.
+                </p>
+
+            </div>
+
+
+            <div class="technology-card">
+
+                <i class="bi bi-box"></i>
+
+                <h3>
+                    3-D Modelling
+                </h3>
+
+                <p>
+                    Digital modelling capabilities for
+                    specialized technology applications.
                 </p>
 
             </div>
@@ -743,149 +1331,124 @@
 </section>
 
 
-
-<!-- =========================================
-     ABOUT SECTION
-========================================= -->
+<!-- =========================================================
+     ABOUT ARND IT
+========================================================= -->
 
 <section
     class="about-section"
     id="about"
 >
 
-    <div class="landing-container about-container">
+    <div class="container">
+
+        <div class="about-grid">
+
+            <div class="about-visual">
+
+                <div class="about-box">
+
+                    <div class="about-logo">
+
+                        <img
+                            src="{% static 'images/arndit_logo.jpg' %}"
+                            alt="ARND IT Logo"
+                        >
+
+                    </div>
 
 
-        <div class="about-content">
+                    <div class="about-year">
+                        2016
+                    </div>
 
-            <span class="section-label">
-                ABOUT THE PLATFORM
-            </span>
 
-            <h2>
-                One platform.
-                <span>
-                    One connected workforce.
+                    <span>
+                        Technology & Innovation
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-content">
+
+                <span class="section-label">
+                    ABOUT ARND IT
                 </span>
-            </h2>
-
-            <p>
-                Our HRMS platform brings essential workforce
-                operations together in one secure environment,
-                helping HR teams and employees work smarter,
-                faster and more efficiently.
-            </p>
-
-            <p>
-                From employee information and attendance to
-                leave, payroll and reporting, everything is
-                designed around a simple and professional
-                employee experience.
-            </p>
-
-            <a
-                href="{% url 'login' %}"
-                class="primary-button"
-            >
-
-                Access Employee Portal
-
-                <i class="bi bi-arrow-right"></i>
-
-            </a>
-
-        </div>
 
 
-        <div class="about-highlights">
+                <h2>
 
-
-            <div class="about-highlight">
-
-                <div class="about-highlight-icon">
-
-                    <i class="bi bi-lightning-charge"></i>
-
-                </div>
-
-                <div>
-
-                    <strong>
-                        Simple
-                    </strong>
-
-                    <span>
-                        Easy-to-use workforce tools
+                    Turning ideas into
+                    <span class="orange-text">
+                        technology.
                     </span>
 
-                </div>
-
-            </div>
+                </h2>
 
 
-            <div class="about-highlight">
+                <p>
 
-                <div class="about-highlight-icon">
+                    ARND IT is a technology-focused company
+                    established in 2016, working across
+                    software development, research,
+                    analytics and innovative technology
+                    solutions.
 
-                    <i class="bi bi-shield-check"></i>
-
-                </div>
-
-                <div>
-
-                    <strong>
-                        Secure
-                    </strong>
-
-                    <span>
-                        Role-based access and protection
-                    </span>
-
-                </div>
-
-            </div>
+                </p>
 
 
-            <div class="about-highlight">
+                <p>
 
-                <div class="about-highlight-icon">
+                    Our approach combines technical expertise,
+                    research and practical problem solving to
+                    create solutions that can support real
+                    business needs.
 
-                    <i class="bi bi-graph-up-arrow"></i>
-
-                </div>
-
-                <div>
-
-                    <strong>
-                        Scalable
-                    </strong>
-
-                    <span>
-                        Built for growing organizations
-                    </span>
-
-                </div>
-
-            </div>
+                </p>
 
 
-            <div class="about-highlight">
+                <div class="about-highlights">
 
-                <div class="about-highlight-icon">
+                    <div>
 
-                    <i class="bi bi-phone"></i>
+                        <strong>
+                            2016
+                        </strong>
 
-                </div>
+                        <span>
+                            Founded
+                        </span>
 
-                <div>
+                    </div>
 
-                    <strong>
-                        Responsive
-                    </strong>
 
-                    <span>
-                        Works across modern devices
-                    </span>
+                    <div>
+
+                        <strong>
+                            R&D
+                        </strong>
+
+                        <span>
+                            Innovation Focus
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            UK
+                        </strong>
+
+                        <span>
+                            Based
+                        </span>
+
+                    </div>
 
                 </div>
 
@@ -898,48 +1461,291 @@
 </section>
 
 
+<!-- =========================================================
+     WHY ARND IT
+========================================================= -->
 
-<!-- =========================================
-     LOGIN CTA
-========================================= -->
+<section class="why-section">
 
-<section class="login-cta-section">
+    <div class="container">
 
-    <div class="landing-container">
+        <div class="why-header">
 
-        <div class="login-cta-card">
+            <span class="section-label">
+                WHY ARND IT
+            </span>
 
-            <div>
+            <h2>
 
-                <span class="section-label">
-                    EMPLOYEE PORTAL
+                Technology should solve
+                <span class="orange-text">
+                    real problems.
                 </span>
 
-                <h2>
-                    Ready to access your HRMS?
-                </h2>
+            </h2>
+
+        </div>
+
+
+        <div class="why-grid">
+
+            <div class="why-card">
+
+                <div class="why-number">
+                    01
+                </div>
+
+                <i class="bi bi-lightbulb-fill"></i>
+
+                <h3>
+                    Innovation
+                </h3>
 
                 <p>
-                    Sign in to manage your employee profile,
-                    attendance, leave and other workforce
-                    services.
+                    We focus on practical innovation and
+                    technology that creates useful outcomes.
                 </p>
 
             </div>
 
 
-            <a
-                href="{% url 'login' %}"
-                class="cta-login-button"
-            >
+            <div class="why-card">
 
-                <i class="bi bi-box-arrow-in-right"></i>
+                <div class="why-number">
+                    02
+                </div>
 
-                Employee Login
+                <i class="bi bi-sliders"></i>
 
-                <i class="bi bi-arrow-right"></i>
+                <h3>
+                    Custom Solutions
+                </h3>
 
-            </a>
+                <p>
+                    Solutions can be shaped around the
+                    requirements of different organizations.
+                </p>
+
+            </div>
+
+
+            <div class="why-card">
+
+                <div class="why-number">
+                    03
+                </div>
+
+                <i class="bi bi-patch-check-fill"></i>
+
+                <h3>
+                    Quality
+                </h3>
+
+                <p>
+                    Reliable software and technology
+                    practices are central to our approach.
+                </p>
+
+            </div>
+
+
+            <div class="why-card">
+
+                <div class="why-number">
+                    04
+                </div>
+
+                <i class="bi bi-people-fill"></i>
+
+                <h3>
+                    Customer Focus
+                </h3>
+
+                <p>
+                    Technology is designed around real
+                    user and business requirements.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     CTA
+========================================================= -->
+
+<section class="cta-section">
+
+    <div class="cta-pattern"></div>
+
+    <div class="container">
+
+        <div class="cta-content">
+
+            <span class="section-label">
+                YOUR HRMS
+            </span>
+
+
+            <h2>
+
+                Ready to make HR
+                <span>
+                    simpler?
+                </span>
+
+            </h2>
+
+
+            <p>
+
+                Access your HRMS platform and manage
+                your employee operations from one
+                connected system.
+
+            </p>
+
+
+            <div class="cta-actions">
+
+                <a
+                    href="{% url 'login' %}"
+                    class="primary-button light"
+                >
+                    Employee Login
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+
+                <a
+                    href="#contact"
+                    class="secondary-button light-border"
+                >
+                    Contact ARND IT
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     CONTACT
+========================================================= -->
+
+<section
+    class="contact-section"
+    id="contact"
+>
+
+    <div class="container">
+
+        <div class="contact-grid">
+
+            <div class="contact-content">
+
+                <span class="section-label">
+                    GET IN TOUCH
+                </span>
+
+
+                <h2>
+
+                    Let's build something
+                    <span class="orange-text">
+                        useful.
+                    </span>
+
+                </h2>
+
+
+                <p>
+
+                    Whether you are looking for HR technology,
+                    software development or a custom technology
+                    solution, ARND IT can help turn your
+                    requirements into a practical digital solution.
+
+                </p>
+
+            </div>
+
+
+            <div class="contact-details">
+
+                <div class="contact-item">
+
+                    <div class="contact-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <span>
+                            LOCATION
+                        </span>
+
+                        <strong>
+                            Cambridgeshire, United Kingdom
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-item">
+
+                    <div class="contact-icon orange">
+                        <i class="bi bi-telephone-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <span>
+                            PHONE
+                        </span>
+
+                        <strong>
+                            +44 1223 655 323
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-item">
+
+                    <div class="contact-icon">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <span>
+                            EMAIL
+                        </span>
+
+                        <strong>
+                            info@arndit.com
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -950,65 +1756,132 @@
 </main>
 
 
-
-<!-- =========================================
+<!-- =========================================================
      FOOTER
-========================================= -->
+========================================================= -->
 
-<footer
-    class="landing-footer"
-    id="contact"
->
+<footer class="landing-footer">
 
-    <div class="landing-container footer-container">
+    <div class="container">
+
+        <div class="footer-main">
+
+            <div class="footer-brand">
+
+                <a
+                    href="{% url 'landing' %}"
+                    class="brand"
+                >
+
+                    <div class="brand-logo">
+
+                        <img
+                            src="{% static 'images/arndit_logo.jpg' %}"
+                            alt="ARND IT Logo"
+                        >
+
+                    </div>
 
 
-        <div class="footer-brand">
+                    <div class="brand-text">
 
-            <div class="company-brand">
+                        <span class="brand-name">
+                            ARND IT
+                        </span>
 
-                <div class="company-logo">
+                        <span class="brand-tagline">
+                            Technology & Innovation
+                        </span>
 
-                    <i class="bi bi-buildings"></i>
+                    </div>
 
-                </div>
+                </a>
 
-                <div class="company-brand-text">
 
-                    <span class="company-name">
-                        Your Company Name
-                    </span>
+                <p>
 
-                    <span class="company-subtitle">
-                        HRMS PORTAL
-                    </span>
+                    Innovative technology solutions
+                    for modern businesses and people.
 
-                </div>
+                </p>
 
             </div>
 
-            <p>
-                Professional workforce management,
-                designed for modern organizations.
-            </p>
 
-        </div>
-
-
-        <div class="footer-links">
-
-            <div>
+            <div class="footer-column">
 
                 <h4>
-                    Platform
+                    HRMS
                 </h4>
 
                 <a href="#features">
-                    Features
+                    Employee Management
                 </a>
 
+                <a href="#features">
+                    Attendance
+                </a>
+
+                <a href="#features">
+                    Leave Management
+                </a>
+
+                <a href="#features">
+                    Payroll
+                </a>
+
+                <a href="#features">
+                    Reports
+                </a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>
+                    Technology
+                </h4>
+
+                <a href="#technology">
+                    Software Development
+                </a>
+
+                <a href="#technology">
+                    Web Applications
+                </a>
+
+                <a href="#technology">
+                    Mobile Applications
+                </a>
+
+                <a href="#technology">
+                    AI & Machine Learning
+                </a>
+
+                <a href="#technology">
+                    Consultancy
+                </a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>
+                    Company
+                </h4>
+
                 <a href="#about">
-                    About
+                    About ARND IT
+                </a>
+
+                <a href="#technology">
+                    Research & Development
+                </a>
+
+                <a href="#contact">
+                    Contact
                 </a>
 
                 <a href="{% url 'login' %}">
@@ -1017,43 +1890,18 @@
 
             </div>
 
-
-            <div>
-
-                <h4>
-                    Support
-                </h4>
-
-                <a href="#contact">
-                    Contact
-                </a>
-
-                <a href="#">
-                    Privacy
-                </a>
-
-                <a href="#">
-                    Terms
-                </a>
-
-            </div>
-
         </div>
 
-    </div>
 
-
-    <div class="footer-bottom">
-
-        <div class="landing-container footer-bottom-inner">
+        <div class="footer-bottom">
 
             <span>
-                © {% now "Y" %} Your Company Name.
-                All rights reserved.
+                © 2026 ARND IT. All rights reserved.
             </span>
 
+
             <span>
-                Human Resource Management System
+                HRMS Platform
             </span>
 
         </div>
@@ -1063,76 +1911,77 @@
 </footer>
 
 
-
-<!-- =========================================
-     MOBILE MENU SCRIPT
-========================================= -->
+<!-- =========================================================
+     MOBILE NAVIGATION SCRIPT
+========================================================= -->
 
 <script>
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-            const button =
-                document.getElementById(
-                    "mobileMenuButton"
-                );
+    const menuToggle =
+        document.getElementById("mobileMenuToggle");
 
-            const navigation =
-                document.getElementById(
-                    "mobileNavigation"
-                );
+    const navigationMenu =
+        document.getElementById("navigationMenu");
 
 
-            if (!button || !navigation) {
-
-                return;
-
-            }
+    if (!menuToggle || !navigationMenu) {
+        return;
+    }
 
 
-            button.addEventListener(
-                "click",
-                function () {
+    menuToggle.addEventListener("click", function () {
 
-                    navigation.classList.toggle(
-                        "show"
-                    );
+        navigationMenu.classList.toggle("active");
 
-                }
-            );
+        const icon =
+            menuToggle.querySelector("i");
 
+        if (
+            navigationMenu.classList.contains("active")
+        ) {
 
-            const links =
-                navigation.querySelectorAll(
-                    "a"
-                );
+            icon.classList.remove("bi-list");
 
+            icon.classList.add("bi-x");
 
-            links.forEach(
-                function (link) {
+        } else {
 
-                    link.addEventListener(
-                        "click",
-                        function () {
+            icon.classList.remove("bi-x");
 
-                            navigation.classList.remove(
-                                "show"
-                            );
-
-                        }
-                    );
-
-                }
-            );
+            icon.classList.add("bi-list");
 
         }
-    );
+
+    });
+
+
+    const navigationLinks =
+        navigationMenu.querySelectorAll("a");
+
+
+    navigationLinks.forEach(function (link) {
+
+        link.addEventListener("click", function () {
+
+            navigationMenu.classList.remove("active");
+
+            const icon =
+                menuToggle.querySelector("i");
+
+            icon.classList.remove("bi-x");
+
+            icon.classList.add("bi-list");
+
+        });
+
+    });
+
+});
 
 </script>
 
 
 </body>
-
 </html>
