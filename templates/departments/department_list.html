@@ -6,31 +6,595 @@ Departments
 
 {% block content %}
 
-<div class="container-fluid">
+<style>
 
-    <!-- ========================================= -->
-    <!-- Header -->
-    <!-- ========================================= -->
+/* =========================================================
+   DEPARTMENT MANAGEMENT PAGE
+========================================================= */
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+.department-page {
+    max-width: 1600px;
+    margin: 0 auto;
+}
 
-        <div>
 
-            <h2 class="fw-bold">
-                Department Management
-            </h2>
+/* =========================================================
+   PAGE HEADER
+========================================================= */
 
-            <p class="text-muted">
-                Manage company departments and their information.
-            </p>
+.department-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.department-page-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.department-page-icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 23px;
+}
+
+.department-page-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.department-page-heading h2 {
+    margin: 0;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.department-page-heading p {
+    margin: 7px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   ADD DEPARTMENT BUTTON
+========================================================= */
+
+.department-add-button {
+    min-height: 43px;
+    padding: 10px 17px;
+    border: none;
+    border-radius: 9px;
+    background: #2563eb;
+    color: #ffffff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.18);
+    transition: all 0.2s ease;
+}
+
+.department-add-button:hover {
+    background: #1d4ed8;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.department-stat-card {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+    transition: all 0.2s ease;
+}
+
+.department-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.department-stat-card::after {
+    content: "";
+    position: absolute;
+    width: 115px;
+    height: 115px;
+    top: -55px;
+    right: -45px;
+    border-radius: 50%;
+    background: #f8fafc;
+}
+
+.department-stat-top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.department-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 19px;
+}
+
+.department-stat-content {
+    position: relative;
+    z-index: 1;
+    margin-top: 18px;
+}
+
+.department-stat-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.department-stat-number {
+    display: block;
+    color: #0f172a;
+    font-size: 29px;
+    line-height: 1;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   SEARCH CARD
+========================================================= */
+
+.department-search-card {
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+}
+
+.department-search-header {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 17px 20px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.department-search-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.department-search-header strong {
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.department-search-body {
+    padding: 19px 20px;
+}
+
+.department-search-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.department-search-input {
+    width: 100%;
+    min-height: 43px;
+    padding: 9px 13px;
+    border: 1px solid #dbe3ed;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 13px;
+    outline: none;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.department-search-input:focus {
+    background: #ffffff;
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.09);
+}
+
+.department-search-button {
+    width: 100%;
+    min-height: 43px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 9px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.department-search-button:hover {
+    background: #1d4ed8;
+}
+
+
+/* =========================================================
+   DEPARTMENT TABLE CARD
+========================================================= */
+
+.department-table-card {
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+
+.department-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 19px 21px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.department-table-title {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.department-table-title-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 16px;
+}
+
+.department-table-title strong {
+    display: block;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.department-table-title span {
+    display: block;
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.department-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.department-table {
+    width: 100%;
+    min-width: 750px;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.department-table thead th {
+    padding: 13px 18px;
+    background: #f8fafc;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.department-table tbody td {
+    padding: 15px 18px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.department-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.department-table tbody tr:hover {
+    background: #f8fbff;
+}
+
+.department-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =========================================================
+   DEPARTMENT NAME
+========================================================= */
+
+.department-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.department-name-icon {
+    width: 39px;
+    height: 39px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 16px;
+}
+
+.department-name {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.department-number {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.department-description {
+    max-width: 430px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.department-no-description {
+    color: #94a3b8;
+    font-style: italic;
+}
+
+
+/* =========================================================
+   CREATED DATE
+========================================================= */
+
+.department-created {
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   EDIT BUTTON
+========================================================= */
+
+.department-edit-button {
+    width: 35px;
+    height: 35px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #d97706;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.department-edit-button:hover {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #b45309;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.department-empty-state {
+    padding: 65px 20px;
+    text-align: center;
+}
+
+.department-empty-icon {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 16px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    color: #94a3b8;
+    font-size: 30px;
+}
+
+.department-empty-state h3 {
+    margin: 0 0 6px;
+    color: #334155;
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.department-empty-state p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .department-page-header {
+        flex-direction: column;
+    }
+
+    .department-add-button {
+        width: 100%;
+    }
+
+    .department-page-heading h2 {
+        font-size: 23px;
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .department-page-heading {
+        gap: 11px;
+    }
+
+    .department-page-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+
+    .department-page-heading h2 {
+        font-size: 21px;
+    }
+
+    .department-page-heading p {
+        font-size: 12px;
+    }
+
+    .department-search-body {
+        padding: 15px;
+    }
+
+    .department-table-header {
+        padding: 16px;
+    }
+
+    .department-table {
+        min-width: 700px;
+    }
+
+}
+
+</style>
+
+
+<div class="department-page">
+
+
+    <!-- =====================================================
+         PAGE HEADER
+    ====================================================== -->
+
+    <div class="department-page-header">
+
+        <div class="department-page-heading">
+
+            <div class="department-page-icon">
+
+                <i class="bi bi-building"></i>
+
+            </div>
+
+            <div>
+
+                <span class="department-page-label">
+                    HRMS PLATFORM
+                </span>
+
+                <h2>
+                    Department Management
+                </h2>
+
+                <p>
+                    Manage company departments and organizational information.
+                </p>
+
+            </div>
 
         </div>
 
+
+        <!-- ADD DEPARTMENT -->
+
         <a
             href="{% url 'add_department' %}"
-            class="btn btn-primary">
+            class="department-add-button"
+        >
 
-            <i class="bi bi-plus-circle"></i>
+            <i class="bi bi-plus-lg"></i>
 
             Add Department
 
@@ -39,25 +603,40 @@ Departments
     </div>
 
 
-    <!-- ========================================= -->
-    <!-- Statistics -->
-    <!-- ========================================= -->
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
 
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
 
-        <div class="col-lg-4 col-md-6 mb-3">
+        <div class="col-lg-4 col-md-6">
 
-            <div class="card bg-primary text-white shadow">
+            <div class="department-stat-card">
 
-                <div class="card-body">
+                <div class="department-stat-top">
 
-                    <h6>
+                    <div class="department-stat-icon">
+
+                        <i class="bi bi-building"></i>
+
+                    </div>
+
+                    <i
+                        class="bi bi-three-dots"
+                        style="color:#cbd5e1;"
+                    ></i>
+
+                </div>
+
+                <div class="department-stat-content">
+
+                    <span class="department-stat-label">
                         Total Departments
-                    </h6>
+                    </span>
 
-                    <h2>
+                    <span class="department-stat-number">
                         {{ total_departments }}
-                    </h2>
+                    </span>
 
                 </div>
 
@@ -68,35 +647,54 @@ Departments
     </div>
 
 
-    <!-- ========================================= -->
-    <!-- Search -->
-    <!-- ========================================= -->
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
 
-    <div class="card mb-4 shadow-sm">
+    <div class="department-search-card">
 
-        <div class="card-body">
+        <div class="department-search-header">
+
+            <div class="department-search-icon">
+
+                <i class="bi bi-search"></i>
+
+            </div>
+
+            <strong>
+                Search Departments
+            </strong>
+
+        </div>
+
+        <div class="department-search-body">
 
             <form method="GET">
 
-                <div class="row">
+                <div class="row g-3">
 
-                    <div class="col-md-9">
+                    <div class="col-lg-9 col-md-8">
+
+                        <label class="department-search-label">
+                            Department Name
+                        </label>
 
                         <input
                             type="text"
                             name="search"
-                            class="form-control"
+                            class="department-search-input"
                             placeholder="Search department..."
                             value="{{ search }}"
                         >
 
                     </div>
 
-                    <div class="col-md-3 mt-2 mt-md-0">
+                    <div class="col-lg-3 col-md-4">
 
                         <button
                             type="submit"
-                            class="btn btn-primary w-100">
+                            class="department-search-button"
+                        >
 
                             <i class="bi bi-search"></i>
 
@@ -115,164 +713,213 @@ Departments
     </div>
 
 
-    <!-- ========================================= -->
-    <!-- Department Table -->
-    <!-- ========================================= -->
+    <!-- =====================================================
+         DEPARTMENT TABLE
+    ====================================================== -->
 
-    <div class="card shadow">
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-
-                <table class="table table-hover align-middle">
-
-                    <!-- Table Header -->
-
-                    <thead class="table-light">
-
-                        <tr>
-
-                            <th>
-                                #
-                            </th>
-
-                            <th>
-                                Department Name
-                            </th>
-
-                            <th>
-                                Description
-                            </th>
-
-                            <th>
-                                Created
-                            </th>
-
-                            <th>
-                                Actions
-                            </th>
-
-                        </tr>
-
-                    </thead>
+    <div class="department-table-card">
 
 
-                    <!-- Table Body -->
+        <!-- TABLE HEADER -->
 
-                    <tbody>
+        <div class="department-table-header">
 
-                        {% for department in departments %}
+            <div class="department-table-title">
 
-                        <tr>
+                <div class="department-table-title-icon">
 
-                            <!-- Number -->
+                    <i class="bi bi-diagram-3-fill"></i>
 
-                            <td>
+                </div>
+
+                <div>
+
+                    <strong>
+                        Department Directory
+                    </strong>
+
+                    <span>
+                        Organization departments and information
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div class="department-table-wrapper">
+
+            <table class="department-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Department
+                        </th>
+
+                        <th>
+                            Description
+                        </th>
+
+                        <th>
+                            Created
+                        </th>
+
+                        <th class="text-center">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for department in departments %}
+
+                    <tr>
+
+
+                        <!-- NUMBER -->
+
+                        <td>
+
+                            <span class="department-number">
                                 {{ forloop.counter }}
-                            </td>
+                            </span>
+
+                        </td>
 
 
-                            <!-- Department Name -->
+                        <!-- DEPARTMENT -->
 
-                            <td>
+                        <td>
 
-                                <strong>
+                            <div class="department-name-cell">
+
+                                <div class="department-name-icon">
+
+                                    <i class="bi bi-building"></i>
+
+                                </div>
+
+                                <span class="department-name">
+
                                     {{ department.name }}
-                                </strong>
 
-                            </td>
+                                </span>
+
+                            </div>
+
+                        </td>
 
 
-                            <!-- Description -->
+                        <!-- DESCRIPTION -->
 
-                            <td>
+                        <td>
 
-                                {% if department.description %}
+                            {% if department.description %}
+
+                                <div class="department-description">
 
                                     {{ department.description|truncatechars:80 }}
 
-                                {% else %}
+                                </div>
 
-                                    <span class="text-muted">
+                            {% else %}
 
-                                        No description
+                                <span class="department-no-description">
 
-                                    </span>
+                                    No description
 
-                                {% endif %}
+                                </span>
 
-                            </td>
+                            {% endif %}
+
+                        </td>
 
 
-                            <!-- Created -->
+                        <!-- CREATED -->
 
-                            <td>
+                        <td>
+
+                            <span class="department-created">
+
+                                <i
+                                    class="bi bi-calendar3 me-1"
+                                    style="color:#94a3b8;"
+                                ></i>
 
                                 {{ department.created_at|date:"d M Y" }}
 
-                            </td>
+                            </span>
+
+                        </td>
 
 
-                            <!-- Actions -->
+                        <!-- ACTIONS -->
 
-                            <td>
+                        <td class="text-center">
 
-                                <!-- Edit Only -->
+                            <a
+                                href="{% url 'edit_department' department.id %}"
+                                class="department-edit-button"
+                                title="Edit Department"
+                            >
 
-                                <a
-                                    href="{% url 'edit_department' department.id %}"
-                                    class="btn btn-warning btn-sm"
-                                    title="Edit Department">
+                                <i class="bi bi-pencil"></i>
 
-                                    <i class="bi bi-pencil"></i>
+                            </a>
 
-                                    Edit
+                        </td>
 
-                                </a>
-
-                                <!--
-                                Delete button intentionally removed.
-
-                                Department deletion is now available
-                                from the three-dot menu on the
-                                Edit Department page.
-                                -->
-
-                            </td>
-
-                        </tr>
+                    </tr>
 
 
-                        {% empty %}
+                    {% empty %}
 
-                        <tr>
+                    <tr>
 
-                            <td
-                                colspan="5"
-                                class="text-center py-4">
+                        <td colspan="5">
 
-                                <i
-                                    class="bi bi-building display-5 text-muted">
-                                </i>
+                            <div class="department-empty-state">
 
-                                <p class="mt-2 mb-0 text-muted">
+                                <div class="department-empty-icon">
 
-                                    No departments found.
+                                    <i class="bi bi-building"></i>
 
+                                </div>
+
+                                <h3>
+                                    No Departments Found
+                                </h3>
+
+                                <p>
+                                    No departments match your current search.
                                 </p>
 
-                            </td>
+                            </div>
 
-                        </tr>
+                        </td>
 
-                        {% endfor %}
+                    </tr>
 
-                    </tbody>
+                    {% endfor %}
 
-                </table>
+                </tbody>
 
-            </div>
+            </table>
 
         </div>
 

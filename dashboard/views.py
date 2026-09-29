@@ -2,12 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils import timezone
 
-from employees.models import Employee
+from accounts.decorators import role_required
+from accounts.models import User
 from attendance.models import Attendance
 from departments.models import Department
-from accounts.models import User
-
-from accounts.decorators import role_required
+from employees.models import Employee
 
 
 @login_required
@@ -20,7 +19,6 @@ def dashboard(request):
 
     today = timezone.localdate()
 
-
     # ======================================================
     # EMPLOYEE DATA
     # ======================================================
@@ -29,7 +27,6 @@ def dashboard(request):
         is_active=True
     ).count()
 
-
     # ======================================================
     # ATTENDANCE DATA
     # ======================================================
@@ -37,9 +34,8 @@ def dashboard(request):
     present_today = Attendance.objects.filter(
         date=today,
         status="Present",
-        employee__is_active=True
+        employee__is_active=True,
     ).count()
-
 
     # ======================================================
     # DEPARTMENT DATA
@@ -49,7 +45,6 @@ def dashboard(request):
         is_active=True
     ).count()
 
-
     # ======================================================
     # USER / ROLE DATA
     # ======================================================
@@ -57,49 +52,34 @@ def dashboard(request):
     total_users = User.objects.count()
 
     admin_users = User.objects.filter(
-        role="ADMIN"
+        role__name="Admin"
     ).count()
 
     hr_users = User.objects.filter(
-        role="HR"
+        role__name="HR"
     ).count()
 
     employee_users = User.objects.filter(
-        role="EMPLOYEE"
+        role__name="Employee"
     ).count()
-
 
     # ======================================================
     # DASHBOARD CONTEXT
     # ======================================================
 
     context = {
-
-        # Existing dashboard data
         "total_employees": total_employees,
-
         "present_today": present_today,
-
         "absent_today": 15,
-
         "departments": total_departments,
-
         "pending_leave": 4,
-
         "monthly_salary": "₹8,50,000",
 
-
-        # User management data
         "total_users": total_users,
-
         "admin_users": admin_users,
-
         "hr_users": hr_users,
-
         "employee_users": employee_users,
-
     }
-
 
     # ======================================================
     # RENDER DASHBOARD
@@ -108,5 +88,5 @@ def dashboard(request):
     return render(
         request,
         "dashboard/dashboard.html",
-        context
+        context,
     )

@@ -1,3 +1,4 @@
+
 from django.urls import path
 
 from . import views
@@ -60,7 +61,7 @@ urlpatterns = [
     # ======================================================
 
     path(
-        "users/<int:user_id>/edit/",
+        "users/<uuid:user_id>/edit/",
         views.edit_user,
         name="edit_user",
     ),
@@ -70,8 +71,9 @@ urlpatterns = [
     # ======================================================
 
     path(
-        "users/<int:user_id>/toggle-status/",
+        "users/<uuid:user_id>/toggle-status/",
         views.toggle_user_status,
         name="toggle_user_status",
     ),
 ]
+

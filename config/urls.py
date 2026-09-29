@@ -1,6 +1,17 @@
-
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import render
+
+
+# ==========================================================
+# PUBLIC LANDING PAGE
+# ==========================================================
+
+def landing_page(request):
+    return render(
+        request,
+        "landing/home.html"
+    )
 
 
 urlpatterns = [
@@ -16,11 +27,22 @@ urlpatterns = [
 
 
     # ======================================================
-    # DASHBOARD
+    # PUBLIC LANDING PAGE
     # ======================================================
 
     path(
         "",
+        landing_page,
+        name="landing",
+    ),
+
+
+    # ======================================================
+    # DASHBOARD
+    # ======================================================
+
+    path(
+        "dashboard/",
         include("dashboard.urls")
     ),
 
@@ -95,4 +117,3 @@ urlpatterns = [
     ),
 
 ]
-

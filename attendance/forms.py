@@ -81,12 +81,28 @@ class AttendanceForm(forms.ModelForm):
         now = timezone.localtime()
 
         # =====================================================
+        # ROLE
+        # =====================================================
+
+        role = getattr(
+            current_user,
+            "role",
+            None
+        )
+
+        role_name = getattr(
+            role,
+            "name",
+            None
+        )
+
+        # =====================================================
         # EMPLOYEE DROPDOWN
         # =====================================================
 
         if (
             current_user
-            and getattr(current_user, "role", None) == "EMPLOYEE"
+            and role_name == "Employee"
         ):
 
             linked_employee = getattr(
@@ -113,12 +129,11 @@ class AttendanceForm(forms.ModelForm):
                 # Automatically select the logged-in employee.
                 self.initial["employee"] = linked_employee
 
-                # Do not allow employee to change the employee.
+                # Employee cannot change the employee.
                 self.fields["employee"].disabled = True
 
             else:
 
-                # No linked Employee record.
                 self.fields["employee"].queryset = (
                     Employee.objects.none()
                 )
@@ -140,7 +155,7 @@ class AttendanceForm(forms.ModelForm):
         # DATE
         # =====================================================
 
-        # Always use today's date.
+        # Attendance date is always controlled by the server.
         self.initial["date"] = now.date()
 
         self.fields["date"].disabled = True
@@ -158,7 +173,7 @@ class AttendanceForm(forms.ModelForm):
 
             self.initial["check_in"] = current_time
 
-            # Display the earliest Present checkout time.
+            # Display earliest Present checkout time.
             minimum_checkout = (
                 now + timedelta(hours=7)
             )
@@ -174,10 +189,18 @@ class AttendanceForm(forms.ModelForm):
         self.fields["check_in"].disabled = True
         self.fields["check_out"].disabled = True
 
+    # ==========================================================
+    # DATE VALIDATION
+    # ==========================================================
+
     def clean_date(self):
 
         # Server is authoritative for attendance date.
         return timezone.localdate()
+
+    # ==========================================================
+    # EMPLOYEE VALIDATION
+    # ==========================================================
 
     def clean_employee(self):
 
@@ -201,11 +224,19 @@ class AttendanceForm(forms.ModelForm):
         # EMPLOYEE OWNERSHIP VALIDATION
         # =====================================================
 
-        if (
-            self.current_user
-            and getattr(self.current_user, "role", None)
-            == "EMPLOYEE"
-        ):
+        role = getattr(
+            self.current_user,
+            "role",
+            None
+        )
+
+        role_name = getattr(
+            role,
+            "name",
+            None
+        )
+
+        if role_name == "Employee":
 
             linked_employee = getattr(
                 self.current_user,
@@ -226,6 +257,10 @@ class AttendanceForm(forms.ModelForm):
                 )
 
         return employee
+
+    # ==========================================================
+    # FORM CLEAN
+    # ==========================================================
 
     def clean(self):
 
@@ -251,6 +286,10 @@ class AttendanceForm(forms.ModelForm):
             cleaned_data["check_out"] = None
 
         return cleaned_data
+
+    # ==========================================================
+    # SAVE
+    # ==========================================================
 
     def save(self, commit=True):
 
@@ -283,11 +322,19 @@ class AttendanceForm(forms.ModelForm):
         # EMPLOYEE USER
         # =====================================================
 
-        if (
-            self.current_user
-            and getattr(self.current_user, "role", None)
-            == "EMPLOYEE"
-        ):
+        role = getattr(
+            self.current_user,
+            "role",
+            None
+        )
+
+        role_name = getattr(
+            role,
+            "name",
+            None
+        )
+
+        if role_name == "Employee":
 
             linked_employee = getattr(
                 self.current_user,
@@ -298,6 +345,21 @@ class AttendanceForm(forms.ModelForm):
             if linked_employee:
 
                 attendance.employee = linked_employee
+
+        # =====================================================
+        # AUDIT USER
+        # =====================================================
+
+        if self.current_user:
+
+            if not attendance.pk:
+                attendance.created_by = self.current_user
+
+            attendance.updated_by = self.current_user
+
+        # =====================================================
+        # SAVE
+        # =====================================================
 
         if commit:
 

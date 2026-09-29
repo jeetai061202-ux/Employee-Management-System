@@ -1,7 +1,16 @@
+import uuid
+
+from django.conf import settings
 from django.db import models
 
 
 class Department(models.Model):
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
 
     name = models.CharField(
         max_length=100,
@@ -13,11 +22,12 @@ class Department(models.Model):
         null=True
     )
 
-    # ==========================================================
-    # SOFT DELETE
-    # True  = Department is active
-    # False = Department is deleted/inactive
-    # ==========================================================
+    code = models.CharField(
+        max_length=50,
+        unique=True,
+        blank=True,
+        null=True
+    )
 
     is_active = models.BooleanField(
         default=True
@@ -27,8 +37,24 @@ class Department(models.Model):
         auto_now_add=True
     )
 
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="departments_created",
+    )
+
     updated_at = models.DateTimeField(
         auto_now=True
+    )
+
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="departments_updated",
     )
 
     def __str__(self):

@@ -1,4 +1,458 @@
 <!-- ===================================== -->
+<!-- ARND IT / HRMS Sidebar -->
+<!-- ===================================== -->
+
+<style>
+
+/* ==========================================================
+   ARND IT SIDEBAR THEME
+========================================================== */
+
+.sidebar {
+    background: #080808 !important;
+    border-right: 1px solid #242424 !important;
+    color: #ffffff;
+}
+
+
+/* ==========================================================
+   SIDEBAR HEADER / BRAND
+========================================================== */
+
+.sidebar .sidebar-header {
+    min-height: 76px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid #242424;
+
+    background: #080808;
+}
+
+.sidebar .sidebar-header .logo {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    color: #ffffff !important;
+
+    text-decoration: none;
+
+    font-weight: 800;
+}
+
+.sidebar .sidebar-header .logo > i {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 9px;
+
+    background: #ff6b00;
+    color: #ffffff;
+
+    font-size: 17px;
+
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+.sidebar .sidebar-header .logo:hover > i {
+    background: #ffffff;
+    color: #ff6b00;
+
+    transform: translateY(-1px);
+}
+
+.sidebar .logo-text {
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    letter-spacing: -.2px;
+
+    white-space: nowrap;
+}
+
+
+/* ==========================================================
+   USER PANEL
+========================================================== */
+
+.sidebar .user-panel {
+    margin: 17px 14px;
+
+    padding: 13px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    background: #111111;
+
+    border: 1px solid #292929;
+    border-radius: 12px;
+}
+
+.sidebar .user-avatar {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: #ff6b00;
+
+    border: 2px solid #ff6b00;
+}
+
+.sidebar .user-avatar img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+}
+
+.sidebar .user-info {
+    min-width: 0;
+}
+
+.sidebar .user-info h6 {
+    margin: 0;
+
+    overflow: hidden;
+
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar .user-info small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #ff8a3d;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    text-transform: uppercase;
+}
+
+
+/* ==========================================================
+   NAVIGATION
+========================================================== */
+
+.sidebar .sidebar-menu {
+    margin: 0;
+
+    padding: 4px 12px 18px;
+
+    list-style: none;
+}
+
+.sidebar .sidebar-menu li {
+    margin: 3px 0;
+}
+
+.sidebar .sidebar-menu li a {
+    min-height: 44px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 10px 12px;
+
+    border-radius: 9px;
+
+    color: #a9a9a9 !important;
+
+    text-decoration: none;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    transition:
+        background .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+.sidebar .sidebar-menu li a i {
+    width: 20px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #777777;
+
+    font-size: 16px;
+
+    transition:
+        color .18s ease,
+        transform .18s ease;
+}
+
+.sidebar .sidebar-menu li a:hover {
+    background: #171717;
+
+    color: #ffffff !important;
+
+    transform: translateX(2px);
+}
+
+.sidebar .sidebar-menu li a:hover i {
+    color: #ff6b00;
+
+    transform: scale(1.06);
+}
+
+
+/* ==========================================================
+   ACTIVE MENU
+   Supports common Django/current-page classes
+========================================================== */
+
+.sidebar .sidebar-menu li.active > a,
+.sidebar .sidebar-menu li a.active,
+.sidebar .sidebar-menu li.active a {
+    background: #ff6b00 !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+        0 7px 18px rgba(255, 107, 0, .18);
+}
+
+.sidebar .sidebar-menu li.active > a i,
+.sidebar .sidebar-menu li a.active i,
+.sidebar .sidebar-menu li.active a i {
+    color: #ffffff !important;
+}
+
+
+/* ==========================================================
+   SEPARATOR
+========================================================== */
+
+.sidebar .sidebar-menu hr {
+    margin: 15px 7px;
+
+    border: 0;
+
+    border-top: 1px solid #292929;
+
+    opacity: 1;
+}
+
+
+/* ==========================================================
+   SPECIAL MENU ITEMS
+========================================================== */
+
+.sidebar .sidebar-menu a.text-danger {
+    color: #ff8b8b !important;
+}
+
+.sidebar .sidebar-menu a.text-danger i {
+    color: #ff6464 !important;
+}
+
+.sidebar .sidebar-menu a.text-danger:hover {
+    background: rgba(214, 69, 69, .12);
+
+    color: #ff6f6f !important;
+}
+
+
+/* ==========================================================
+   LOGOUT / BOTTOM ACTION
+========================================================== */
+
+.sidebar .sidebar-menu li:last-child a {
+    margin-top: 3px;
+}
+
+
+/* ==========================================================
+   COLLAPSED SIDEBAR
+   Works with existing sidebar.js
+========================================================== */
+
+.sidebar.collapsed .sidebar-header {
+    justify-content: center;
+
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.sidebar.collapsed .logo {
+    justify-content: center;
+}
+
+.sidebar.collapsed .logo-text {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-header .logo > i {
+    width: 40px;
+    height: 40px;
+}
+
+.sidebar.collapsed .user-panel {
+    margin-left: 10px;
+    margin-right: 10px;
+
+    justify-content: center;
+
+    padding: 9px;
+}
+
+.sidebar.collapsed .user-info {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-menu {
+    padding-left: 9px;
+    padding-right: 9px;
+}
+
+.sidebar.collapsed .sidebar-menu li a {
+    justify-content: center;
+
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.sidebar.collapsed .sidebar-menu li a i {
+    width: 100%;
+}
+
+.sidebar.collapsed .menu-text {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-menu hr {
+    margin-left: 9px;
+    margin-right: 9px;
+}
+
+
+/* ==========================================================
+   COLLAPSED TOOLTIP
+========================================================== */
+
+.sidebar.collapsed .sidebar-menu li a {
+    position: relative;
+}
+
+.sidebar.collapsed .sidebar-menu li a:hover::after {
+    content: attr(data-title);
+
+    position: absolute;
+
+    left: calc(100% + 12px);
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    z-index: 9999;
+
+    padding: 7px 10px;
+
+    background: #111111;
+    color: #ffffff;
+
+    border: 1px solid #333333;
+    border-radius: 6px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, .2);
+
+    pointer-events: none;
+}
+
+
+/* ==========================================================
+   MOBILE OVERLAY
+========================================================== */
+
+.sidebar-overlay {
+    background: rgba(0, 0, 0, .62) !important;
+
+    backdrop-filter: blur(2px);
+}
+
+
+/* ==========================================================
+   MOBILE
+========================================================== */
+
+@media (max-width: 992px) {
+
+    .sidebar .sidebar-header {
+        min-height: 70px;
+    }
+
+    .sidebar .sidebar-menu {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+}
+
+
+/* ==========================================================
+   ACCESSIBILITY
+========================================================== */
+
+.sidebar a:focus-visible {
+    outline: 2px solid #ff6b00;
+
+    outline-offset: 2px;
+}
+
+</style>
+
+
+<!-- ===================================== -->
 <!-- Sidebar -->
 <!-- ===================================== -->
 
@@ -11,17 +465,21 @@
 
     <div class="sidebar-header">
 
-        {% if user.is_authenticated and user.role == "ADMIN" %}
+        {% if user.is_authenticated %}
 
             <a
                 href="{% url 'dashboard' %}"
-                class="logo">
+                class="logo"
+                data-title="Dashboard"
+            >
 
         {% else %}
 
             <a
                 href="{% url 'employee_list' %}"
-                class="logo">
+                class="logo"
+                data-title="Employees"
+            >
 
         {% endif %}
 
@@ -42,7 +500,6 @@
 
     <div class="user-panel">
 
-
         <div class="user-avatar">
 
             {% if user.is_authenticated and user.profile_picture %}
@@ -54,7 +511,7 @@
             {% else %}
 
                 <img
-                    src="https://ui-avatars.com/api/?name={{ user.username }}&background=2563eb&color=fff"
+                    src="https://ui-avatars.com/api/?name={{ user.username }}&background=ff6b00&color=fff"
                     alt="Profile">
 
             {% endif %}
@@ -71,14 +528,18 @@
                 </h6>
 
                 <small>
-                    {{ user.role|default:"Administrator" }}
+                    {{ user.role.name|default:"Administrator" }}
                 </small>
 
             {% else %}
 
-                <h6>Guest</h6>
+                <h6>
+                    Guest
+                </h6>
 
-                <small>Not Logged In</small>
+                <small>
+                    Not Logged In
+                </small>
 
             {% endif %}
 
@@ -95,14 +556,17 @@
 
 
         <!-- ================================= -->
-        <!-- Dashboard - ADMIN ONLY -->
+        <!-- Dashboard - ADMIN + HR -->
         <!-- ================================= -->
 
-        {% if user.is_authenticated and user.role == "ADMIN" %}
+        {% if user.is_authenticated and user.role.name == "Admin" or user.is_authenticated and user.role.name == "HR" %}
 
             <li>
 
-                <a href="{% url 'dashboard' %}">
+                <a
+                    href="{% url 'dashboard' %}"
+                    data-title="Dashboard"
+                >
 
                     <i class="bi bi-speedometer2"></i>
 
@@ -117,6 +581,7 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- Employees - ALL ROLES -->
         <!-- ================================= -->
@@ -125,7 +590,10 @@
 
             <li>
 
-                <a href="{% url 'employee_list' %}">
+                <a
+                    href="{% url 'employee_list' %}"
+                    data-title="Employees"
+                >
 
                     <i class="bi bi-people-fill"></i>
 
@@ -140,6 +608,7 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- Departments - ALL ROLES -->
         <!-- ================================= -->
@@ -148,7 +617,10 @@
 
             <li>
 
-                <a href="{% url 'department_list' %}">
+                <a
+                    href="{% url 'department_list' %}"
+                    data-title="Departments"
+                >
 
                     <i class="bi bi-diagram-3-fill"></i>
 
@@ -163,6 +635,7 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- Attendance - ALL ROLES -->
         <!-- ================================= -->
@@ -171,7 +644,10 @@
 
             <li>
 
-                <a href="{% url 'attendance_list' %}">
+                <a
+                    href="{% url 'attendance_list' %}"
+                    data-title="Attendance"
+                >
 
                     <i class="bi bi-calendar-check-fill"></i>
 
@@ -186,15 +662,19 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- Leave - ADMIN + EMPLOYEE -->
         <!-- ================================= -->
 
-        {% if user.is_authenticated and user.role == "ADMIN" or user.is_authenticated and user.role == "EMPLOYEE" %}
+        {% if user.is_authenticated and user.role.name == "Admin" or user.is_authenticated and user.role.name == "Employee" %}
 
             <li>
 
-                <a href="{% url 'leave_list' %}">
+                <a
+                    href="{% url 'leave_list' %}"
+                    data-title="Leave Management"
+                >
 
                     <i class="bi bi-airplane-fill"></i>
 
@@ -209,15 +689,19 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- Payroll - ADMIN + HR -->
         <!-- ================================= -->
 
-        {% if user.is_authenticated and user.role == "ADMIN" or user.is_authenticated and user.role == "HR" %}
+        {% if user.is_authenticated and user.role.name == "Admin" or user.is_authenticated and user.role.name == "HR" %}
 
             <li>
 
-                <a href="{% url 'payroll_list' %}">
+                <a
+                    href="{% url 'payroll_list' %}"
+                    data-title="Payroll"
+                >
 
                     <i class="bi bi-cash-stack"></i>
 
@@ -232,15 +716,19 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- Reports - ADMIN + HR -->
         <!-- ================================= -->
 
-        {% if user.is_authenticated and user.role == "ADMIN" or user.is_authenticated and user.role == "HR" %}
+        {% if user.is_authenticated and user.role.name == "Admin" or user.is_authenticated and user.role.name == "HR" %}
 
             <li>
 
-                <a href="{% url 'report_dashboard' %}">
+                <a
+                    href="{% url 'report_dashboard' %}"
+                    data-title="Reports"
+                >
 
                     <i class="bi bi-bar-chart-fill"></i>
 
@@ -255,15 +743,19 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- User Management - ADMIN ONLY -->
         <!-- ================================= -->
 
-        {% if user.is_authenticated and user.role == "ADMIN" %}
+        {% if user.is_authenticated and user.role.name == "Admin" %}
 
             <li>
 
-                <a href="{% url 'user_management' %}">
+                <a
+                    href="{% url 'user_management' %}"
+                    data-title="User Management"
+                >
 
                     <i class="bi bi-person-gear"></i>
 
@@ -278,6 +770,7 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- Notifications -->
         <!-- ================================= -->
@@ -286,7 +779,10 @@
 
             <li>
 
-                <a href="#">
+                <a
+                    href="#"
+                    data-title="Notifications"
+                >
 
                     <i class="bi bi-bell-fill"></i>
 
@@ -301,15 +797,19 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- Settings - ADMIN ONLY -->
         <!-- ================================= -->
 
-        {% if user.is_authenticated and user.role == "ADMIN" %}
+        {% if user.is_authenticated and user.role.name == "Admin" %}
 
             <li>
 
-                <a href="#">
+                <a
+                    href="#"
+                    data-title="Settings"
+                >
 
                     <i class="bi bi-gear-fill"></i>
 
@@ -324,6 +824,7 @@
         {% endif %}
 
 
+
         <!-- ================================= -->
         <!-- My Profile -->
         <!-- ================================= -->
@@ -332,7 +833,10 @@
 
             <li>
 
-                <a href="#">
+                <a
+                    href="#"
+                    data-title="My Profile"
+                >
 
                     <i class="bi bi-person-circle"></i>
 
@@ -347,7 +851,13 @@
         {% endif %}
 
 
+
+        <!-- ================================= -->
+        <!-- Separator -->
+        <!-- ================================= -->
+
         <hr>
+
 
 
         <!-- ================================= -->
@@ -360,7 +870,9 @@
 
                 <a
                     href="{% url 'logout' %}"
-                    class="text-danger">
+                    class="text-danger"
+                    data-title="Logout"
+                >
 
                     <i class="bi bi-box-arrow-right"></i>
 
@@ -379,7 +891,10 @@
 </aside>
 
 
+
+<!-- ===================================== -->
 <!-- Mobile Sidebar Overlay -->
+<!-- ===================================== -->
 
 <div
     class="sidebar-overlay"

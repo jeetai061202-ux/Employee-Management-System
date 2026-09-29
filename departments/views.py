@@ -45,10 +45,9 @@ def department_list(request):
     if search:
 
         departments = departments.filter(
-
             Q(name__icontains=search) |
-            Q(description__icontains=search)
-
+            Q(description__icontains=search) |
+            Q(code__icontains=search)
         )
 
     # ======================================================
@@ -56,16 +55,12 @@ def department_list(request):
     # ======================================================
 
     context = {
-
         "departments": departments,
-
         "search": search,
 
-        # Count only active departments
         "total_departments": Department.objects.filter(
             is_active=True
         ).count(),
-
     }
 
     return render(
@@ -96,8 +91,12 @@ def add_department(request):
                 commit=False
             )
 
-            # New departments are active
+            # New departments are active.
             department.is_active = True
+
+            # Audit information.
+            department.created_by = request.user
+            department.updated_by = request.user
 
             department.save()
 
@@ -146,7 +145,14 @@ def edit_department(request, pk):
 
         if form.is_valid():
 
-            form.save()
+            department = form.save(
+                commit=False
+            )
+
+            # Audit information.
+            department.updated_by = request.user
+
+            department.save()
 
             messages.success(
                 request,
@@ -194,19 +200,21 @@ def delete_department(request, pk):
         # ==================================================
         # Do NOT permanently delete the department.
         #
-        # Instead:
+        # The department remains in the database.
         #
-        # True  -> False
+        # True -> False
         #
-        # The department remains in the database but will
-        # no longer appear on the main department page.
+        # This preserves historical department information.
         # ==================================================
 
         department.is_active = False
+        department.updated_by = request.user
 
         department.save(
             update_fields=[
-                "is_active"
+                "is_active",
+                "updated_by",
+                "updated_at",
             ]
         )
 

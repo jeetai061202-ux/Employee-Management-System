@@ -1,6 +1,8 @@
+import uuid
 from datetime import datetime, timedelta
 from decimal import Decimal
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -11,6 +13,12 @@ class Attendance(models.Model):
         ("Present", "Present"),
         ("Half Day", "Half Day"),
     ]
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
 
     employee = models.ForeignKey(
         "employees.Employee",
@@ -42,7 +50,8 @@ class Attendance(models.Model):
         default=Decimal("0.00")
     )
 
-    remarks = models.TextField(
+    remarks = models.CharField(
+        max_length=255,
         blank=True,
         null=True
     )
@@ -51,15 +60,28 @@ class Attendance(models.Model):
         auto_now_add=True
     )
 
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="attendances_created",
+    )
+
     updated_at = models.DateTimeField(
         auto_now=True
     )
 
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="attendances_updated",
+    )
+
     @property
     def minimum_working_hours(self):
-        """
-        Minimum required working hours according to status.
-        """
         if self.status == "Present":
             return Decimal("7.00")
 
@@ -70,9 +92,6 @@ class Attendance(models.Model):
 
     @property
     def minimum_checkout_datetime(self):
-        """
-        Calculates the earliest permitted checkout datetime.
-        """
         if not self.check_in:
             return None
 
@@ -89,9 +108,6 @@ class Attendance(models.Model):
 
     @property
     def minimum_checkout_time(self):
-        """
-        Returns the minimum checkout time for display.
-        """
         minimum_datetime = self.minimum_checkout_datetime
 
         if minimum_datetime is None:
@@ -100,12 +116,6 @@ class Attendance(models.Model):
         return minimum_datetime.time()
 
     def get_checkout_datetime(self):
-        """
-        Converts checkout time into a datetime.
-
-        If checkout time is earlier than check-in time,
-        it is treated as next-day checkout.
-        """
         if not self.check_in or not self.check_out:
             return None
 
@@ -123,24 +133,20 @@ class Attendance(models.Model):
 
         errors = {}
 
-        # Check-out cannot exist without check-in.
         if self.check_out and not self.check_in:
             errors["check_out"] = (
                 "Check-In time is required before Check-Out."
             )
 
-        # Validate employee.
         if not self.employee:
             errors["employee"] = "Employee is required."
 
-        # Validate status.
         if self.status not in ["Present", "Half Day"]:
             errors["status"] = "Invalid attendance status."
 
         if errors:
             raise ValidationError(errors)
 
-        # Validate working time.
         if self.check_in and self.check_out:
 
             checkout_datetime = self.get_checkout_datetime()
@@ -167,7 +173,6 @@ class Attendance(models.Model):
                     )
                 })
 
-            # Automatically calculate working hours.
             self.working_hours = (
                 total_hours.quantize(Decimal("0.01"))
             )

@@ -1,6 +1,8 @@
+import uuid
+
 from django.conf import settings
-from django.db import models
 from django.core.validators import RegexValidator
+from django.db import models
 
 from departments.models import Department
 
@@ -13,7 +15,15 @@ class Employee(models.Model):
         ("Other", "Other"),
     )
 
-    # Connect employee record with the registered user account
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+
+    # Existing relationship with the registered user account.
+    # Kept during the migration so existing user/employee links
+    # are preserved.
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -23,16 +33,16 @@ class Employee(models.Model):
     )
 
     employee_id = models.CharField(
-        max_length=10,
+        max_length=50,
         unique=True
     )
 
     first_name = models.CharField(
-        max_length=100
+        max_length=150
     )
 
     last_name = models.CharField(
-        max_length=100
+        max_length=150
     )
 
     email = models.EmailField(
@@ -66,11 +76,6 @@ class Employee(models.Model):
         related_name="employees"
     )
 
-    salary = models.DecimalField(
-        max_digits=10,
-        decimal_places=2
-    )
-
     joining_date = models.DateField()
 
     is_active = models.BooleanField(
@@ -83,14 +88,92 @@ class Employee(models.Model):
         null=True
     )
 
-    address = models.TextField()
+    # ----------------------------------------------------------
+    # New target address fields
+    # ----------------------------------------------------------
+
+    address_line_1 = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    address_line_2 = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    city = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    state = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    country = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    pincode = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    # ----------------------------------------------------------
+    # Legacy fields
+    #
+    # These are intentionally kept for now so existing data is
+    # not removed before we perform the controlled migration.
+    # They can be removed after the migration/data-copy step.
+    # ----------------------------------------------------------
+
+    salary = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+
+    address = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    # ----------------------------------------------------------
+    # Audit fields
+    # ----------------------------------------------------------
 
     created_at = models.DateTimeField(
         auto_now_add=True
     )
 
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="employees_created",
+    )
+
     updated_at = models.DateTimeField(
         auto_now=True
+    )
+
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="employees_updated",
     )
 
     class Meta:

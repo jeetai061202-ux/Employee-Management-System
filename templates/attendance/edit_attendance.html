@@ -8,271 +8,257 @@ Edit Attendance
 
 <div class="container-fluid">
 
-```
-<div class="row justify-content-center">
+    <div class="row justify-content-center">
 
-    <div class="col-lg-8">
+        <div class="col-lg-8">
 
-        <div class="card shadow">
+            <div class="card shadow">
 
-            <!-- ================================================= -->
-            <!-- HEADER -->
-            <!-- ================================================= -->
+                <div class="card-header bg-warning">
+                    <h4 class="mb-0">
+                        Edit Attendance
+                    </h4>
+                </div>
 
-            <div class="card-header bg-primary text-white">
+                <div class="card-body">
 
-                <h4 class="mb-0">
-                    Edit Employee Attendance
-                </h4>
+                    <form method="POST">
 
-            </div>
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+
+                            <!-- EMPLOYEE -->
+                            <div class="col-md-6 mb-3">
+
+                                <label
+                                    for="{{ form.employee.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Employee
+                                </label>
+
+                                {{ form.employee }}
+
+                                {% if form.employee.errors %}
+                                    <div class="text-danger mt-1">
+                                        {{ form.employee.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
 
 
-            <div class="card-body">
+                            <!-- DATE -->
+                            <div class="col-md-6 mb-3">
 
-                <form method="POST">
+                                <label
+                                    for="{{ form.date.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Date
+                                </label>
 
-                    {% csrf_token %}
+                                {{ form.date }}
 
-                    <div class="row">
+                                <small class="text-muted d-block mt-1">
+                                    <i class="bi bi-lock-fill"></i>
+                                    Attendance date is controlled by the
+                                    attendance system.
+                                </small>
 
-                        <!-- ================================================= -->
-                        <!-- EMPLOYEE -->
-                        <!-- ================================================= -->
+                                {% if form.date.errors %}
+                                    <div class="text-danger mt-1">
+                                        {{ form.date.errors }}
+                                    </div>
+                                {% endif %}
 
-                        <div class="col-md-6 mb-3">
+                            </div>
 
-                            <label
-                                for="{{ form.employee.id_for_label }}"
-                                class="form-label">
 
-                                Employee
+                            <!-- CHECK IN -->
+                            <div class="col-md-6 mb-3">
 
-                            </label>
+                                <label
+                                    for="{{ form.check_in.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Check In
+                                </label>
 
-                            {{ form.employee }}
+                                {{ form.check_in }}
 
-                            {% if form.employee.errors %}
+                                <small class="text-muted d-block mt-1">
+                                    <i class="bi bi-lock-fill"></i>
+                                    Check-in time is system controlled.
+                                </small>
 
-                                <div class="text-danger mt-1">
-                                    {{ form.employee.errors }}
-                                </div>
+                                {% if form.check_in.errors %}
+                                    <div class="text-danger mt-1">
+                                        {{ form.check_in.errors }}
+                                    </div>
+                                {% endif %}
 
-                            {% endif %}
+                            </div>
+
+
+                            <!-- CHECK OUT -->
+                            <div class="col-md-6 mb-3">
+
+                                <label
+                                    for="{{ form.check_out.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Check Out
+                                </label>
+
+                                {{ form.check_out }}
+
+                                <small class="text-muted d-block mt-1">
+                                    <i class="bi bi-lock-fill"></i>
+                                    Check-out time is controlled by the
+                                    attendance system.
+                                </small>
+
+                                {% if form.check_out.errors %}
+                                    <div class="text-danger mt-1">
+                                        {{ form.check_out.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- STATUS -->
+                            <div class="col-md-6 mb-3">
+
+                                <label
+                                    for="{{ form.status.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Status
+                                </label>
+
+                                {{ form.status }}
+
+                                {% if form.status.errors %}
+                                    <div class="text-danger mt-1">
+                                        {{ form.status.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- WORKING HOURS -->
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label">
+                                    Working Hours
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    value="{{ attendance.working_hours|default:'0.00' }} hrs"
+                                    readonly
+                                >
+
+                                <small class="text-muted d-block mt-1">
+                                    Working hours are calculated automatically
+                                    from check-in and check-out.
+                                </small>
+
+                            </div>
+
+
+                            <!-- REMARKS -->
+                            <div class="col-12 mb-3">
+
+                                <label
+                                    for="{{ form.remarks.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Remarks
+                                </label>
+
+                                {{ form.remarks }}
+
+                                {% if form.remarks.errors %}
+                                    <div class="text-danger mt-1">
+                                        {{ form.remarks.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
 
                         </div>
 
 
-                        <!-- ================================================= -->
-                        <!-- DATE -->
-                        <!-- ================================================= -->
+                        <!-- ATTENDANCE RULES -->
+                        <div class="alert alert-info">
 
-                        <div class="col-md-6 mb-3">
+                            <i class="bi bi-info-circle"></i>
 
-                            <label
-                                for="{{ form.date.id_for_label }}"
-                                class="form-label">
+                            <strong>Attendance Rules:</strong>
 
-                                Date
+                            <ul class="mb-0 mt-2">
 
-                            </label>
+                                <li>
+                                    <strong>Present</strong> requires at least
+                                    <strong>7 hours</strong> of working time.
+                                </li>
 
-                            {{ form.date }}
+                                <li>
+                                    <strong>Half Day</strong> requires at least
+                                    <strong>3 hours</strong> of working time.
+                                </li>
 
-                            <small class="text-muted d-block mt-1">
+                                <li>
+                                    Working hours are calculated automatically.
+                                </li>
 
-                                <i class="bi bi-lock-fill"></i>
+                                <li>
+                                    Check-in and check-out times cannot be
+                                    manually changed from this form.
+                                </li>
 
-                                Attendance date is automatically
-                                set to today's date.
-
-                            </small>
-
-                            {% if form.date.errors %}
-
-                                <div class="text-danger mt-1">
-                                    {{ form.date.errors }}
-                                </div>
-
-                            {% endif %}
+                            </ul>
 
                         </div>
 
 
-                        <!-- ================================================= -->
-                        <!-- CHECK IN - SINGLE FIELD -->
-                        <!-- ================================================= -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label
-                                for="{{ form.check_in.id_for_label }}"
-                                class="form-label">
-
-                                Check In
-
-                            </label>
-
-                            {{ form.check_in }}
-
-                            {% if form.check_in.errors %}
-
-                                <div class="text-danger mt-1">
-                                    {{ form.check_in.errors }}
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <!-- ================================================= -->
-                        <!-- CHECK OUT - SINGLE FIELD -->
-                        <!-- ================================================= -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label
-                                for="{{ form.check_out.id_for_label }}"
-                                class="form-label">
-
-                                Check Out
-
-                            </label>
-
-                            {{ form.check_out }}
-
-                            {% if form.check_out.errors %}
-
-                                <div class="text-danger mt-1">
-                                    {{ form.check_out.errors }}
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <!-- ================================================= -->
-                        <!-- STATUS -->
-                        <!-- ================================================= -->
-
-                        <div class="col-md-6 mb-3">
-
-                            <label
-                                for="{{ form.status.id_for_label }}"
-                                class="form-label">
-
-                                Status
-
-                            </label>
-
-                            {{ form.status }}
-
-                            {% if form.status.errors %}
-
-                                <div class="text-danger mt-1">
-                                    {{ form.status.errors }}
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <!-- ================================================= -->
-                        <!-- REMARKS -->
-                        <!-- ================================================= -->
-
-                        <div class="col-12 mb-3">
-
-                            <label
-                                for="{{ form.remarks.id_for_label }}"
-                                class="form-label">
-
-                                Remarks
-
-                            </label>
-
-                            {{ form.remarks }}
-
-                            {% if form.remarks.errors %}
-
-                                <div class="text-danger mt-1">
-                                    {{ form.remarks.errors }}
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- ================================================= -->
-                    <!-- ATTENDANCE RULES -->
-                    <!-- ================================================= -->
-
-                    <div class="alert alert-info">
-
-                        <i class="bi bi-info-circle"></i>
-
-                        <strong>Attendance Rules:</strong>
-
-                        <ul class="mb-0 mt-2">
-
-                            <li>
-                                Present requires more than
-                                <strong>7 hours</strong> of working time.
-                            </li>
-
-                            <li>
-                                Half Day requires more than
-                                <strong>3 hours</strong> of working time.
-                            </li>
-
-                            <li>
-                                Check Out must be later than Check In.
-                            </li>
-
-                        </ul>
-
-                    </div>
-
-
-                    <!-- ================================================= -->
-                    <!-- BUTTONS -->
-                    <!-- ================================================= -->
-
-                    <button
-                        type="submit"
-                        class="btn btn-success">
-
-                        <i class="bi bi-check-circle"></i>
-
-                        Update Attendance
-
-                    </button>
-
-
-                    <a
-                        href="{% url 'attendance_list' %}"
-                        class="btn btn-secondary">
-
-                        Cancel
-
-                    </a>
-
-                </form>
+                        <!-- BUTTONS -->
+                        <button
+                            type="submit"
+                            class="btn btn-success"
+                        >
+                            <i class="bi bi-check-circle"></i>
+                            Update Attendance
+                        </button>
+
+                        <a
+                            href="{% url 'attendance_list' %}"
+                            class="btn btn-secondary"
+                        >
+                            Cancel
+                        </a>
+
+                    </form>
+
+                </div>
 
             </div>
 
         </div>
 
     </div>
-
-</div>
-```
 
 </div>
 

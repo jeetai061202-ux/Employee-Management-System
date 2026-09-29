@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import User
+from .models import User, Role
 
 
 # ==========================================================
@@ -18,7 +18,7 @@ class AdminUserCreationForm(UserCreationForm):
             "last_name",
             "username",
             "email",
-            "phone",
+            "phone_number",
             "role",
             "password1",
             "password2",
@@ -48,10 +48,12 @@ class AdminUserCreationForm(UserCreationForm):
             "Enter email address"
         )
 
-        self.fields["phone"].widget.attrs["placeholder"] = (
+        self.fields["phone_number"].label = "Phone Number"
+        self.fields["phone_number"].widget.attrs["placeholder"] = (
             "Enter phone number"
         )
 
+        self.fields["role"].label = "Role"
         self.fields["role"].widget.attrs["class"] = "form-select"
 
         self.fields["password1"].widget.attrs["placeholder"] = (
@@ -62,21 +64,21 @@ class AdminUserCreationForm(UserCreationForm):
             "Confirm password"
         )
 
-        # Admin decides the user's role.
-        self.fields["role"].choices = [
-            ("EMPLOYEE", "Employee"),
-            ("HR", "HR"),
-            ("ADMIN", "Admin"),
-        ]
+        # Role is now a ForeignKey to the Role table.
+        self.fields["role"].queryset = Role.objects.filter(
+            name__in=["Employee", "HR", "Admin"]
+        ).order_by("name")
+
+        self.fields["role"].empty_label = "Select role"
 
     # ------------------------------------------------------
     # PHONE VALIDATION
     # ------------------------------------------------------
 
-    def clean_phone(self):
+    def clean_phone_number(self):
 
         phone = self.cleaned_data.get(
-            "phone",
+            "phone_number",
             ""
         ).strip()
 
@@ -150,7 +152,6 @@ class AdminUserCreationForm(UserCreationForm):
 
         user = super().save(commit=False)
 
-        # Role is selected by Admin.
         user.role = self.cleaned_data["role"]
 
         if commit:
@@ -173,7 +174,7 @@ class UserManagementForm(forms.ModelForm):
             "last_name",
             "username",
             "email",
-            "phone",
+            "phone_number",
             "role",
             "is_active",
         )
@@ -207,7 +208,7 @@ class UserManagementForm(forms.ModelForm):
                 }
             ),
 
-            "phone": forms.TextInput(
+            "phone_number": forms.TextInput(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter phone number",
@@ -236,20 +237,24 @@ class UserManagementForm(forms.ModelForm):
 
         self.fields["username"].label = "User ID"
 
-        self.fields["role"].choices = [
-            ("EMPLOYEE", "Employee"),
-            ("HR", "HR"),
-            ("ADMIN", "Admin"),
-        ]
+        self.fields["phone_number"].label = "Phone Number"
+
+        self.fields["role"].label = "Role"
+
+        self.fields["role"].queryset = Role.objects.filter(
+            name__in=["Employee", "HR", "Admin"]
+        ).order_by("name")
+
+        self.fields["role"].empty_label = "Select role"
 
     # ------------------------------------------------------
     # PHONE VALIDATION
     # ------------------------------------------------------
 
-    def clean_phone(self):
+    def clean_phone_number(self):
 
         phone = self.cleaned_data.get(
-            "phone",
+            "phone_number",
             ""
         ).strip()
 
